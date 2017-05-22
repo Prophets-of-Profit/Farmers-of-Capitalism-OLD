@@ -1,9 +1,13 @@
 {
-	"name": "farmers of capitalism",
+	"name": "farmers-of-capitalism",
 	"authors": [
-		"Saurabh Totey"
+		"Saurabh Totey",
+		"Elia Gorokhovsky"
 	],
-	"description": "A minimal D application.",
-	"copyright": "Copyright © 2017, Saurabh Totey",
+	"description": "A game about farming, power, and aliens.",
+	"homepage": "https://github.com/SaurabhTotey/Farmers-of-Capitalism",
+	"dependencies": {
+		"derelict-glfw3": "~>4.0.0-alpha.6"
+	},
 	"license": "proprietary"
 }
