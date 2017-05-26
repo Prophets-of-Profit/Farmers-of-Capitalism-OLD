@@ -1,5 +1,6 @@
 import app;
 import World;
+import TilePiece;
 import std.stdio;
 
 class HexTile{
@@ -10,6 +11,7 @@ class HexTile{
     private double soil;            ///Part of tile's climate
     public bool isWater;            ///Determines if the tile is a water tile
     private int direction;          ///Direction of wind or water flow
+    public TilePiece[] improvement; ///Improvement or building or plant(s) that are on this tile
 
     this(int[] coords){
         this.coords = coords;
