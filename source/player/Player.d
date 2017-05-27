@@ -47,7 +47,7 @@ public class Player{
      *      newLocation = to-be location of the player
      */
     public bool setLocation(int[] newLocation){
-        if(numMoves /* TODO - World.getDistanceBetween(coords, location) */ > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
+        if(this.numMovesLeft /* TODO - World.getDistanceBetween(coords, location) */ > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
             //TODO this.numMovesLeft -= World.getDistanceBetween(coords, location)
             this.coords = newLocation.dup;
             return true;
@@ -58,5 +58,18 @@ public class Player{
 }
 
 unittest{
-    //TODO add tests for the class
+    import std.stdio;
+    import std.random;
+    mainWorld = new World(100);
+    Player testPlayer = new Player([0, 0]);
+    testPlayer.numMovesLeft = 5;
+    writeln("A player at (0, 0) who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
+    int numPlayersToTest = 4;
+    for(int i = 0; i < numPlayersToTest; i++){
+        int numRing = uniform(0, mainWorld.numRings);
+        int pos = uniform(0, getSizeOfRing(numRing));
+        testPlayer = new Player([numRing, pos]);
+        testPlayer.numMovesLeft = uniform(0, 5);
+        writeln("A player at (", numRing, ", ", pos, ") who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
+    }
 }
