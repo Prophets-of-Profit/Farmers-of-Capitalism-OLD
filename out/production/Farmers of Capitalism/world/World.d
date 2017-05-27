@@ -23,6 +23,7 @@ class World{
                 tiles ~= new HexTile([i, j]);
             }
         }
+        //TODO make tiles not empty and fill their instancedata
     }
 
     /**
@@ -81,4 +82,15 @@ unittest{
  */
 public static int getSizeOfRing(int ringNum){
     return (ringNum == 0)? 1 : 6 * ringNum;
+}
+
+/**
+ * Gives the distance between two coordinates given as [ringNum, pos]
+ * Params:
+ *      firstLocation = the coordinates of the first point
+ *      secondLocation = the coordinates of the second point
+ */
+public static int getDistanceBetweeen(int[] firstLocation, int[] secondLocation){
+    //TODO add implementation
+    return 0;
 }
