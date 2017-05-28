@@ -4,7 +4,8 @@
     <list default="true" id="4788537d-4e41-4b13-9759-575063fbfea6" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/farmers-of-capitalism.exe" afterPath="$PROJECT_DIR$/farmers-of-capitalism.exe" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Farmers of Capitalism/app.d" afterPath="$PROJECT_DIR$/out/production/Farmers of Capitalism/app.d" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Farmers of Capitalism/world/HexTile.d" afterPath="$PROJECT_DIR$/out/production/Farmers of Capitalism/world/HexTile.d" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/HexTile.d" afterPath="$PROJECT_DIR$/source/world/HexTile.d" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/World.d" afterPath="$PROJECT_DIR$/source/world/World.d" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/improvement/TilePiece.d" afterPath="$PROJECT_DIR$/source/world/improvement/TilePiece.d" />
     </list>
@@ -32,18 +33,18 @@
       <file leaf-file-name="Player.d" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/player/Player.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-317">
-              <caret line="20" column="33" lean-forward="true" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+            <state relative-caret-position="627">
+              <caret line="19" column="7" lean-forward="false" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HexTile.d" pinned="false" current-in-tab="false">
+      <file leaf-file-name="HexTile.d" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/world/HexTile.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="6" column="36" lean-forward="false" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+            <state relative-caret-position="759">
+              <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -52,18 +53,18 @@
       <file leaf-file-name="World.d" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/world/World.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="825">
-              <caret line="25" column="63" lean-forward="false" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
+            <state relative-caret-position="2442">
+              <caret line="74" column="15" lean-forward="false" selection-start-line="74" selection-start-column="15" selection-end-line="74" selection-end-column="15" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TilePiece.d" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TilePiece.d" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/world/improvement/TilePiece.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="34" column="79" lean-forward="false" selection-start-line="34" selection-start-column="79" selection-end-line="34" selection-end-column="79" />
+            <state relative-caret-position="1056">
+              <caret line="32" column="21" lean-forward="true" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -93,11 +94,11 @@
         <option value="$PROJECT_DIR$/source/plant/Plant.d" />
         <option value="$PROJECT_DIR$/source/world/Plant.d" />
         <option value="$PROJECT_DIR$/dub.json" />
-        <option value="$PROJECT_DIR$/source/world/HexTile.d" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/source/app.d" />
-        <option value="$PROJECT_DIR$/source/world/World.d" />
+        <option value="$PROJECT_DIR$/source/world/HexTile.d" />
         <option value="$PROJECT_DIR$/source/world/improvement/TilePiece.d" />
+        <option value="$PROJECT_DIR$/source/world/World.d" />
       </list>
     </option>
   </component>
@@ -130,7 +131,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -218,6 +218,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -755,11 +756,12 @@
       <workItem from="1495858314186" duration="102000" />
       <workItem from="1495927024651" duration="25000" />
       <workItem from="1495927197146" duration="707000" />
+      <workItem from="1495941931051" duration="408000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24129000" />
+    <option name="totallyTimeSpent" value="24537000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-13" y="-13" width="3026" height="1946" extended-state="6" />
@@ -822,7 +824,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
           <caret line="7" column="5" lean-forward="false" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1135,26 +1136,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/world/HexTile.d">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="6" column="36" lean-forward="false" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
           <caret line="7" column="5" lean-forward="false" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/world/World.d">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2442">
+          <caret line="74" column="15" lean-forward="false" selection-start-line="74" selection-start-column="15" selection-end-line="74" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/world/improvement/TilePiece.d">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1056">
+          <caret line="32" column="21" lean-forward="true" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/player/Player.d">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-317">
-          <caret line="20" column="33" lean-forward="true" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+        <state relative-caret-position="627">
+          <caret line="19" column="7" lean-forward="false" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
           <folding />
         </state>
       </provider>
@@ -1167,18 +1175,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/world/World.d">
+    <entry file="file://$PROJECT_DIR$/source/world/HexTile.d">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="25" column="63" lean-forward="false" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/world/improvement/TilePiece.d">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="34" column="79" lean-forward="false" selection-start-line="34" selection-start-column="79" selection-end-line="34" selection-end-column="79" />
+        <state relative-caret-position="759">
+          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
           <folding />
         </state>
       </provider>

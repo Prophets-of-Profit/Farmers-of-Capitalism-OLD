@@ -1,5 +1,6 @@
 import app;
 import World;
+import Player;
 import TilePiece;
 
 class HexTile{
@@ -11,6 +12,7 @@ class HexTile{
     public bool isWater;            ///Determines if the tile is a water tile
     private int direction;          ///Direction of wind or water flow
     public TilePiece[] improvement; ///Improvement(s) or building(s) or plant(s) that are on this tile
+    public Player owner;            ///The owner of this tile; if none, owner is null
 
     /**
      * The constructor for a hextile

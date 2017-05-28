@@ -72,6 +72,7 @@ unittest{
         writeln("The position of a tile at ", [ringNum, pos], " is ", testWorld.getTileAt([ringNum, pos]).coords);
         assert([ringNum, pos] == testWorld.getTileAt([ringNum, pos]).coords);
     }
+    //TODO test for getDistanceBetween
 }
 
 
