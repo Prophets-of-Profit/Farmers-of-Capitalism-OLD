@@ -1,3 +1,4 @@
+import Inventory;
 import Player;
 import app;
 
@@ -8,16 +9,16 @@ import app;
 abstract class TilePiece{
 
     public double completion;       ///How close the tilepiece is towards being complete: once it won't function until it has reached completion
-    public immutable int[] coords;  ///The location of which hex the tile piece exists in in terms of [ringNum, pos]
-    private Player creator = null;  ///The original creator of the tile piece (WARNING: may not be owner of tile piece)
+    public int[] coords;            ///The location of which hex the tile piece came from in terms of [ringNum, pos]
+    private Inventory source;       ///The source inventory for where the item is/came from
 
     /**
      *  A constructor for any TilePiece
-     *  A TilePiece MUST have coordinates and MUST exist on a hex
+     *  A TilePiece MUST have coordinates: if it is in an inventory, they are the coordinates of where the piece came from
      * Params:
      *      coords = the coordinates of where the TilePiece is located
      */
-    this(immutable int[] coords){
+    this(int[] coords){
         this.coords = coords;
         getCreated();
     }
@@ -28,8 +29,8 @@ abstract class TilePiece{
      *      coords = the coordinates of where the TilePiece is located
      *      creator = the player who is making the TilePiece
      */
-    this(immutable int[] coords, Player creator){
-        this.creator = creator;
+    this(int[] coords, Inventory origin){
+        this.source = origin;
         this(coords);
     }
 
@@ -41,7 +42,7 @@ abstract class TilePiece{
         return mainWorld.getTileAt(this.coords.dup).owner;
     }
 
-    public abstract void getCreated();                      ///What the tile piece should do when created (should also account for a null creator)
+    public abstract void getCreated();                      ///What the tile piece should do when created (should also account for a null origin)
     public abstract void getSteppedOn(Player stepper);      ///What the tile piece should do when stepped on
     public abstract void doIncrementalAction();             ///What the tile piece should do every turn
     public abstract void doMainAction(Player player);       ///What the tile piece should do when the player interacts with it

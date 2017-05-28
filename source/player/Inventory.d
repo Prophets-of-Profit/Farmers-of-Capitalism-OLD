@@ -1,3 +1,5 @@
+import Player;
+import TilePiece;
 
 /**
  * A class for an object that holds other objects
