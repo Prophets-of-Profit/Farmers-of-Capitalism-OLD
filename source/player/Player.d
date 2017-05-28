@@ -1,5 +1,6 @@
 import app;
 import World;
+import Inventory;
 import std.algorithm;
 
 /**
@@ -47,8 +48,8 @@ public class Player{
      *      newLocation = to-be location of the player
      */
     public bool setLocation(int[] newLocation){
-        if(this.numMovesLeft /* TODO - World.getDistanceBetween(coords, location) */ > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
-            //TODO this.numMovesLeft -= World.getDistanceBetween(coords, location)
+        if(this.numMovesLeft - World.getDistanceBetweeen(coords, newLocation) > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
+            this.numMovesLeft -= World.getDistanceBetweeen(coords, newLocation);
             this.coords = newLocation.dup;
             return true;
         }
