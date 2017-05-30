@@ -9,43 +9,32 @@ import app;
 abstract class TilePiece{
 
     public double completion;       ///How close the tilepiece is towards being complete: once it won't function until it has reached completion
-    public int[] coords;            ///The location of which hex the tile piece came from in terms of [ringNum, pos]
     private Inventory source;       ///The source inventory for where the item is/came from
+    public int movementCost;        ///How much the tilepiece would impair movement were it placed
+    public bool canBePlaced = true; ///Whether this tilepiece is just an item or it can be placed
+    public bool isPlaced = false;   ///Whether the tilepiece is in a hextile or not
 
     /**
-     *  A constructor for any TilePiece
-     *  A TilePiece MUST have coordinates: if it is in an inventory, they are the coordinates of where the piece came from
+     * What the tilepiece should do when moved to a different inventory: has a default implementation
      * Params:
-     *      coords = the coordinates of where the TilePiece is located
+     *      newSource = the new inventory to be moved to
      */
-    this(int[] coords){
-        this.coords = coords;
-        getCreated();
+    public bool getMovedTo(Inventory newSource){
+        Inventory oldSource = this.source;
+        this.source.remove(this);
+        if(newSource.addItem(this)){
+            this.source = newSource;
+            return true;
+        }else{
+            getMovedTo(oldSource);
+            return false;
+        }
     }
-
-    /**
-     * A constructor for a TilePiece that has a creator
-     * Params:
-     *      coords = the coordinates of where the TilePiece is located
-     *      creator = the player who is making the TilePiece
-     */
-    this(int[] coords, Inventory origin){
-        this.source = origin;
-        this(coords);
-    }
-
-    /**
-     * Gets the owner of the tile piece by getting the owner of the tile the tile piece is on
-     * Can be overwritten for different tile piece subclasses
-     */
-    public Player getOwner(){
-        return mainWorld.getTileAt(this.coords.dup).owner;
-    }
-
-    public abstract void getCreated();                      ///What the tile piece should do when created (should also account for a null origin)
+    public abstract Player getOwner();                      ///Gets the owner of the tilepiece
+    public abstract void getPlaced(Player placer);          ///What the tile piece should do when created
     public abstract void getSteppedOn(Player stepper);      ///What the tile piece should do when stepped on
     public abstract void doIncrementalAction();             ///What the tile piece should do every turn
-    public abstract void doMainAction(Player player);       ///What the tile piece should do when the player interacts with it
+    public abstract void doMainAction(Player player);       ///What the tile piece should do when the player interacts with it; should do different actions based on whether it isPlaced
     public abstract void getDestroyed(Player destroyer);    ///What/how the tile piece gets destroyed and what it will do when destroyed
 
 }
