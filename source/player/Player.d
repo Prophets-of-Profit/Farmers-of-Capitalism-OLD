@@ -48,8 +48,8 @@ public class Player{
      *      newLocation = to-be location of the player
      */
     public bool setLocation(int[] newLocation){
-        if(this.numMovesLeft - World.getDistanceBetweeen(coords, newLocation) > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
-            this.numMovesLeft -= World.getDistanceBetweeen(coords, newLocation);
+        if(this.numMovesLeft - World.getDistanceBetween(coords, newLocation) > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
+            this.numMovesLeft -= World.getDistanceBetween(coords, newLocation);
             this.coords = newLocation.dup;
             return true;
         }
