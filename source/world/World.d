@@ -1,5 +1,7 @@
 import HexTile;
 import core.exception;
+import std.algorithm;
+import app;
 
 /**
  * A general class that should only ever be instantiated once
@@ -72,7 +74,17 @@ unittest{
         writeln("The position of a tile at ", [ringNum, pos], " is ", testWorld.getTileAt([ringNum, pos]).coords);
         assert([ringNum, pos] == testWorld.getTileAt([ringNum, pos]).coords);
     }
+<<<<<<< HEAD
     //TODO test for getDistanceBetween
+=======
+    assert(getDistanceBetween([0, 0], [1, 1]) == 1);
+    int runNumForGettingDistances = 5;
+    for(int i = 0; i < runNumForGettingDistances; i++){
+        int[] ringNums = [uniform(0, testWorld.numRings), uniform(0, testWorld.numRings)];
+        int[] poss = [uniform(0, getSizeOfRing(ringNums[0])), uniform(0, getSizeOfRing(ringNums[1]))];
+        writeln("The distance between (", ringNums[0], ", ", poss[0], ") and (", ringNums[1], ", ", poss[1], ") is ", getDistanceBetween([ringNums[0], poss[0]], [ringNums[1], poss[1]]));
+    }
+>>>>>>> master
 }
 
 
@@ -91,7 +103,22 @@ public static int getSizeOfRing(int ringNum){
  *      firstLocation = the coordinates of the first point
  *      secondLocation = the coordinates of the second point
  */
+<<<<<<< HEAD
 public static int getDistanceBetweeen(int[] firstLocation, int[] secondLocation){
     //TODO add implementation
     return 0;
+=======
+public static int getDistanceBetween(int[] firstLocation, int[] secondLocation){
+    int distance = 0;
+    int[][] checked = [firstLocation];
+    while(!checked.canFind(secondLocation)){
+        int[][] prevChecked = checked.dup;
+        checked = null;
+        distance++;
+        foreach(int[] coord; prevChecked){
+            checked ~= mainWorld.getTileAt(coord).getAdjacentTiles();
+        }
+    }
+    return distance;
+>>>>>>> master
 }

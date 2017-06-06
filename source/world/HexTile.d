@@ -2,6 +2,7 @@ import app;
 import World;
 import Player;
 import TilePiece;
+import Inventory;
 
 class HexTile{
 
@@ -11,7 +12,12 @@ class HexTile{
     private double soil;            ///Part of tile's climate
     public bool isWater;            ///Determines if the tile is a water tile
     private int direction;          ///Direction of wind or water flow
+<<<<<<< HEAD
     public TilePiece[] improvement; ///Improvement(s) or building(s) or plant(s) that are on this tile
+=======
+    public Inventory contained;     ///Improvement(s) or building(s) or plant(s) that are on this tile
+    private int passabilityCost;    ///How much movement passing this tile costs; isn't the final value, as things in inventory might affect cost
+>>>>>>> master
     public Player owner;            ///The owner of this tile; if none, owner is null
 
     /**
@@ -59,6 +65,13 @@ class HexTile{
             }
         }
         return adjacentTiles;
+    }
+
+    /**
+     * Gets how much movement the tile costs based on the tiles movement cost and its items' movement cost
+     */
+    public int getPassabilityCost(){
+        return this.passabilityCost + this.contained.getCollectiveMovementCost();
     }
 
 }
