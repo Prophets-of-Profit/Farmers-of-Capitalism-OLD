@@ -1,4 +1,5 @@
 import World;
+import Player;
 
 static World mainWorld; ///The main world of the entire game
 
