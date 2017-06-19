@@ -1,4 +1,5 @@
 import HexTile;
+import Player;
 import core.exception;
 import std.algorithm;
 import std.random;
@@ -10,8 +11,9 @@ import app;
  */
 class World{
 
-    public HexTile[] tiles;        ///The storage array of all tiles; stored in order of ringNum and then pos
-    public immutable int numRings;  ///The number of rings the hexmap (World) has
+    private HexTile[] tiles;            ///The storage array of all tiles; stored in order of ringNum and then pos
+    public immutable int numRings;      ///The number of rings the hexmap (World) has
+    public Player[] players;            ///A list of all of the players in the game
 
     /**
      * The constructor for a world
@@ -69,6 +71,96 @@ class World{
         return this.tiles.length;
     }
 
+    /**
+     * Gives the distance between two coordinates given as [ringNum, pos]
+     * Params:
+     *      firstLocation = the coordinates of the first point
+     *      secondLocation = the coordinates of the second point
+     */
+    public int getDistanceBetween(int[] firstLocation, int[] secondLocation){
+        assert(this.getTileAt(firstLocation) !is null && this.getTileAt(secondLocation) !is null);
+        int distance = 0;
+        int[][] checked = [firstLocation];
+        while(!checked.canFind(secondLocation)){
+            int[][] prevChecked = checked.dup;
+            checked = null;
+            distance++;
+            foreach(int[] coord; prevChecked){
+                checked ~= this.getTileAt(coord).getAdjacentCoords();
+            }
+        }
+        return distance;
+    }
+
+    /**
+     * Gets a list of coordinates that will take any player from firstLocation to secondLocation with the smallest
+     * movement cost: the returned coordinates will contain the second given location as the last element, but will not
+     * contain the first given location
+     * Params:
+     *      firstLocation = the initial starting location of where to get the cheapest path
+     *      secondLocation = where the cheapest path should end
+     *      maxAllowablePathCost = the maximum cost allowed for the cheapest path between two coords: if no path is found under this value, null is returned: a smaller max cost makes this function faster
+     */
+    public int[][] getCheapestPathBetween(int[] firstLocation, int[] secondLocation, double maxAllowablePathCost = double.max){
+        if(maxAllowablePathCost < 0){
+            return null;
+        }
+        if(firstLocation == secondLocation){
+            return [secondLocation];
+        }
+        int[][][] candidates = null;
+        foreach(int[] coord ; this.getTileAt(firstLocation).getAdjacentCoords()){
+            int[][] pathCandidate = this.getCheapestPathBetween(coord, secondLocation, maxAllowablePathCost - this.getTileAt(coord).getPassabilityCost());
+            if(pathCandidate !is null){
+                candidates ~= [coord] ~ pathCandidate;
+            }
+        }
+        double smallestCost = double.max;
+        int[][] path = null;
+        foreach(int[][] pathCandidate ; candidates){
+            double currentPathCost = 0;
+            foreach(int[] coord ; pathCandidate){
+                currentPathCost += this.getTileAt(coord).getPassabilityCost();
+            }
+            if(currentPathCost < smallestCost){
+                path = pathCandidate;
+            }
+        }
+        if(path !is null && path.length >= 2){
+            assert(this.isContiguous(path));
+        }
+        return path;
+    }
+
+    /**
+     * Returns whether the given path is contiguous
+     * Params:
+     *      path = the list of coordinates to check for contiguity
+     */
+    public bool isContiguous(int[][] path){
+        assert(path.length >= 2);
+        for(int i = 0; i < path.length - 1; i++){
+            if(!this.getTileAt(path[i]).getAdjacentCoords().canFind(path[i + 1])){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns a copy of the world
+     * The returned copy is a mostly-deep copy, meaning that all of its contained tiles are separate from this's contained tiles
+     * If a change were to happen to one of this world's tiles, it wouldn't be reflected in the copy's tiles
+     * This does not hold for the owner for each tile, as the stored owner of a tile would reflect changes in that player
+     */
+    public World clone(){
+        World copy = new World(this.numRings);
+        for(int i = 0; i < this.getNumTiles(); i++){
+            copy.tiles[i] = this.tiles[i].clone();
+        }
+        return copy;
+    }
+
 }
 
 unittest{
@@ -87,15 +179,14 @@ unittest{
         writeln("The position of a tile at ", [ringNum, pos], " is ", testWorld.getTileAt([ringNum, pos]).coords);
         assert([ringNum, pos] == testWorld.getTileAt([ringNum, pos]).coords);
     }
-    assert(getDistanceBetween([0, 0], [1, 1]) == 1);
+    assert(testWorld.getDistanceBetween([0, 0], [1, 1]) == 1);
     int runNumForGettingDistances = 5;
     for(int i = 0; i < runNumForGettingDistances; i++){
         int[] ringNums = [uniform(0, testWorld.numRings), uniform(0, testWorld.numRings)];
         int[] poss = [uniform(0, getSizeOfRing(ringNums[0])), uniform(0, getSizeOfRing(ringNums[1]))];
-        writeln("The distance between (", ringNums[0], ", ", poss[0], ") and (", ringNums[1], ", ", poss[1], ") is ", getDistanceBetween([ringNums[0], poss[0]], [ringNums[1], poss[1]]));
+        writeln("The distance between (", ringNums[0], ", ", poss[0], ") and (", ringNums[1], ", ", poss[1], ") is ", testWorld.getDistanceBetween([ringNums[0], poss[0]], [ringNums[1], poss[1]]));
     }
 }
-
 
 /**
  * Gives how many tiles can exist within a given ring
@@ -104,24 +195,4 @@ unittest{
  */
 public static int getSizeOfRing(int ringNum){
     return (ringNum == 0)? 1 : 6 * ringNum;
-}
-
-/**
- * Gives the distance between two coordinates given as [ringNum, pos]
- * Params:
- *      firstLocation = the coordinates of the first point
- *      secondLocation = the coordinates of the second point
- */
-public static int getDistanceBetween(int[] firstLocation, int[] secondLocation){
-    int distance = 0;
-    int[][] checked = [firstLocation];
-    while(!checked.canFind(secondLocation)){
-        int[][] prevChecked = checked.dup;
-        checked = null;
-        distance++;
-        foreach(int[] coord; prevChecked){
-            checked ~= mainWorld.getTileAt(coord).getAdjacentTiles();
-        }
-    }
-    return distance;
 }

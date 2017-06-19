@@ -2,6 +2,7 @@ import app;
 import World;
 import Inventory;
 import std.algorithm;
+import std.array;
 
 /**
  * A class for each player
@@ -9,9 +10,10 @@ import std.algorithm;
  */
 public class Player{
 
-    public int[] coords;                    ///The location of the player stored as [ringNum, pos]
-    public int maxTravellableDistance = 5;  ///The most distance the player can move in one turn
-    public int numMovesLeft;                ///The amount of moves the player can still do this turn
+    public int[] coords;                            ///The location of the player stored as [ringNum, pos]
+    public int maxTravellableDistance = 5;          ///The most distance the player can move in one turn
+    public double numMovesLeft;                     ///The amount of moves the player can still do this turn
+    public Inventory inventory = new Inventory();   ///The player's inventory
 
     /**
      * A constructor for a player
@@ -28,30 +30,42 @@ public class Player{
      * Doesn't return the distance of those coordinates
      */
     public int[][] getValidMoveLocations(){
-        int[][] validLocations = [coords.dup];
-        for(int i = 0; i < this.numMovesLeft; i++){
-            foreach(int[] traversableCoordinate ; validLocations){
-                foreach(int[] candidate; mainWorld.getTileAt(traversableCoordinate).getAdjacentTiles()){
-                    if(!validLocations.canFind(candidate)){
-                        validLocations ~= candidate;
+        if(this.numMovesLeft == 0){
+            return [this.coords];
+        }
+        int[][] validMoveLocations = [this.coords];
+        foreach(int[] adjacentCoord ; mainWorld.getTileAt(this.coords).getAdjacentCoords()){
+            Player copy = new Player(adjacentCoord);
+            copy.numMovesLeft = this.numMovesLeft - mainWorld.getTileAt(adjacentCoord).getPassabilityCost();
+            if(copy.numMovesLeft >= 0){
+                if(!validMoveLocations.canFind(adjacentCoord)){
+                    validMoveLocations ~= adjacentCoord;
+                }
+                foreach(int[] validMoveLocation ; copy.getValidMoveLocations()){
+                    if(!validMoveLocations.canFind(validMoveLocation)){
+                        validMoveLocations ~= validMoveLocation;
                     }
                 }
             }
         }
-        return validLocations;
+        return validMoveLocations;
     }
 
     /**
      * Moves the player based on where they want to move, and adjusts the amount of moves they have left in the turn accordingly
      * Returns if the move was successful
      * Params:
-     *      newLocation = to-be location of the player
+     *      pathToNewLocation = the path to the to-be location of the player
      */
-    public bool setLocation(int[] newLocation){
-        if(this.numMovesLeft - World.getDistanceBetween(coords, newLocation) > 0 && newLocation !is null && this.getValidMoveLocations().canFind(newLocation)){
-            this.numMovesLeft -= World.getDistanceBetween(coords, newLocation);
-            this.coords = newLocation.dup;
-            return true;
+    public bool setLocation(int[][] pathToNewLocation){
+        assert(pathToNewLocation[0] != this.coords && mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
+        foreach(int[] location ; pathToNewLocation){
+            if(this.numMovesLeft > 0 && location != this.coords && this.getValidMoveLocations().canFind(location)){
+                this.coords = location;
+                //TODO activate onStep of each tilePiece on newLocation
+                this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
+                return true;
+            }
         }
         return false;
     }
@@ -63,7 +77,7 @@ unittest{
     import std.random;
     mainWorld = new World(100);
     Player testPlayer = new Player([0, 0]);
-    testPlayer.numMovesLeft = 5;
+    testPlayer.numMovesLeft = 1;
     writeln("A player at (0, 0) who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     int numPlayersToTest = 4;
     for(int i = 0; i < numPlayersToTest; i++){

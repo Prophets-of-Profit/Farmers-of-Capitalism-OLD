@@ -10,8 +10,6 @@ abstract class TilePiece{
 
     public double completion;       ///How close the tilepiece is towards being complete: once it won't function until it has reached completion
     private Inventory source;       ///The source inventory for where the item is/came from
-    public int movementCost;        ///How much the tilepiece would impair movement were it placed
-    public bool canBePlaced = true; ///Whether this tilepiece is just an item or it can be placed
     public bool isPlaced = false;   ///Whether the tilepiece is in a hextile or not
 
     /**
@@ -22,7 +20,7 @@ abstract class TilePiece{
     public bool getMovedTo(Inventory newSource){
         Inventory oldSource = this.source;
         this.source.remove(this);
-        if(newSource.addItem(this)){
+        if(newSource.add(this)){
             this.source = newSource;
             return true;
         }else{
@@ -30,11 +28,15 @@ abstract class TilePiece{
             return false;
         }
     }
-    public abstract Player getOwner();                      ///Gets the owner of the tilepiece
-    public abstract void getPlaced(Player placer);          ///What the tile piece should do when created
-    public abstract void getSteppedOn(Player stepper);      ///What the tile piece should do when stepped on
-    public abstract void doIncrementalAction();             ///What the tile piece should do every turn
-    public abstract void doMainAction(Player player);       ///What the tile piece should do when the player interacts with it; should do different actions based on whether it isPlaced
-    public abstract void getDestroyed(Player destroyer);    ///What/how the tile piece gets destroyed and what it will do when destroyed
+
+    public abstract Player getOwner();                                  ///Gets the owner of the tilepiece
+    public abstract bool canBePlaced(int[] placementCandidateCoords);   ///Returns whether the tile piece can be placed
+    public abstract void getPlaced(Player placer, int[] newLocation);   ///What the tile piece should do when created
+    public abstract double getMovementCost();                           ///Returns the movement cost of the tile piece (how much the tile piece would affect movement were it placed)
+    public abstract void getSteppedOn(Player stepper);                  ///What the tile piece should do when stepped on
+    public abstract void doIncrementalAction();                         ///What the tile piece should do every turn
+    public abstract void doMainAction(Player player);                   ///What the tile piece should do when the player interacts with it; should do different actions based on whether it isPlaced
+    public abstract void getDestroyed(Player destroyer);                ///What/how the tile piece gets destroyed and what it will do when destroyed
+    public abstract TilePiece clone();                                  ///Returns a copy of the tile piece
 
 }

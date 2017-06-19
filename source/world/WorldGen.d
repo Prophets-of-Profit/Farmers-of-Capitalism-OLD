@@ -6,6 +6,8 @@ import std.algorithm;
 import World;
 import HexTile;
 
+/*
+TODO rework all of this into world constructor and delete this file
 void generateTiles(World world, int numRivers){
     int worldSize = world.getNumTiles();
     int[][] generated;
@@ -146,5 +148,4 @@ void genWindDirection(World world){
             tile.direction = direction;
         }
     }
-}
-
+}*/
