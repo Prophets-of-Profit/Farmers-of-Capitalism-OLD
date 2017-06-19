@@ -2,8 +2,11 @@ module world.WorldGen;
 
 import std.stdio;
 import std.random;
+import std.algorithm;
 import World;
-void generateTiles(World world){
+import HexTile;
+
+void generateTiles(World world, int numRivers){
     int worldSize = world.getNumTiles();
     int[][] generated;
     int[] maxElevationLocation;
@@ -20,21 +23,22 @@ void generateTiles(World world){
                     totalElevationOfAdjacent += world.getTileAt(adj).elevation;
                 }
             }
-            double avgElevation = totalElevationOfAdjacent / adjancencies.length;
+            double avgElevation = totalElevationOfAdjacent / adjacencies.length;
             currentTile.elevation = avgElevation + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding elevation
             if(currentTile.elevation > maxElevation){
-                maxElevation = currentTile.elevation
+                maxElevation = currentTile.elevation;
                 maxElevationLocation = currentTile.coords.dup();
             }
-            generated ~= currentTile.coords;
+            generated ~= currentTile.coords.dup();
         }
-        currentTile = adjacencies[uniform(0, adjacencies.length)];
+        int[][] adjacencies = currentTile.getAdjacentTiles();
+        currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
 
-    int[][] generated;
+    generated = [];
     generated ~= world.getRandomTile();
-    HexTile startingTile = world.getTileAt(generated[0]);
-    HexTile currentTile = startingTile;
+    startingTile = world.getTileAt(generated[0]);
+    currentTile = startingTile;
     while(generated.length < worldSize){                                        ///Repeat; initializing temperature
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
@@ -44,18 +48,19 @@ void generateTiles(World world){
                     totalTempOfAdjacent += world.getTileAt(adj).baseTemperature;
                 }
             }
-            double avgTemp = totalTempOfAdjacent / adjancencies.length;
+            double avgTemp = totalTempOfAdjacent / adjacencies.length;
             currentTile.baseTemperature = avgTemp + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
-            currentTile.baseTemperature += currentTile.elevation / -5.0
-            generated ~= currentTile.coords;
+            currentTile.baseTemperature += currentTile.elevation / -5.0;
+            generated ~= currentTile.coords.dup();
         }
-        currentTile = adjacencies[uniform(0, adjacencies.length)];
+        int[][] adjacencies = currentTile.getAdjacentTiles();
+        currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
 
-    int[][] generated;
+    generated = [];
     generated ~= world.getRandomTile();
-    HexTile startingTile = world.getTileAt(generated[0]);
-    HexTile currentTile = startingTile;
+    startingTile = world.getTileAt(generated[0]);
+    currentTile = startingTile;
     while(generated.length < worldSize){                                        ///Repeat; initializing humidity
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
@@ -65,17 +70,18 @@ void generateTiles(World world){
                     totalHumidOfAdjacent += world.getTileAt(adj).baseHumidity;
                 }
             }
-            double avgHumid = totalHumidOfAdjacent / adjancencies.length;
+            double avgHumid = totalHumidOfAdjacent / adjacencies.length;
             currentTile.baseHumidity = avgHumid + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
-            currentTile.baseHumidity += currentTile.elevation / -3.0
-            generated ~= currentTile.coords;
+            currentTile.baseHumidity += currentTile.elevation / -3.0;
+            generated ~= currentTile.coords.dup();
         }
-        currentTile = adjacencies[uniform(0, adjacencies.length)];
+        int[][] adjacencies = currentTile.getAdjacentTiles();
+        currentTile = world.getTileAt(currentTile.getAdjacentTiles()[uniform(0, adjacencies.length)]);
     }
-    int[][] generated;
+    generated = [];
     generated ~= world.getRandomTile();
-    HexTile startingTile = world.getTileAt(generated[0]);
-    HexTile currentTile = startingTile;
+    startingTile = world.getTileAt(generated[0]);
+    currentTile = startingTile;
     while(generated.length < worldSize){                                        ///Repeat; initializing temperature
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
@@ -85,51 +91,60 @@ void generateTiles(World world){
                     totalSoilOfAdjacent += world.getTileAt(adj).soil;
                 }
             }
-            double avgSoil = totalSoilOfAdjacent / adjancencies.length;
+            double avgSoil = totalSoilOfAdjacent / adjacencies.length;
             currentTile.soil = avgSoil + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
-            currentTile.soil += currentTile.elevation / 8.0
-            generated ~= currentTile.coords;
+            currentTile.soil += currentTile.elevation / 8.0;
+            generated ~= currentTile.coords.dup();
         }
-        currentTile = adjacencies[uniform(0, adjacencies.length)];
+        int[][] adjacencies = currentTile.getAdjacentTiles();
+        currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
+    for(int i = 0; i < numRivers; i++){
+        genRiver(world);
+    }
+    genWindDirection(world);
 }
 
 void genRiver(World world){
     bool cont = true;
-    int[] currentTile = World.getRandomTile();
+    int[] currentTile = world.getRandomTile();
     while(cont){
-        if(currentTile.isWater || currentTile[0] == world.numRings){
+        if(world.getTileAt(currentTile).isWater || currentTile[0] == world.numRings){
             cont = false;
         }
         else{
-            currentTile.isWater = true;
-            int[] minElev = currentTile.getAdjacentTiles()[0];
+            world.getTileAt(currentTile).isWater = true;
+            int[] minElev = world.getTileAt(currentTile).getAdjacentTiles()[0];
             int index = 0;
             int direction = 0;
-            foreach(int[] tile; currentTile.getAdjancentTiles()){
-                if(world.tileAt(tile).elevation < world.tileAt(minElev).elevation){
+            foreach(int[] tile; world.getTileAt(currentTile).getAdjacentTiles()){
+                if(world.getTileAt(tile).elevation < world.getTileAt(minElev).elevation){
                     minElev = tile;
-                    direction = index;            }
+                    direction = index;
+                    }
                 index++;
             }
             world.getTileAt(currentTile).direction = direction;
-            currentTile = world.tileAt(minElev)
+            currentTile = minElev;
         }
     }
 }
 
 void genWindDirection(World world){
-    foreach(Hextile tile; World.tiles){
-        int[] maxTemp = tile.getAdjacentTiles()[0];
-        int index = 0;
-        int direction = 0;
-        foreach(int[] coords; currentTile.getAdjancentTiles()){
-            if(world.tileAt(coords).baseTemperature < world.tileAt(maxTemp).baseTemperature){
-                maxTemp = tile;
-                direction = index;            }
-            index++;
+    foreach(HexTile tile; world.tiles){
+        if(!tile.isWater){
+            int[] maxTemp = tile.getAdjacentTiles()[0];
+            int index = 0;
+            int direction = 0;
+            foreach(int[] coords; tile.getAdjacentTiles()){
+                if(world.getTileAt(coords).baseTemperature < world.getTileAt(maxTemp).baseTemperature){
+                    maxTemp = tile.coords.dup();
+                    direction = index;
+                    index++;
+                }
+            }
+            tile.direction = direction;
         }
-        tile.direction = direction;
     }
 }
 

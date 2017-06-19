@@ -7,11 +7,14 @@ import Inventory;
 class HexTile{
 
     public immutable int[] coords;  ///Location of the tile stored as [ringNumber, positionInRing]
-    private double temperature;     ///Part of tile's climate
-    private double humidity;        ///Part of tile's climate (if this is a water tile, determines water salinity)
-    private double soil;            ///Part of tile's climate
+    public double temperature;     ///Part of tile's climate
+    public double baseTemperature;
+    public double humidity;        ///Part of tile's climate (if this is a water tile, determines water salinity)
+    public double baseHumidity;
+    public double soil;            ///Part of tile's climate
+    public double elevation;
     public bool isWater;            ///Determines if the tile is a water tile
-    private int direction;          ///Direction of wind or water flow
+    public int direction;          ///Direction of wind or water flow
     public Inventory contained;     ///Improvement(s) or building(s) or plant(s) that are on this tile
     private int passabilityCost;    ///How much movement passing this tile costs; isn't the final value, as things in inventory might affect cost
     public Player owner;            ///The owner of this tile; if none, owner is null
