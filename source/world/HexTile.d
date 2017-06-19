@@ -8,13 +8,17 @@ import std.conv;
 
 class HexTile{
 
+    public enum Direction{
+        NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
+    }
+
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
     private double temperature;                     ///Part of tile's climate
     private double water;                           ///Part of tile's climate (if this is a water tile, determines water salinity, otherwise is humidity)
     private double soil;                            ///Part of tile's climate
     private double elevation;                       ///Part of the tile's climate
     public bool isWater;                            ///Determines if the tile is a water tile
-    private int direction;                          ///Direction of wind or water flow TODO limit to 0-5
+    private Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
     public Player owner;                            ///The owner of this tile; if none, owner is null
 
@@ -35,6 +39,7 @@ class HexTile{
      *  and then performing different actions based on whether the tile is a) the center, b) straight off the side of the center hex, or
      *  c) just any tile
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
+     * TODO rework order of returned coordinates such that order is: NORTH, NORTHEAST, SOUTHEAST, SOUTH, SOUTHWEST, NORTHWEST (clockwise starting north)
      */
     public int[][] getAdjacentCoords(){
         int[][] adjacentCandidates = null;
@@ -63,6 +68,16 @@ class HexTile{
             }
         }
         return adjacentTiles;
+    }
+
+    /*
+     * Returns a tile of distance 1 away from this tile in the direction given
+     * TODO this function won't work because getAdjacentCoords returns adjacencies in an arbitrary order
+     * Params:
+     *      directionOfAdjacent = the direction enum or integer of which side the given adjacent coordinate should be
+     */
+    public int[] getAdjacentCoordInDirection(Direction directionOfAdjacent){
+        return this.getAdjacentCoords()[directionOfAdjacent];
     }
 
     /**
