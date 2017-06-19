@@ -48,6 +48,18 @@ class World{
         }
     }
 
+	public int[] getRandomTile(){
+        int index = uniform(0, tiles.length);
+        int nextRingSize = 0;
+        int nextRingNumber = 0;
+        while (index >= nextRingSize){
+            index -= nextRingSize;
+            nextRingNumber++;
+            nextRingSize = getSizeOfRing(nextRingNumber);
+        }
+        return [nextRingNumber, index - 1];
+    }
+	
     /**
      *  Returns the amount of tiles that exists within the world
      *  Isn't probably going to be used for much
