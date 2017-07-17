@@ -62,7 +62,7 @@ public class Player{
         foreach(int[] location ; pathToNewLocation){
             if(this.numMovesLeft > 0 && location != this.coords && this.getValidMoveLocations().canFind(location)){
                 this.coords = location;
-                //TODO activate onStep of each tilePiece on newLocation
+                //TODO activate onStep of each Item on newLocation
                 this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
                 return true;
             }

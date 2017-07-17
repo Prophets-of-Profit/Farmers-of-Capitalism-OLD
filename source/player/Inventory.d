@@ -1,5 +1,5 @@
 import Player;
-import TilePiece;
+import Item;
 import core.exception;
 
 /**
@@ -9,7 +9,7 @@ import core.exception;
 class Inventory{
 
     public Player[] accessibleTo;   ///A list of players who can access the inventory
-    public TilePiece[] items;       ///All the items inside of the inventory
+    public Item[] items;       ///All the items inside of the inventory
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
     public int[] coords;            ///The location of the tile or the player or inventorycontainer with this inventory
 
@@ -20,7 +20,7 @@ class Inventory{
      */
     this(int maxSize = -1){
         this.maxSize = maxSize;
-        items = (maxSize < 0)? null : new TilePiece[maxSize];
+        items = (maxSize < 0)? null : new Item[maxSize];
     }
 
     /**
@@ -29,7 +29,7 @@ class Inventory{
      * Params:
      *      itemToAdd = the item to add to the inventory
      */
-    public bool add(TilePiece itemToAdd){
+    public bool add(Item itemToAdd){
         if(this.maxSize < 0){
             this.items ~= itemToAdd;
             return true;
@@ -49,7 +49,7 @@ class Inventory{
      * Params:
      *      itemToRemove = the item to remove from the inventory
      */
-    public TilePiece remove(TilePiece itemToRemove){
+    public Item remove(Item itemToRemove){
         for(int i = 0; i < this.items.length; i++){
             if(this.items[i] == itemToRemove){
                 this.items[i] = null;
@@ -64,7 +64,7 @@ class Inventory{
      */
     public double getCollectiveMovementCost(){
         double moveCost = 0;
-        foreach(TilePiece item ; this.items){
+        foreach(Item item ; this.items){
            if(item !is null && item.isPlaced){
                 moveCost += item.getMovementCost();
            }
@@ -101,6 +101,6 @@ unittest{
     Inventory testInv = new Inventory(1);
     assert(testInv.add(null));
     assert(testInv.add(null));
-    //TODO assert(testInv.add(someTilePiece));
-    //TODO assert(!testInv.add(someTilePiece));
+    //TODO assert(testInv.add(someItem));
+    //TODO assert(!testInv.add(someItem));
 }
