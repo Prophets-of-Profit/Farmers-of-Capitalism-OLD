@@ -1,7 +1,7 @@
 import app;
 import World;
 import Player;
-import Item;
+import TilePiece;
 import Inventory;
 import std.math;
 import std.conv;

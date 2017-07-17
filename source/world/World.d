@@ -3,7 +3,6 @@ import Player;
 import core.exception;
 import std.algorithm;
 import std.random;
-import std.conv;
 import app;
 
 /**
@@ -53,7 +52,7 @@ class World{
     }
 
 	public int[] getRandomTile(){
-        int index = uniform(0, this.getNumTiles());
+        int index = uniform(0, tiles.length);
         int nextRingSize = 0;
         int nextRingNumber = 0;
         while (index >= nextRingSize){
@@ -63,13 +62,13 @@ class World{
         }
         return [nextRingNumber, index - 1];
     }
-
+	
     /**
      *  Returns the amount of tiles that exists within the world
      *  Isn't probably going to be used for much
      */
     public int getNumTiles(){
-        return to!int(this.tiles.length);
+        return this.tiles.length;
     }
 
     /**
