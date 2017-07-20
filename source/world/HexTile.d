@@ -1,3 +1,8 @@
+/**
+* Contains the class for tiles.
+*/
+module world.HexTile;
+
 import app;
 import World;
 import Player;

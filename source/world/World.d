@@ -1,3 +1,8 @@
+/**
+* Contains the class for the world.
+*/
+module world.World;
+
 import HexTile;
 import Player;
 import core.exception;

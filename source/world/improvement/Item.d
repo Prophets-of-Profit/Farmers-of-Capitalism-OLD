@@ -1,3 +1,8 @@
+/**
+* Contains the class for placed or unplaced items.
+*/
+module world.improvement.Item;
+
 import Inventory;
 import Player;
 import app;

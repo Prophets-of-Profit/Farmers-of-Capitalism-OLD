@@ -1,3 +1,8 @@
+/**
+* Contains the Inventory class.
+*/
+module player.Inventory;
+
 import Player;
 import Item;
 import core.exception;
