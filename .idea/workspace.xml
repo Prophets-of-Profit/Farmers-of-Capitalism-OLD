@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4788537d-4e41-4b13-9759-575063fbfea6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/player/Inventory.d" afterPath="$PROJECT_DIR$/source/player/Inventory.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/HexTile.d" afterPath="$PROJECT_DIR$/source/world/HexTile.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/World.d" afterPath="$PROJECT_DIR$/source/world/World.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/improvement/Item.d" afterPath="$PROJECT_DIR$/source/world/improvement/Item.d" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/plant/Plant.d" afterPath="$PROJECT_DIR$/source/world/plant/Plant.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/plant/PlantTraits.d" afterPath="$PROJECT_DIR$/source/world/plant/PlantTraits.d" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -65,8 +58,8 @@
       <file leaf-file-name="Plant.d" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/world/plant/Plant.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="49" column="8" lean-forward="false" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+            <state relative-caret-position="-1006">
+              <caret line="45" column="6" lean-forward="false" selection-start-line="45" selection-start-column="6" selection-end-line="45" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -842,12 +835,12 @@
       <workItem from="1495948009362" duration="499000" />
       <workItem from="1496173087721" duration="428000" />
       <workItem from="1500401800989" duration="3952000" />
-      <workItem from="1500483200484" duration="4883000" />
+      <workItem from="1500483200484" duration="5795000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17447000" />
+    <option name="totallyTimeSpent" value="18359000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -1201,14 +1194,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/world/improvement/Item.d">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/player/Inventory.d">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-153">
@@ -1241,10 +1226,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/world/improvement/Item.d">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/world/plant/Plant.d">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="49" column="8" lean-forward="false" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+        <state relative-caret-position="-1006">
+          <caret line="45" column="6" lean-forward="false" selection-start-line="45" selection-start-column="6" selection-end-line="45" selection-end-column="6" />
           <folding />
         </state>
       </provider>

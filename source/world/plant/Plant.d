@@ -40,15 +40,27 @@ class Plant : Item{
     }
 
     public Player getOwner();
+
+    /**
+    * Checks whether the plant can be placed at a certain tile.
+    */
     public bool canBePlaced(int[] placementCandidateCoords){
         tile = mainWorld.getTileAt(placementCandidateCoords);
         //Check if tile conditions are appropriate.
-        if((tile.isWater && ("Aquatic" in this.attributes is null)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation <= this.survivableClimate["Elevation"][1])){
+        if((tile.isWater && (("Aquatic" in this.attributes) is null)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation <= this.survivableClimate["Elevation"][1])){
             return false;
-
+        //Check if plant can be moved.
+        }else if(("Moveable" in this.attributes) !is null){
+            if(this.completion <= this.attributes["Moveable"]/5){
+                return true;
+            }else{
+                return false;
+            }
+        //Check if plant is a seed.
+        }else if(this.completion == 0){
+            return true;
         }else{
-        
-
+            return false;
         }
 
     }
