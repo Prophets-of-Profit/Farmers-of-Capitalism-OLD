@@ -1,11 +1,14 @@
 /**
 * Contains the class for plant objects.
 */
-module world.plant.Plant;
+module Plant;
 
 import Item;
 import Player;
 import std.random;
+import HexTile;
+import World;
+import app;
 
 /**
 * A parent class for all plant objects.
@@ -13,49 +16,63 @@ import std.random;
 */
 class Plant : Item{
 
-    private string[] incrementalActions;    ///Stores actions taken every turn in the form of string method names.
-    private string[] steppedOnActions;      ///Stores actions taken when stepped on in the form of string method names.
-    private string[] mainActions;           ///Stores actions taken when interacted with in the form of string method names.
-    private string[] destroyedActions;      ///Stores actions taken when destroyed in the form of string method names.
-    private string[] placedActions;         ///Stores actions taken when placed in the form of string method names.
-    private int[string] attributes;         ///Stores passive (constantly applied) attributes in the form of strings, with levels from 1 to 5 in the form of ints.
-    private int[string] stats;              ///Stores base stats as integers on a scale of 1 to 5. Indexed by stat as string.
-    private int[][string] survivableClimate;///Stores bounds of survivable templerature, water, soil, elevation.
+    public void delegate()[] incrementalActions;                 ///Stores actions taken every turn in the form of string method names.
+    public void delegate(Player stepper)[] steppedOnActions;     ///Stores actions taken when stepped on in the form of string method names.
+    public void delegate(Player player)[] mainActions;           ///Stores actions taken when interacted with in the form of string method names.
+    public void delegate(Player destroyer)[] destroyedActions;   ///Stores actions taken when destroyed in the form of string method names.
+    public void delegate(Player placer)[] placedActions;         ///Stores actions taken when placed in the form of string method names.
+    public int[string] attributes;                               ///Stores passive (constantly applied) attributes in the form of strings, with levels from 1 to 5 in the form of ints.
+    public double[][string] survivableClimate;                      ///Stores bounds of survivable templerature, water, soil, elevation.
+    private Player placer;                                        ///The person who planted the plant.
+
+    /**
+    * Contains base stats of plant.
+    * Stats:
+    *     *Growth: Rate of growth.
+    *     *Resilience: Resistance to invasive species and being stepped on.
+    *     *Yield: Amount of products produced when destroyed.
+    *     *Seed Quantity: Amount of seeds produced when naturally reproducing.
+    *     *Seed Strength: Distance seeds can go before settling.
+    */
+    public int[string] stats;
+
 
     /**
     * The constructor for a plant.
     *
     */
 
-    this(string[] turnActions, string[] stepActions, string[] mainActions, string[] deadActions, string[] placeActions, int[string] attributes, int[string] stats, int[][string] sruvivableClimate){
+    this( ){
         //Add actions, attributes, and stats to object.
-        this.incrementalActions = turnActions;
-        this.steppedOnActions = stepActions;
-        this.mainActions = mainActions;
-        this.destroyedActions = deadActions;
-        this.placedActions = placeActions;
-        this.attributes = attributes;
-        this.stats = stats;
-        this.survivableClimate = survivableClimate;
+        this.stats["Growth"] = 1;
+        this.stats["Resilience"] = 1;
+        this.stats["Yield"] = 1;
+        this.stats["Seed Strength"] = 1;
+        this.stats["Seed Quantity"] = 1;
     }
 
-    public Player getOwner();
+    /**
+    * Returns owner of HexTile if not patented. Returns placer of plant if patented.
+    */
+    override Player getOwner(){
+        if(("Patent" in this.attributes) !is null){
+            return this.placer;
+        }else{
+            return mainWorld.getTileAt(this.source.coords).owner;
+        }
+    }
 
     /**
     * Checks whether the plant can be placed at a certain tile.
     */
-    public bool canBePlaced(int[] placementCandidateCoords){
-        tile = mainWorld.getTileAt(placementCandidateCoords);
+    override bool canBePlaced(int[] placementCandidateCoords){
+        HexTile tile = mainWorld.getTileAt(placementCandidateCoords);
         //Check if tile conditions are appropriate.
-        if((tile.isWater && (("Aquatic" in this.attributes) is null)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation <= this.survivableClimate["Elevation"][1])){
+        if((tile.isWater && (("Aquatic" in this.attributes) is null)) || (!tile.isWater && (("Aquatic" in this.attributes) !is null)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature  && tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water && tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil && tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation && tile.elevation <= this.survivableClimate["Elevation"][1])){
             return false;
         //Check if plant can be moved.
         }else if(("Moveable" in this.attributes) !is null){
-            if(this.completion <= this.attributes["Moveable"]/5){
-                return true;
-            }else{
-                return false;
-            }
+            return this.completion <= this.attributes["Moveable"]/5;
         //Check if plant is a seed.
         }else if(this.completion == 0){
             return true;
@@ -64,29 +81,36 @@ class Plant : Item{
         }
 
     }
-    public double getMovementCost();
+
+    override double getMovementCost(){
+        if(("Slowing" in this.attributes) !is null){
+            return this.attributes["Slowing"];
+        }
+        return 0;
+    }
 
     /**
     * Dictates what the plant does when placed.
     * Iterates through the plant's placedActions, executing each one.
     */
-    public void getPlaced(Player placer, int[] newLocation){
-        if(!this.isPlaced) && (this.canBePlaced()){
-            for(int i = 0; i < this.steppedOnActions.length; i++){
-                mixin(this.steppedOnActions[i]);
+    override void getPlaced(Player placer, int[] newLocation){
+        if(!this.isPlaced && this.canBePlaced(newLocation)){
+            for(int i = 0; i < this.placedActions.length; i++){
+                this.placedActions[i](placer);
             }
             this.isPlaced = true;
         }
+        this.placer = placer;
     }
 
     /**
     * Dictates what the plant does when stepped on.
     * Iterates through the plant's steppedOnActions, executing each one.
     */
-    public void getSteppedOn(Player stepper){
+    override void getSteppedOn(Player stepper){
         if(this.isPlaced){
             for(int i = 0; i < this.steppedOnActions.length; i++){
-                mixin(this.steppedOnActions[i]);
+                this.steppedOnActions[i](stepper);
             }
         }
     }
@@ -95,10 +119,10 @@ class Plant : Item{
     * Dictates what the plant does each turn.
     * Iterates through the plant's incrementalActions, executing each one.
     */
-    public void doIncrementalAction(){
+    override void doIncrementalAction(){
         if(this.isPlaced){
             for(int i = 0; i < this.incrementalActions.length; i++){
-                mixin(this.incrementalActions[i]);
+                this.incrementalActions[i]();
             }
         }
     }
@@ -107,10 +131,10 @@ class Plant : Item{
     * Dictates what the plant does when interacted with.
     * Iterates through the plant's mainActions, executing each one.
     */
-    public void doMainAction(Player player){
+    override void doMainAction(Player player){
        if(this.isPlaced){
            for(int i = 0; i < this.mainActions.length; i++){
-               mixin(this.mainActions[i]);
+               this.mainActions[i](player);
            }
        }
     }
@@ -119,15 +143,29 @@ class Plant : Item{
     * Dictates what the plant does when destroyed.
     * Iterates through the plant's destroyedActions, executing each one.
     */
-    public void getDestroyed(Player destroyer){
+    override void getDestroyed(Player destroyer){
         if(this.isPlaced){
             for(int i = 0; i < this.destroyedActions.length; i++){
-                mixin(this.destroyedActions[i]);
+                this.destroyedActions[i](destroyer);
             }
             this.isPlaced = false;
         }
     }
 
 
-    public Item clone();
+    override Plant clone(){
+        Plant copy = new Plant();
+        copy.incrementalActions = this.incrementalActions;
+        copy.steppedOnActions = this.steppedOnActions;
+        copy.mainActions = this.mainActions;
+        copy.destroyedActions = this.destroyedActions;
+        copy.placedActions = this.placedActions;
+        copy.attributes = this.attributes;
+        copy.stats = this.stats;
+        copy.survivableClimate = this.survivableClimate;
+        copy.placer = this.placer;
+        return copy;
+    }
 }
+
+

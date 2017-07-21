@@ -1,14 +1,11 @@
 /**
 * Contains all possible functional attributes of plants.
 * Each active trait can be implemented in certain sockets of Plant (incrementalActions, steppedOnActions, etc.) and does something.
-* Each passive trait (with level 1 to 5 is stored as a string in Plant.attribute and checked for in Plant functions.
+* Each passive trait is stored as a string in Plant.attribute and checked for in Plant functions.
 * Passive traits:
-*     *Copyright: Ownership based on creator rather than tile owner. TODO: Implement
+*     *Patent: Ownership based on creator rather than tile owner.
 *         Level 1: Ownership determined based on immediate creator or creator of parents.
-*         Level 2: Ownership of containing HexTile determined based on immediate creator or creator of parents.
-*         With multiple different Copyrighted plants in the same tile, the one with the highest level determines tile ownership.
-*         In the case of a tie, ownership is chosen randomly.
-*     *Moveable: Can be replanted after being planted, passing growth cycles, and being harvested. TODO: Implement
+*     *Moveable: Can be replanted after being planted, passing growth cycles, and being harvested.
 *         Level 1: Can be moved if maturity <= 20%.
 *         Level 2: Can be moved if maturity <= 40%.
 *         Level 3: Can be moved if maturity <= 60%.
@@ -19,11 +16,21 @@
 *         Level 2: Slows growth for all other plants on tile by 50%.
 *         Level 3: Slows growth for all other plants on tile by 75%.
 *         Level 4: Stops growth for all other plants on tile.
-*         Level 5: All other plants on tile wither by 25% of growth rate every growth cycle.
-*     *Aquatic: Can be planted on water tiles. TODO: Implement
+*         Level 5: All other plants on tile wither by 25% of growth rate instead of growing.
+*     *Aquatic: Can be planted on water tiles.
+*     *Slowing: Increases movement cost for a tile.
+*         Movement cost increase is equal to level.
 *TODO: More Passive Traits
 *
 * Active traits:
 *TODO: More Active Traits
 */
-module world.plant.PlantTraits;
+module PlantTraits;
+import Player;
+
+void delegate()[] naturallyPossibleIncrementalActions = [];
+void delegate(Player stepper)[] naturallyPossibleSteppedOnActions = [];
+void delegate(Player player)[] naturallyPossibleMainActions = [];
+void delegate(Player destroyer)[] naturallyPossibleDestroyedActions = [];
+void delegate(Player placer)[] naturallyPossiblePlacedActions = [];
+string[] naturallyPossibleAttributes = ["Moveable", "Invasive", "Slowing"];

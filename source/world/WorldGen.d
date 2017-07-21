@@ -1,4 +1,4 @@
-module world.WorldGen;
+module WorldGen;
 
 import std.stdio;
 import std.random;

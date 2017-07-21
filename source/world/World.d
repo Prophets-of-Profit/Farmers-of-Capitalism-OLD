@@ -1,7 +1,5 @@
-/**
-* Contains the class for the world.
-*/
-module world.World;
+
+module World;
 
 import HexTile;
 import Player;

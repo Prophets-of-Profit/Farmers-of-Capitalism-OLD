@@ -1,8 +1,3 @@
-/**
-* Contains the class for tiles.
-*/
-module world.HexTile;
-
 import app;
 import World;
 import Player;
@@ -18,10 +13,10 @@ class HexTile{
     }
 
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
-    private double temperature;                     ///Part of tile's climate
-    private double water;                           ///Part of tile's climate (if this is a water tile, determines water salinity, otherwise is humidity)
-    private double soil;                            ///Part of tile's climate
-    private double elevation;                       ///Part of the tile's climate
+    public double temperature;                     ///Part of tile's climate
+    public double water;                           ///Part of tile's climate (if this is a water tile, determines water salinity, otherwise is humidity)
+    public double soil;                            ///Part of tile's climate
+    public double elevation;                       ///Part of the tile's climate
     public bool isWater;                            ///Determines if the tile is a water tile
     private Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile

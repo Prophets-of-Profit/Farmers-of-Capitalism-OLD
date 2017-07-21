@@ -1,7 +1,7 @@
 /**
 * Contains the Inventory class.
 */
-module player.Inventory;
+module Inventory;
 
 import Player;
 import Item;

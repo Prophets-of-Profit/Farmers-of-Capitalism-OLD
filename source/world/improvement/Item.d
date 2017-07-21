@@ -1,7 +1,7 @@
 /**
 * Contains the class for placed or unplaced items.
 */
-module world.improvement.Item;
+module Item;
 
 import Inventory;
 import Player;
@@ -14,7 +14,7 @@ import app;
 abstract class Item{
 
     public double completion;       ///How close the Item is towards being complete: once it won't function until it has reached completion
-    private Inventory source;       ///The source inventory for where the item is/came from
+    protected Inventory source;       ///The source inventory for where the item is/came from
     public bool isPlaced = false;   ///Whether the Item is in a hextile or not
 
     /**
