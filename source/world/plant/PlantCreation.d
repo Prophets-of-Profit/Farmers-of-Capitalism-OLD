@@ -8,19 +8,21 @@ import HexTile;
 import PlantTraits;
 import std.random;
 import app;
+import World;
+import std.stdio;
 
 
 /**
 * Generates a random plant on the specified coordinates.
 * Should be used during worldgen.
 */
-Plant createPlant(int[] creationCoords){
+Plant createPlant(int[] creationCoords, int statsToGive){
     HexTile tile = mainWorld.getTileAt(creationCoords);
     Plant plant = new Plant();
-    plant.survivableClimate["Temperature"] = [tile.temperature - uniform(0, 0.1), tile.temperature + uniform(0, 0.1)];
-    plant.survivableClimate["Water"] = [tile.water - uniform(0, 0.1), tile.water + uniform(0, 0.1)];
-    plant.survivableClimate["Soil"] = [tile.soil - uniform(0, 0.1), tile.soil + uniform(0, 0.1)];
-    plant.survivableClimate["Elevation"] = [tile.elevation - uniform(0, 0.1), tile.elevation + uniform(0, 0.1)];
+    plant.survivableClimate["Temperature:"] = [tile.temperature - uniform(0, 0.1), tile.temperature + uniform(0, 0.1)];
+    plant.survivableClimate["Water:"] = [tile.water - uniform(0, 0.1), tile.water + uniform(0, 0.1)];
+    plant.survivableClimate["Soil:"] = [tile.soil - uniform(0, 0.1), tile.soil + uniform(0, 0.1)];
+    plant.survivableClimate["Elevation:"] = [tile.elevation - uniform(0, 0.1), tile.elevation + uniform(0, 0.1)];
     if(tile.isWater){ plant.attributes["Aquatic"] = 1; }
     double chanceBound = 1.0;
     foreach(possibleAttribute; naturallyPossibleAttributes){
@@ -59,10 +61,26 @@ Plant createPlant(int[] creationCoords){
             chanceBound -= 0.04;
         }
     }
-    int statsToGive =  10;
     string[] statTypes = ["Growth", "Resilience", "Yield", "Seed Strength", "Seed Quantity"];
-    foreach(int i; 0..statsToGive+1){
-        plant.stats[statTypes[uniform(0,$)]] += 1;
+    for(int i = 0; i< statsToGive; i++){
+        plant.stats[statTypes[uniform(0, $)]] += 1;
     }
     return plant;
+}
+
+unittest{
+    for(int i = 0; i < 10; i++){
+        HexTile tile = mainWorld.tiles[uniform(0, $)];
+        int[] coords = tile.coords.dup;
+        int statsToGive = uniform(6, 15);
+        Plant seedling = createPlant(coords, statsToGive);
+        writeln("Conditions at", coords, "are");
+        writeln("Temperature:", tile.temperature);
+        writeln("Water", tile.water);
+        writeln("Elevation", tile.elevation);
+        writeln("Soil", tile.soil);
+        writeln("Seedling strength (statsToGive):", statsToGive);
+        writeln("Seedling stats:", seedling.stats);
+        writeln("Seedling Survivable Climate:", seedling.survivableClimate);
+    }
 }
