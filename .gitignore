@@ -4,6 +4,6 @@ __dummy.html
 *.o
 *.obj
 __test__*__
-*.exe
-out/*
 farmers-of-capitalism.exe
+/.idea/
+/out/
