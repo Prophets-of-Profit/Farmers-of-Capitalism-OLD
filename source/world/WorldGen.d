@@ -10,10 +10,12 @@ import HexTile;
 TODO rework all of this into world constructor and delete this file
 void generateTiles(World world, int numRivers){
     int worldSize = world.getNumTiles();
+
     int[][] generated;
     int[] maxElevationLocation;
-    double maxElevation = -1.0;
     generated ~= world.getRandomTile();
+    double maxElevation = -1.0;
+    double minElevation = 1.0;
     HexTile startingTile = world.getTileAt(generated[0]);
     HexTile currentTile = startingTile;
     while(generated.length < worldSize){                                        ///Initialize elevation
@@ -31,16 +33,22 @@ void generateTiles(World world, int numRivers){
                 maxElevation = currentTile.elevation;
                 maxElevationLocation = currentTile.coords.dup();
             }
+            if(currentTile.elevation < minElevation){
+                minElevation = currentTile.elevation;
+            }
             generated ~= currentTile.coords.dup();
         }
         int[][] adjacencies = currentTile.getAdjacentTiles();
         currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
+    
 
     generated = [];
     generated ~= world.getRandomTile();
     startingTile = world.getTileAt(generated[0]);
     currentTile = startingTile;
+    double maxTemp = startingTile.baseTemperature;
+    double minTemp = maxTemp;
     while(generated.length < worldSize){                                        ///Repeat; initializing temperature
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
@@ -54,6 +62,12 @@ void generateTiles(World world, int numRivers){
             currentTile.baseTemperature = avgTemp + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
             currentTile.baseTemperature += currentTile.elevation / -5.0;
             generated ~= currentTile.coords.dup();
+            if(currentTile.baseTemperature > maxTemp){
+                maxTemp = currentTile.baseTemperature;
+            }
+            if(currentTile.baseTemperature < minTemp){
+                minTemp = currentTile.baseTemperature;
+            }
         }
         int[][] adjacencies = currentTile.getAdjacentTiles();
         currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
@@ -63,28 +77,39 @@ void generateTiles(World world, int numRivers){
     generated ~= world.getRandomTile();
     startingTile = world.getTileAt(generated[0]);
     currentTile = startingTile;
-    while(generated.length < worldSize){                                        ///Repeat; initializing humidity
+    double maxHumid = startingTile.baseWater;
+    double minHumid = maxHumid;
+    while(generated.length < worldSize){                                        ///Repeat; initializing water
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
             double totalHumidOfAdjacent = 0;                                /// If there are no surrounding tiles, set temperature
             foreach(int[] adj; adjacencies){
                 if(generated.canFind(adj)){
-                    totalHumidOfAdjacent += world.getTileAt(adj).baseHumidity;
+                    totalHumidOfAdjacent += world.getTileAt(adj).baseWater;
                 }
             }
             double avgHumid = totalHumidOfAdjacent / adjacencies.length;
-            currentTile.baseHumidity = avgHumid + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
-            currentTile.baseHumidity += currentTile.elevation / -3.0;
+            currentTile.baseWater = avgHumid + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
+            currentTile.baseWater += currentTile.elevation / -3.0;
             generated ~= currentTile.coords.dup();
+            if(currentTile.baseWater > maxHumid){
+                maxHumid = currentTile.baseWater;
+            }
+            if(currentTile.baseWater < minHumid){
+                minHumid = currentTile.baseWater;
+            }
         }
         int[][] adjacencies = currentTile.getAdjacentTiles();
         currentTile = world.getTileAt(currentTile.getAdjacentTiles()[uniform(0, adjacencies.length)]);
     }
+
     generated = [];
     generated ~= world.getRandomTile();
     startingTile = world.getTileAt(generated[0]);
     currentTile = startingTile;
-    while(generated.length < worldSize){                                        ///Repeat; initializing temperature
+    double maxSoil = startingTile.soil;
+    double minSoil = maxSoil;
+    while(generated.length < worldSize){                                        ///Repeat; initializing soil
         if(!generated.canFind(currentTile.coords)){
             int[][] adjacencies = currentTile.getAdjacentTiles();
             double totalSoilOfAdjacent = 0;                                /// If there are no surrounding tiles, set temperature
@@ -97,10 +122,18 @@ void generateTiles(World world, int numRivers){
             currentTile.soil = avgSoil + uniform(-1.0, 1.0);           ///Can vary up to one from avg. surrounding temperature
             currentTile.soil += currentTile.elevation / 8.0;
             generated ~= currentTile.coords.dup();
+            if(currentTile.soil > maxSoil){
+                maxSoil = currentTile.soil;
+            }
+            if(currentTile.soil < minSoil){
+                minSoil = currentTile.soil;
+            }
         }
         int[][] adjacencies = currentTile.getAdjacentTiles();
         currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
+
+
     for(int i = 0; i < numRivers; i++){
         genRiver(world);
     }

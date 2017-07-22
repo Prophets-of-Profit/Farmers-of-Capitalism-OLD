@@ -14,7 +14,9 @@ class HexTile{
 
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
     public double temperature;                     ///Part of tile's climate
+    public double baseTemperature;
     public double water;                           ///Part of tile's climate (if this is a water tile, determines water salinity, otherwise is humidity)
+    public double baseWater;
     public double soil;                            ///Part of tile's climate
     public double elevation;                       ///Part of the tile's climate
     public bool isWater;                            ///Determines if the tile is a water tile
