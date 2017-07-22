@@ -41,7 +41,7 @@ void generateTiles(World world, int numRivers){
         int[][] adjacencies = currentTile.getAdjacentTiles();
         currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
-    
+
 
     generated = [];
     generated ~= world.getRandomTile();
@@ -133,6 +133,12 @@ void generateTiles(World world, int numRivers){
         currentTile = world.getTileAt(adjacencies[uniform(0, adjacencies.length)]);
     }
 
+    foreach(HexTile tile; world.tiles){
+        tile.baseTemperature = (tile.baseTemperature - minTemp) / (maxTemp - minTemp);
+        tile.elevation = (tile.elevation - minElevation) / (maxElevation - minElevation);
+        tile.baseWater = (tile.baseWater - minHumid) / (maxHumid - minHumid);
+        tile.soil = (tile.soil - minSoil) / (maxSoil - minSoil);
+    }
 
     for(int i = 0; i < numRivers; i++){
         genRiver(world);
