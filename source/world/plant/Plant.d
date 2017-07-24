@@ -183,18 +183,25 @@ class Plant : Item{
     }
 
     /**
-    * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant.
+    * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
     */
     public double getClimateFavorability(){
         double optimalTemperature = (this.survivableClimate["Temperature"][0] + this.survivableClimate["Temperature"][1])/2;
         double optimalWater = (this.survivableClimate["Water"][0] + this.survivableClimate["Water"][1])/2;
         double optimalSoil = (this.survivableClimate["Soil"][0] + this.survivableClimate["Soil"][1])/2;
         double optimalElevation = (this.survivableClimate["Elevation"][0] + this.survivableClimate["Elevation"][1])/2;
+
         HexTile tile = mainWorld.getTileAt(this.source.coords);
-        double temperatureDifference = tile.temperature - optimalTemperature;
-        double waterDifference = tile.water - optimalWater;
-        double soilDifference = tile.soil - optimalSoil;
-        double elevationDifference = tile.elevation - optimalElevation;
+        double temperatureIntervalLength = this.survivableClimate["Temperature"][1] - this.survivableClimate["Temperature"][0];
+        double waterIntervalLength = this.survivableClimate["Water"][1] - this.survivableClimate["Water"][0];
+        double soilIntervalLength = this.survivableClimate["Soil"][1] - this.survivableClimate["Soil"][0];
+        double elevationIntervalLength = this.survivableClimate["Elevation"][1] - this.survivableClimate["Elevation"][0];
+
+        double temperatureDifference = (tile.temperature - optimalTemperature)/temperatureIntervalLength;
+        double waterDifference = (tile.water - optimalWater)/waterIntervalLength;
+        double soilDifference = (tile.soil - optimalSoil)/soilIntervalLength;
+        double elevationDifference =(tile.elevation - optimalElevation)/elevationIntervalLength;
+
         return sqrt((pow(temperatureDifference, 2) + pow(waterDifference, 2) + pow(soilDifference, 2) + pow(elevationDifference, 2))/4);
     }
 
@@ -211,7 +218,7 @@ class Plant : Item{
         foreach(level; symbioticLevels){
             growthModifier += (double)(level*0.05);
         }
-        double growth = this.stats["Growth"]*growthModifier/20;
+        double growth = this.stats["Growth"]*growthModifier/10;
         this.completion += growth;
 
     }

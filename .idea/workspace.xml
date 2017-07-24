@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4788537d-4e41-4b13-9759-575063fbfea6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/farmers-of-capitalism.exe" afterPath="$PROJECT_DIR$/farmers-of-capitalism.exe" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/HexTile.d" afterPath="$PROJECT_DIR$/source/world/HexTile.d" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/plant/Plant.d" afterPath="$PROJECT_DIR$/source/world/plant/Plant.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/plant/PlantCreation.d" afterPath="$PROJECT_DIR$/source/world/plant/PlantCreation.d" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/world/plant/PlantTraits.d" afterPath="$PROJECT_DIR$/source/world/plant/PlantTraits.d" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -73,8 +69,8 @@
       <file leaf-file-name="Plant.d" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/world/plant/Plant.d">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="198" column="0" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -847,7 +843,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38987000" />
+    <option name="totallyTimeSpent" value="40792000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -1240,14 +1236,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/world/HexTile.d">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/world/plant/PlantCreation.d">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
@@ -1264,10 +1252,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/world/HexTile.d">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/world/plant/Plant.d">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="198" column="0" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
           <folding />
         </state>
       </provider>
