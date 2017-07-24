@@ -9,6 +9,8 @@ import std.random;
 import HexTile;
 import World;
 import app;
+import std.math;
+import PlantTraits;
 
 /**
 * A parent class for all plant objects.
@@ -22,8 +24,8 @@ class Plant : Item{
     public void delegate(Player destroyer)[] destroyedActions;   ///Stores actions taken when destroyed in the form of string method names.
     public void delegate(Player placer)[] placedActions;         ///Stores actions taken when placed in the form of string method names.
     public int[string] attributes;                               ///Stores passive (constantly applied) attributes in the form of strings, with levels from 1 to 5 in the form of ints.
-    public double[][string] survivableClimate;                      ///Stores bounds of survivable templerature, water, soil, elevation.
-    private Player placer;                                        ///The person who planted the plant.
+    public double[][string] survivableClimate;                   ///Stores bounds of survivable templerature, water, soil, elevation.
+    private Player placer;                                       ///The person who planted the plant.
 
     /**
     * Contains base stats of plant.
@@ -68,10 +70,10 @@ class Plant : Item{
     override bool canBePlaced(int[] placementCandidateCoords){
         HexTile tile = mainWorld.getTileAt(placementCandidateCoords);
         //Check if tile conditions are appropriate.
-        if((tile.isWater && (("Aquatic" in this.attributes) is null)) || (!tile.isWater && (("Aquatic" in this.attributes) !is null)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature  && tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water && tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil && tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation && tile.elevation <= this.survivableClimate["Elevation"][1])){
+        if((tile.isWater && !("Aquatic" in this.attributes)) || (!tile.isWater && ("Aquatic" in this.attributes)) || !(this.survivableClimate["Temperature"][0] <= tile.temperature  && tile.temperature <= this.survivableClimate["Temperature"][1]) || !(this.survivableClimate["Water"][0] <= tile.water && tile.water <= this.survivableClimate["Water"][1]) || !(this.survivableClimate["Soil"][0] <= tile.soil && tile.soil <= this.survivableClimate["Soil"][1]) || !(this.survivableClimate["Elevation"][0] <= tile.elevation && tile.elevation <= this.survivableClimate["Elevation"][1])){
             return false;
         //Check if plant can be moved.
-        }else if(("Moveable" in this.attributes) !is null){
+        }else if("Moveable" in this.attributes){
             return this.completion <= this.attributes["Moveable"]/5;
         //Check if plant is a seed.
         }else if(this.completion == 0){
@@ -82,9 +84,14 @@ class Plant : Item{
 
     }
 
+    /**
+    * Returns the influence the plant has on the tile's movement cost; inherited from Item.
+    */
     override double getMovementCost(){
-        if(("Slowing" in this.attributes) !is null){
+        if("Slowing" in this.attributes){
             return this.attributes["Slowing"];
+        }else if("Speeding" in this.attributes){
+            return this.attributes["Speeding"];
         }
         return 0;
     }
@@ -112,17 +119,23 @@ class Plant : Item{
             for(int i = 0; i < this.steppedOnActions.length; i++){
                 this.steppedOnActions[i](stepper);
             }
+            if(uniform(0, this.stats["Resilience"]) == 0){
+                this.getDestroyed();
+            }
         }
     }
 
     /**
     * Dictates what the plant does each turn.
-    * Iterates through the plant's incrementalActions, executing each one.
+    * Iterates through the plant's incrementalActions, executing each one. Also grows.
     */
     override void doIncrementalAction(){
         if(this.isPlaced){
             for(int i = 0; i < this.incrementalActions.length; i++){
                 this.incrementalActions[i]();
+            }
+            if(uniform(0, getClimateFavorability()) == 0){
+                grow();
             }
         }
     }
@@ -152,7 +165,9 @@ class Plant : Item{
         }
     }
 
-
+    /**
+    * Returns an exact copy of the plant.
+    */
     override Plant clone(){
         Plant copy = new Plant();
         copy.incrementalActions = this.incrementalActions;
@@ -165,6 +180,65 @@ class Plant : Item{
         copy.survivableClimate = this.survivableClimate;
         copy.placer = this.placer;
         return copy;
+    }
+
+    /**
+    * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant.
+    */
+    public double getClimateFavorability(){
+        double optimalTemperature = (this.survivableClimate["Temperature"][0] + this.survivableClimate["Temperature"][1])/2;
+        double optimalWater = (this.survivableClimate["Water"][0] + this.survivableClimate["Water"][1])/2;
+        double optimalSoil = (this.survivableClimate["Soil"][0] + this.survivableClimate["Soil"][1])/2;
+        double optimalElevation = (this.survivableClimate["Elevation"][0] + this.survivableClimate["Elevation"][1])/2;
+        HexTile tile = mainWorld.getTileAt(this.source.coords);
+        double temperatureDifference = tile.temperature - optimalTemperature;
+        double waterDifference = tile.water - optimalWater;
+        double soilDifference = tile.soil - optimalSoil;
+        double elevationDifference = tile.elevation - optimalElevation;
+        return sqrt((pow(temperatureDifference, 2) + pow(waterDifference, 2) + pow(soilDifference, 2) + pow(elevationDifference, 2))/4);
+    }
+
+    /**
+    * Increases the plant's growth based on climate favorability and other factors.
+    */
+    public void grow(){
+        int[] invasiveLevels = checkOtherPlants("Invasive");
+        int[] symbioticLevels = "Invasive" in this.attributes ? [] : checkOtherPlants("Symbiotic");
+        double growthModifier = 0;
+        foreach(level; invasiveLevels){
+            growthModifier -= (double)(level*0.05 - this.stats["Resilience"/2]);
+        }
+        foreach(level; symbioticLevels){
+            growthModifier += (double)(level*0.05);
+        }
+        double growth = this.stats["Growth"]*growthModifier/20;
+        this.completion += growth;
+
+    }
+
+    /**
+    * Checks all other plants in the tile for an attribute.
+    */
+    public int[] checkOtherPlants(string attribute){
+        int[] levels = 0;
+        Item[] sourceItems = this.source.items;
+        foreach(item; sourceItems){
+            if(cast(Plant)item){
+                if((attribute in item.attributes) !is null){ levels ~= item.attributes[attribute]; }
+            }
+        }
+        return levels;
+    }
+
+    bool canGetTrait(trait){
+        foreach(exclusivity; mutuallyExclusiveAttributes){
+            if(exclusivity.canFind(trait)){
+                foreach(attribute;exclusivity){
+                    if(attribute in this.attributes){ return false; }
+                }
+            }
+        }
+        return true;
     }
 }
 

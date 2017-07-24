@@ -12,14 +12,23 @@
 *         Level 4: Can be moved if maturity <= 80%.
 *         Level 5: Can be moved.
 *     *Invasive: Inhibits other plants on the same tile. Slowed by Resilience of other plants. TODO: Implement
-*         Level 1: Slows growth for all other plants on tile by 25%.
-*         Level 2: Slows growth for all other plants on tile by 50%.
-*         Level 3: Slows growth for all other plants on tile by 75%.
-*         Level 4: Stops growth for all other plants on tile.
-*         Level 5: All other plants on tile wither by 25% of growth rate instead of growing.
+*         Level 1: Slows growth for all other plants on tile by 5%.
+*         Level 2: Slows growth for all other plants on tile by 10%.
+*         Level 3: Slows growth for all other plants on tile by 15%.
+*         Level 4: Slows growth for all other plants on tile by 20%.
+*         Level 5: Slows growth for all other plants on tile by 25%.
 *     *Aquatic: Can be planted on water tiles.
 *     *Slowing: Increases movement cost for a tile.
 *         Movement cost increase is equal to level.
+*     *Speeding: Decreases movement cost for a tile.
+*         Movement cost decrease is equal to level.
+*     *Symbiotic: Aids other plants on the same tile. Works less if target is Invasive. TODO: Implement
+*         Level 1: Speeds growth for all other plants on tile by 5%.
+*         Level 2: Speeds growth for all other plants on tile by 10%.
+*         Level 3: Speeds growth for all other plants on tile by 15%.
+*         Level 4: Speeds growth for all other plants on tile by 20%.
+*         Level 5: Speeds growth for all other plants on tile by 25%.
+*
 *TODO: More Passive Traits
 *
 * Active traits:
@@ -27,10 +36,14 @@
 */
 module PlantTraits;
 import Player;
+import std.algorithm;
 
-void delegate()[] naturallyPossibleIncrementalActions = [];
-void delegate(Player stepper)[] naturallyPossibleSteppedOnActions = [];
-void delegate(Player player)[] naturallyPossibleMainActions = [];
-void delegate(Player destroyer)[] naturallyPossibleDestroyedActions = [];
-void delegate(Player placer)[] naturallyPossiblePlacedActions = [];
-string[] naturallyPossibleAttributes = ["Moveable", "Invasive", "Slowing"];
+void delegate()[] naturallyPossibleIncrementalActions = [];                                                 ///The set of all incremental actions that are possible in nature (wild plants).
+void delegate(Player stepper)[] naturallyPossibleSteppedOnActions = [];                                     ///The set of all steppedOn actions that are possible in nature.
+void delegate(Player player)[] naturallyPossibleMainActions = [];                                           ///The set of all main actions that are possible in nature.
+void delegate(Player destroyer)[] naturallyPossibleDestroyedActions = [];                                   ///The set of all destroyed actions that are possible in nature.
+void delegate(Player placer)[] naturallyPossiblePlacedActions = [];                                         ///The set of all placed actions that are possible in nature.
+string[] naturallyPossibleAttributes = ["Moveable", "Invasive", "Slowing", "Symbiotic", "Speeding"];        ///The set of all attributes that are naturally possible in nature.
+string[][] mutuallyExclusiveAttributes = [["Invasive", "Symbiotic"], ["Slowing", "Speeding"]]               ///Contains list of attributes that can never be on the same plant.
+
+

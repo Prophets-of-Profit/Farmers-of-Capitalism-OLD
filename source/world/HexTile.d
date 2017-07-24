@@ -84,7 +84,7 @@ class HexTile{
      * Gets how much movement the tile costs based on the tiles movement cost and its items' movement cost
      */
     public double getPassabilityCost(){
-        return 1 + to!int(ceil(this.contained.getCollectiveMovementCost()));
+        return max(1 + to!int(ceil(this.contained.getCollectiveMovementCost())), 0);
     }
 
     /**
