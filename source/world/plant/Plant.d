@@ -46,7 +46,7 @@ class Plant : Item{
     /**
     * Checks whether the plant can be placed at a certain tile.
     * Params:
-    *   placementCandidateCoords = the location of where to check if this plant can be placed
+    *     placementCandidateCoords = the location of where to check if this plant can be placed
     */
     override bool canBePlaced(int[] placementCandidateCoords){
         HexTile tile = mainWorld.getTileAt(placementCandidateCoords);
@@ -144,7 +144,7 @@ class Plant : Item{
         }
         this.die();
     }
-    
+
     /**
      * Creates a clone of the plant
      * Is almost a deep copy where the clone is unaffected by the original
@@ -166,5 +166,8 @@ class Plant : Item{
 }
 
 unittest{
+    import std.stdio;
+
+    writeln("Running unittest of Plant");
     //TODO
 }

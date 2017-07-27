@@ -46,7 +46,7 @@ class World{
     public HexTile getTileAt(int[] location){
         try{
             location[1] = location[1] % getSizeOfRing(location[0]);
-            int previousTiles = 0;
+            int previousTiles;
             for(int i = 0; i < location[0]; i++){
                 previousTiles += getSizeOfRing(i);
             }
@@ -85,8 +85,10 @@ class World{
             int[][] prevChecked = checked.dup;
             checked = null;
             distance++;
-            foreach(int[] coord; prevChecked){
-                checked ~= this.getTileAt(coord).getAdjacentCoords();
+            foreach(coord; prevChecked){
+                if(coord !is null){
+                    checked ~= this.getTileAt(coord).getAdjacentCoords();
+                }
             }
         }
         return distance;

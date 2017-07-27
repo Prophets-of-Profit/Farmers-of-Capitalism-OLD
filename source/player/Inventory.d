@@ -21,6 +21,8 @@ class Inventory{
      * A constructor for an inventory
      * Usually for players, but may also be needed for improvements/plants
      * Takes in a size, but if the inventory size is negative, the inventory has infinite size
+     * Params:
+     *      maxSize = the maximum amount of items the inventory can hold; if it is negative, the inventory won't have a maximum size
      */
     this(int maxSize = -1){
         this.maxSize = maxSize;
@@ -28,8 +30,8 @@ class Inventory{
     }
 
     /**
-     * Adds the given tile piece to the inventory
-     * Returns whether the tile piece was successfully added to inventory
+     * Adds the given item to the inventory
+     * Returns whether the item was successfully added to inventory
      * Params:
      *      itemToAdd = the item to add to the inventory
      */
@@ -48,18 +50,18 @@ class Inventory{
     }
 
     /**
-     * Removes the given tile piece to the inventory and sets its location in the items array to null
-     * Returns the tile piece given it was successfully removed, otherwise returns null
+     * Removes the given item from the inventory and sets its location in the items array to null
+     * Returns whether the item given was successfully removed
      * Params:
      *      itemToRemove = the item to remove from the inventory
      */
-    public Item remove(Item itemToRemove){
+    public bool remove(Item itemToRemove){
         int index = this.items.countUntil(itemToRemove).to!int;
         if(index >= 0){
             this.items[index] = null;
-            return itemToRemove;
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -67,20 +69,12 @@ class Inventory{
      */
     public double getCollectiveMovementCost(){
         double moveCost = 0;
-        foreach(Item item ; this.items){
+        foreach(item; this.items){
            if(item !is null && item.isPlaced){
                 moveCost += item.getMovementCost();
            }
         }
         return moveCost;
-    }
-
-    /**
-     * Gets the collective value of all of the items in the inventory
-     * TODO
-     */
-    public int getCollectiveValue(){
-        return 0;
     }
 
     /**

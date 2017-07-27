@@ -36,7 +36,10 @@ public class Player{
             return [this.coords];
         }
         int[][] validMoveLocations = [this.coords];
-        foreach(int[] adjacentCoord ; mainWorld.getTileAt(this.coords).getAdjacentCoords()){
+        foreach(adjacentCoord; mainWorld.getTileAt(this.coords).getAdjacentCoords()){
+            if(adjacentCoord is null){
+                break;   
+            }
             Player copy = new Player(adjacentCoord);
             copy.numMovesLeft = this.numMovesLeft - mainWorld.getTileAt(adjacentCoord).getPassabilityCost();
             if(copy.numMovesLeft >= 0){
@@ -62,17 +65,17 @@ public class Player{
      */
     public bool setLocation(int[][] pathToNewLocation){
         assert(pathToNewLocation[0] != this.coords && mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
-        foreach(int[] location ; pathToNewLocation){
-            if(this.numMovesLeft > 0 && location != this.coords && this.getValidMoveLocations().canFind(location)){
-                this.coords = location;
-                foreach(item; mainWorld.getTileAt(location).contained){
-                    item.getSteppedOn(this);
-                }
-                this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
-                return true;
+        foreach(location ; pathToNewLocation){
+            if(this.numMovesLeft <= 0 || location == this.coords || !this.getValidMoveLocations().canFind(location)){
+                return false;
             }
+            this.coords = location;
+            foreach(item; mainWorld.getTileAt(location).contained){
+                item.getSteppedOn(this);
+            }
+            this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
         }
-        return false;
+        return true;
     }
 
 }
