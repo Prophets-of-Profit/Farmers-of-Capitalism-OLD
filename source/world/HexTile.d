@@ -1,26 +1,38 @@
+module world.HexTile;
+
 import app;
-import World;
-import Player;
-import Item;
-import Inventory;
+import world.World;
+import player.Player;
+import world.improvement.Item;
+import player.Inventory;
 import std.math;
 import std.conv;
 
+/**
+ * An enum for directions
+ * Each direction is assigned an integer for which element in getAdjacentCoords of a tile will be in the given direction
+ */
+public enum Direction{
+    NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
+}
+    
+/**
+ * Types of stats a tile has
+ * Temperature is the temperature of the tile in C
+ * Water is either the humidity of the tile or the salinity of the tile (depending on if the tile is water)
+ * Soil is the soil quality of the tile
+ * Elevation is the height of the tile
+ */
+enum TileStat{
+    TEMPERATURE, WATER, SOIL, ELEVATION
+}
+
 class HexTile{
 
-    public enum Direction{
-        NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
-    }
-
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
-    public double temperature;                     ///Part of tile's climate
-    public double baseTemperature;
-    public double water;                           ///Part of tile's climate (if this is a water tile, determines water salinity, otherwise is humidity)
-    public double baseWater;
-    public double soil;                            ///Part of tile's climate
-    public double elevation;                       ///Part of the tile's climate
+    public double[TileStat] climate;                ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
-    private Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
+    public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
     public Player owner;                            ///The owner of this tile; if none, owner is null
 
@@ -65,9 +77,7 @@ class HexTile{
         }
         int[][] adjacentTiles = null;
         foreach(int[] coord; adjacentCandidates){
-            if(mainWorld.getTileAt(coord) !is null){
-                adjacentTiles ~= coord;
-            }
+            adjacentTiles ~= (mainWorld.getTileAt(coord) !is null)? coord : null;
         }
         return adjacentTiles;
     }
@@ -96,9 +106,7 @@ class HexTile{
      */
     public HexTile clone(){
         HexTile copy = new HexTile(this.coords);
-        copy.temperature = this.temperature;
-        copy.water = this.water;
-        copy.soil = this.soil;
+        copy.climate = this.climate;
         copy.isWater = this.isWater;
         copy.direction = this.direction;
         copy.contained = this.contained.clone();
@@ -110,15 +118,15 @@ class HexTile{
 
 unittest{
     import std.stdio;
-    import std.conv;
-    import std.random;
+    
+    writeln("Running unittest of HexTile");
+    
     int ringNumsToTest = 5;
     mainWorld = new World(ringNumsToTest);
-    writeln("Adjacencies of (0, 0) : ", mainWorld.getTileAt([0, 0]).getAdjacentCoords());
+    writeln("Adjacencies of [0, 0] : ", mainWorld.getTileAt([0, 0]).getAdjacentCoords());
     int testRunNum = 4;
     for(int i = 0; i < testRunNum; i++){
-        int ringNum = uniform(0, ringNumsToTest);
-        int pos = uniform(0, getSizeOfRing(ringNum));
-        writeln("Adjacencies of (", ringNum, ", ", pos, ") : ", mainWorld.getTileAt([ringNum, pos]).getAdjacentCoords());
+        int[] coords = mainWorld.getRandomCoords();
+        writeln("Adjacencies of ", coords, " : ", mainWorld.getTileAt(coords).getAdjacentCoords());
     }
 }

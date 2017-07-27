@@ -1,13 +1,13 @@
+module world.World;
 
-module World;
-
-import HexTile;
-import Player;
+import world.HexTile;
+import player.Player;
 import core.exception;
 import std.algorithm;
 import std.random;
 import std.conv;
 import app;
+import core.thread;
 
 /**
  * A general class that should only ever be instantiated once
@@ -15,13 +15,14 @@ import app;
  */
 class World{
 
-    public HexTile[] tiles;            ///The storage array of all tiles; stored in order of ringNum and then pos
-    public immutable int numRings;      ///The number of rings the hexmap (World) has
-    public Player[] players;            ///A list of all of the players in the game
+    private HexTile[] tiles;                ///The storage array of all tiles; stored in order of ringNum and then pos
+    public immutable int numRings;          ///The number of rings the hexmap (World) has
+    public Player[] players;                ///A list of all of the players in the game
+    public immutable double variance = 1.0; ///How much each adjacent hextile can differ
 
     /**
      * The constructor for a world
-     * Fills itself with a bunch of empty tiles given how many rings to make
+     * Fills itself with a bunch of tiles given how many rings to make
      * Params:
      *      numRings = the amount of rings to construct the world with
      */
@@ -32,7 +33,7 @@ class World{
                 tiles ~= new HexTile([i, j]);
             }
         }
-        //TODO make tiles not empty and fill their instancedata
+        /*TODO insert Kadin's generation of hextiles and Elia's generation of plants*/
     }
 
     /**
@@ -55,16 +56,11 @@ class World{
         }
     }
 
-	public int[] getRandomTile(){
-        int index = uniform(0, this.getNumTiles());
-        int nextRingSize = 0;
-        int nextRingNumber = 0;
-        while (index >= nextRingSize){
-            index -= nextRingSize;
-            nextRingNumber++;
-            nextRingSize = getSizeOfRing(nextRingNumber);
-        }
-        return [nextRingNumber, index - 1];
+    /**
+     * Returns the coordinates of a random tile
+     */
+	public int[] getRandomCoords(){
+        return this.tiles[uniform(0, this.getNumTiles())].coords.dup;
     }
 
     /**
@@ -169,7 +165,9 @@ class World{
 
 unittest{
     import std.stdio;
-    import std.random;
+    
+    writeln("Running unittest of World");
+    
     int maxWorldRingsToCheck = 5;
     World testWorld;
     for(int i = 1; i < maxWorldRingsToCheck + 1; i++){
@@ -178,17 +176,15 @@ unittest{
     }
     int runNumForGettingLocations = 3;
     for(int i = 0; i < runNumForGettingLocations; i++){
-        int ringNum = uniform(0, testWorld.numRings);
-        int pos = uniform(0, getSizeOfRing(ringNum));
-        writeln("The position of a tile at ", [ringNum, pos], " is ", testWorld.getTileAt([ringNum, pos]).coords);
-        assert([ringNum, pos] == testWorld.getTileAt([ringNum, pos]).coords);
+        int[] coords = testWorld.getRandomCoords();
+        writeln("The position of a tile at ", coords, " is ", testWorld.getTileAt(coords).coords);
+        assert(coords == testWorld.getTileAt(coords).coords);
     }
     assert(testWorld.getDistanceBetween([0, 0], [1, 1]) == 1);
     int runNumForGettingDistances = 5;
     for(int i = 0; i < runNumForGettingDistances; i++){
-        int[] ringNums = [uniform(0, testWorld.numRings), uniform(0, testWorld.numRings)];
-        int[] poss = [uniform(0, getSizeOfRing(ringNums[0])), uniform(0, getSizeOfRing(ringNums[1]))];
-        writeln("The distance between (", ringNums[0], ", ", poss[0], ") and (", ringNums[1], ", ", poss[1], ") is ", testWorld.getDistanceBetween([ringNums[0], poss[0]], [ringNums[1], poss[1]]));
+        int[][] coords = [testWorld.getRandomCoords(), testWorld.getRandomCoords()];
+        writeln("The distance between ", coords[0], " and ", coords[1], " is ", testWorld.getDistanceBetween(coords[0], coords[1]));
     }
 }
 

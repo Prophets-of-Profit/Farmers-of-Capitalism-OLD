@@ -1,20 +1,19 @@
-/**
-* Contains the Inventory class.
-*/
-module Inventory;
+module player.Inventory;
 
-import Player;
-import Item;
+import player.Player;
+import world.improvement.Item;
 import core.exception;
+import std.algorithm;
+import std.conv;
 
 /**
  * A class for an object that holds other objects
- * TODO add iterator for a foreach loop
  */
 class Inventory{
 
     public Player[] accessibleTo;   ///A list of players who can access the inventory
-    public Item[] items;       ///All the items inside of the inventory
+    public Item[] items;            ///All the items inside of the inventory
+    alias items this;               ///Sets the access of this object as the array of items it contains
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
     public int[] coords;            ///The location of the tile or the player or inventorycontainer with this inventory
 
@@ -55,11 +54,10 @@ class Inventory{
      *      itemToRemove = the item to remove from the inventory
      */
     public Item remove(Item itemToRemove){
-        for(int i = 0; i < this.items.length; i++){
-            if(this.items[i] == itemToRemove){
-                this.items[i] = null;
-                return itemToRemove;
-            }
+        int index = this.items.countUntil(itemToRemove).to!int;
+        if(index >= 0){
+            this.items[index] = null;
+            return itemToRemove;
         }
         return null;
     }
@@ -103,6 +101,10 @@ class Inventory{
 }
 
 unittest{
+    import std.stdio;
+
+    writeln("Running unittest of Inventory");
+
     Inventory testInv = new Inventory(1);
     assert(testInv.add(null));
     assert(testInv.add(null));

@@ -5,5 +5,13 @@ __dummy.html
 *.obj
 __test__*__
 farmers-of-capitalism.exe
-/.idea/
-/out/
+\.idea/
+\out/
+farmers-of-capitalism
+*.iml
+\.dlangidews
+*.wssettings
+*.settings
+*.sh
+
+dub\.selections\.json

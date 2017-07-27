@@ -1,6 +1,8 @@
+module player.Player;
+
 import app;
-import World;
-import Inventory;
+import world.World;
+import player.Inventory;
 import std.algorithm;
 import std.array;
 
@@ -53,6 +55,7 @@ public class Player{
 
     /**
      * Moves the player based on where they want to move, and adjusts the amount of moves they have left in the turn accordingly
+     * Accounts for tiles they step on and activates their getSteppedOn function
      * Returns if the move was successful
      * Params:
      *      pathToNewLocation = the path to the to-be location of the player
@@ -62,7 +65,9 @@ public class Player{
         foreach(int[] location ; pathToNewLocation){
             if(this.numMovesLeft > 0 && location != this.coords && this.getValidMoveLocations().canFind(location)){
                 this.coords = location;
-                //TODO activate onStep of each Item on newLocation
+                foreach(item; mainWorld.getTileAt(location).contained){
+                    item.getSteppedOn(this);
+                }
                 this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
                 return true;
             }
@@ -75,16 +80,18 @@ public class Player{
 unittest{
     import std.stdio;
     import std.random;
-    mainWorld = new World(100);
+    
+    writeln("Running unittest of Player");
+    
+    mainWorld = new World(7);
     Player testPlayer = new Player([0, 0]);
     testPlayer.numMovesLeft = 1;
-    writeln("A player at (0, 0) who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
+    writeln("A player at [0, 0] who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     int numPlayersToTest = 4;
     for(int i = 0; i < numPlayersToTest; i++){
-        int numRing = uniform(0, mainWorld.numRings);
-        int pos = uniform(0, getSizeOfRing(numRing));
-        testPlayer = new Player([numRing, pos]);
+        int[] coords = mainWorld.getRandomCoords();
+        testPlayer = new Player(coords);
         testPlayer.numMovesLeft = uniform(0, 5);
-        writeln("A player at (", numRing, ", ", pos, ") who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
+        writeln("A player at ", coords, " who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     }
 }
