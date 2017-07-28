@@ -24,7 +24,7 @@ class Plant : Item{
     public void delegate(Player destroyer)[] destroyedActions;   ///Stores actions taken when destroyed in the form of string method names.
     public void delegate(Player placer)[] placedActions;         ///Stores actions taken when placed in the form of string method names.
     public int[string] attributes;                               ///Stores passive (constantly applied) attributes in the form of strings, with levels from 1 to 5 in the form of ints.
-    public double[][string] survivableClimate;                   ///Stores bounds of survivable templerature, water, soil, elevation.
+    public double[][string] survivableClimate;                   ///Stores bounds of survivable temperature, water, soil, elevation.
     private Player placer;                                       ///The person who planted the plant.
 
     /**
@@ -149,6 +149,8 @@ class Plant : Item{
            for(int i = 0; i < this.mainActions.length; i++){
                this.mainActions[i](player);
            }
+       }else{
+           this.getPlaced(player.coords);
        }
     }
 
@@ -180,6 +182,24 @@ class Plant : Item{
         copy.survivableClimate = this.survivableClimate;
         copy.placer = this.placer;
         return copy;
+    }
+
+    /**
+    * Creates a seedling
+    */
+    public Seedling createSeedling(){
+        Seedling child = new Seedling();
+        child.incrementalActions = this.incrementalActions;
+        child.steppedOnActions = this.steppedOnActions;
+        child.mainActions = this.mainActions;
+        child.destroyedActions = this.destroyedActions;
+        child.placedActions = this.placedActions;
+        child.attributes = this.attributes;
+        child.stats = this.stats;
+        child.survivableClimate = this.survivableClimate;
+        child.placer = this.placer;
+        child.parent = this;
+        return child;
     }
 
     /**

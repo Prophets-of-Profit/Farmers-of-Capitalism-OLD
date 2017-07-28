@@ -18,7 +18,7 @@ class HexTile{
     public double soil;                            ///Part of tile's climate
     public double elevation;                       ///Part of the tile's climate
     public bool isWater;                            ///Determines if the tile is a water tile
-    private Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
+    public Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
     public Player owner;                            ///The owner of this tile; if none, owner is null
 
