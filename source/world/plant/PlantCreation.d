@@ -21,15 +21,15 @@ TODO rework all of this into world or plant constructor and delete this file
 Plant createPlant(int[] creationCoords, int statsToGive){
     HexTile tile = mainWorld.getTileAt(creationCoords);
     Plant plant = new Plant();
-    plant.survivableClimate["Temperature:"] = [tile.temperature - uniform(0, 0.1), tile.temperature + uniform(0, 0.1)];
-    plant.survivableClimate["Water:"] = [tile.water - uniform(0, 0.1), tile.water + uniform(0, 0.1)];
-    plant.survivableClimate["Soil:"] = [tile.soil - uniform(0, 0.1), tile.soil + uniform(0, 0.1)];
-    plant.survivableClimate["Elevation:"] = [tile.elevation - uniform(0, 0.1), tile.elevation + uniform(0, 0.1)];
+    plant.survivableClimate["Temperature:"] = [min(tile.temperature - uniform(0, 0.1), 0), max(tile.temperature + uniform(0, 0.1), 1)];
+    plant.survivableClimate["Water:"] = [min(tile.water - uniform(0, 0.1), 0), max(tile.water + uniform(0, 0.1), 1)];
+    plant.survivableClimate["Soil:"] = [min(tile.soil - uniform(0, 0.1), 0), max(tile.soil + uniform(0, 0.1), 1)];
+    plant.survivableClimate["Elevation:"] = [min(tile.elevation - uniform(0, 0.1), 0), max(tile.elevation + uniform(0, 0.1), 1)];
     if(tile.isWater){ plant.attributes["Aquatic"] = 1; }
     double chanceBound = 1.0;
     foreach(possibleAttribute; naturallyPossibleAttributes){
         if(uniform(0.0, chanceBound) >= 0.8){
-            plant.attributes[possibleAttribute] = uniform(1,3);
+            if(plant.canGetTrait(possibleAttribute)){ plant.attributes[possibleAttribute] = uniform(1,3); }
             chanceBound -= 0.04;
         }
     }
@@ -69,6 +69,8 @@ Plant createPlant(int[] creationCoords, int statsToGive){
     }
     return plant;
 }
+
+
 
 unittest{
     for(int i = 0; i < 10; i++){

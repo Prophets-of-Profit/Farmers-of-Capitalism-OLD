@@ -34,7 +34,7 @@ void delegate(Player placer)[]      naturallyPossiblePlacedActions;
  *         Movement cost increase is equal to level.
  */
 enum Attribute{
-    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING
+    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING
 }
     
 /**
@@ -48,4 +48,5 @@ enum Attribute{
 enum PlantReq{
     GROWTH, RESILIENCE, YIELD, SEED_QUANTITY, SEED_STRENGTH
 }
+
 

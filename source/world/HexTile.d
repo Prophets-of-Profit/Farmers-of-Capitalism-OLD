@@ -32,7 +32,7 @@ class HexTile{
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
     public double[TileStat] climate;                ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
-    public Direction direction;                     ///Direction of wind or water flow
+    public Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
     public Player owner;                            ///The owner of this tile; if none, owner is null
 
@@ -96,7 +96,7 @@ class HexTile{
      * Gets how much movement the tile costs based on the tiles movement cost and its items' movement cost
      */
     public double getPassabilityCost(){
-        return 1 + to!int(ceil(this.contained.getCollectiveMovementCost()));
+        return max(1 + to!int(ceil(this.contained.getCollectiveMovementCost())), 0);
     }
 
     /**
