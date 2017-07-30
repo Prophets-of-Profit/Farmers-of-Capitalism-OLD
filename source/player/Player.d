@@ -5,6 +5,7 @@ import world.World;
 import player.Inventory;
 import std.algorithm;
 import std.array;
+import player.technology.Technology;
 
 /**
  * A class for each player
@@ -16,6 +17,7 @@ public class Player{
     public int maxTravellableDistance = 5;          ///The most distance the player can move in one turn
     public double numMovesLeft;                     ///The amount of moves the player can still do this turn
     public Inventory inventory = new Inventory();   ///The player's inventory
+    public Technology[] researched;                 ///The technologies the player has researched
 
     /**
      * A constructor for a player
