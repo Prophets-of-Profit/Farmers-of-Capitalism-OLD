@@ -45,6 +45,6 @@ void delegate(Player player)[] naturallyPossibleMainActions = [];               
 void delegate(Player destroyer)[] naturallyPossibleDestroyedActions = [];                                               ///The set of all destroyed actions that are possible in nature.
 void delegate(Player placer)[] naturallyPossiblePlacedActions = [];                                                     ///The set of all placed actions that are possible in nature.
 string[] naturallyPossibleAttributes = ["Moveable", "Invasive", "Slowing", "Symbiotic", "Speeding", "Mutating"];        ///The set of all attributes that are naturally possible in nature.
-string[][] mutuallyExclusiveAttributes = [["Invasive", "Symbiotic"], ["Slowing", "Speeding"]]                           ///Contains list of attributes that can never be on the same plant.
+string[][] mutuallyExclusiveAttributes = [["Invasive", "Symbiotic"], ["Slowing", "Speeding"]];                           ///Contains list of attributes that can never be on the same plant.
 
 

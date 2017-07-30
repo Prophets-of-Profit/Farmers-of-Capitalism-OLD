@@ -233,10 +233,10 @@ class Plant : Item{
         int[] symbioticLevels = "Invasive" in this.attributes ? [] : checkOtherPlants("Symbiotic");
         double growthModifier = 0;
         foreach(level; invasiveLevels){
-            growthModifier -= (double)(level*0.05 - this.stats["Resilience"/2]);
+            growthModifier -= cast(double)(level*0.05 - this.stats["Resilience"/2]);
         }
         foreach(level; symbioticLevels){
-            growthModifier += (double)(level*0.05);
+            growthModifier += cast(double)(level*0.05);
         }
         double growth = this.stats["Growth"]*growthModifier/10;
         this.completion += growth;
