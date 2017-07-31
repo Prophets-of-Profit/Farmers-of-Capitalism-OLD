@@ -1,17 +1,18 @@
-module player.Player;
+module character.Player;
 
 import app;
 import world.World;
-import player.Inventory;
+import item.Inventory;
 import std.algorithm;
 import std.array;
-import player.technology.Technology;
+import character.Character;
+import character.technology.Technology;
 
 /**
  * A class for each player
  * Stores basic data for each player and contains methods for performing actions as/with the player
  */
-public class Player{
+public class Player: Character{
 
     public int[] coords;                            ///The location of the player stored as [ringNum, pos]
     public int maxTravellableDistance = 5;          ///The most distance the player can move in one turn
@@ -38,12 +39,12 @@ public class Player{
             return [this.coords];
         }
         int[][] validMoveLocations = [this.coords];
-        foreach(adjacentCoord; mainWorld.getTileAt(this.coords).getAdjacentCoords()){
+        foreach(adjacentCoord; game.mainWorld.getTileAt(this.coords).getAdjacentCoords()){
             if(adjacentCoord is null){
-                break;   
+                break;
             }
             Player copy = new Player(adjacentCoord);
-            copy.numMovesLeft = this.numMovesLeft - mainWorld.getTileAt(adjacentCoord).getPassabilityCost();
+            copy.numMovesLeft = this.numMovesLeft - game.mainWorld.getTileAt(adjacentCoord).getPassabilityCost();
             if(copy.numMovesLeft >= 0){
                 if(!validMoveLocations.canFind(adjacentCoord)){
                     validMoveLocations ~= adjacentCoord;
@@ -66,16 +67,16 @@ public class Player{
      *      pathToNewLocation = the path to the to-be location of the player
      */
     public bool setLocation(int[][] pathToNewLocation){
-        assert(pathToNewLocation[0] != this.coords && mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
+        assert(pathToNewLocation[0] != this.coords && game.mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
         foreach(location ; pathToNewLocation){
             if(this.numMovesLeft <= 0 || location == this.coords || !this.getValidMoveLocations().canFind(location)){
                 return false;
             }
             this.coords = location;
-            foreach(item; mainWorld.getTileAt(location).contained){
+            foreach(item; game.mainWorld.getTileAt(location).contained){
                 item.getSteppedOn(this);
             }
-            this.numMovesLeft -= mainWorld.getTileAt(location).getPassabilityCost();
+            this.numMovesLeft -= game.mainWorld.getTileAt(location).getPassabilityCost();
         }
         return true;
     }
@@ -85,16 +86,16 @@ public class Player{
 unittest{
     import std.stdio;
     import std.random;
-    
+
     writeln("Running unittest of Player");
-    
-    mainWorld = new World(7);
+
+    game = new Main(0, 7);
     Player testPlayer = new Player([0, 0]);
     testPlayer.numMovesLeft = 1;
     writeln("A player at [0, 0] who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     int numPlayersToTest = 4;
     for(int i = 0; i < numPlayersToTest; i++){
-        int[] coords = mainWorld.getRandomCoords();
+        int[] coords = game.mainWorld.getRandomCoords();
         testPlayer = new Player(coords);
         testPlayer.numMovesLeft = uniform(0, 5);
         writeln("A player at ", coords, " who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());

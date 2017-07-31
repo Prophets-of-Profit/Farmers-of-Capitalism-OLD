@@ -4,14 +4,17 @@
 * Each passive trait is stored in Plant.attribute and checked for in Plant functions.
 * Passive traits:
 */
-module world.plant.PlantTraits;
-import player.Player;
+module item.plant.PlantTraits;
+
+import character.Player;
 
 void delegate()[]                   naturallyPossibleIncrementalActions;
 void delegate(Player stepper)[]     naturallyPossibleSteppedOnActions;
 void delegate(Player player)[]      naturallyPossibleMainActions;
 void delegate(Player destroyer)[]   naturallyPossibleDestroyedActions;
 void delegate(Player placer)[]      naturallyPossiblePlacedActions;
+
+Attribute[][] mutuallyExclusiveAttributes;
 
 /**
  * Attributes a plant can have
@@ -34,9 +37,9 @@ void delegate(Player placer)[]      naturallyPossiblePlacedActions;
  *         Movement cost increase is equal to level.
  */
 enum Attribute{
-    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING
+    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING, SYMBIOTIC
 }
-    
+
 /**
 * Enums for the types of stats that a plant can have
 * Growth: Rate of growth.
@@ -48,5 +51,3 @@ enum Attribute{
 enum PlantReq{
     GROWTH, RESILIENCE, YIELD, SEED_QUANTITY, SEED_STRENGTH
 }
-
-

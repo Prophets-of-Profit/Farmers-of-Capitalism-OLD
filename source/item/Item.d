@@ -1,7 +1,7 @@
-module world.improvement.Item;
+module item.Item;
 
-import player.Inventory;
-import player.Player;
+import item.Inventory;
+import character.Player;
 import app;
 
 /**
@@ -11,14 +11,15 @@ import app;
 abstract class Item{
 
     public double completion;       ///How close the Item is towards being complete: once it won't function until it has reached completion
-    protected Inventory source;     ///The source inventory for where the item is/came from
+    public Inventory source;     ///The source inventory for where the item is/came from
     public bool isPlaced = false;   ///Whether the Item is in a hextile or not
-    
+
     /**
      * Kills the current item
      * Just removes the item from the source inventory if it exists
      */
     public void die(){
+        this.getDestroyed(null);
         if(this.source !is null){
             this.source.remove(this);
         }

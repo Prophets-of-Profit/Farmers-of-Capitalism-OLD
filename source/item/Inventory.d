@@ -1,7 +1,7 @@
-module player.Inventory;
+module item.Inventory;
 
-import player.Player;
-import world.improvement.Item;
+import character.Player;
+import item.Item;
 import core.exception;
 import std.algorithm;
 import std.conv;

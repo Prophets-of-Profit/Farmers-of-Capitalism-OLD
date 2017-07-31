@@ -1,7 +1,8 @@
 /**
 * Contains methods for creating, breeding, and genetically modifying plants.
 */
-module world.plant.PlantCreation;
+/**
+module item.plant.PlantCreation;
 
 import world.plant.Plant;
 import world.HexTile;
@@ -15,8 +16,6 @@ import std.stdio;
 /**
 * Generates a random plant on the specified coordinates.
 * Should be used during worldgen.
-*/
-/*
 TODO rework all of this into world or plant constructor and delete this file
 Plant createPlant(int[] creationCoords, int statsToGive){
     HexTile tile = mainWorld.getTileAt(creationCoords);

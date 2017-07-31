@@ -1,7 +1,7 @@
 module world.World;
 
 import world.HexTile;
-import player.Player;
+import character.Player;
 import core.exception;
 import std.algorithm;
 import std.random;
@@ -167,26 +167,25 @@ class World{
 
 unittest{
     import std.stdio;
-    
+
     writeln("Running unittest of World");
-    
+
     int maxWorldRingsToCheck = 5;
-    World testWorld;
     for(int i = 1; i < maxWorldRingsToCheck + 1; i++){
-        testWorld = new World(i);
-        writeln("A world with ", i, " rings has ", testWorld.getNumTiles(), " tiles with an outer ring of ", getSizeOfRing(i), " tiles");
+        game = new Main(0, i);
+        writeln("A world with ", i, " rings has ", game.mainWorld.getNumTiles(), " tiles with an outer ring of ", getSizeOfRing(i), " tiles");
     }
     int runNumForGettingLocations = 3;
     for(int i = 0; i < runNumForGettingLocations; i++){
-        int[] coords = testWorld.getRandomCoords();
-        writeln("The position of a tile at ", coords, " is ", testWorld.getTileAt(coords).coords);
-        assert(coords == testWorld.getTileAt(coords).coords);
+        int[] coords = game.mainWorld.getRandomCoords();
+        writeln("The position of a tile at ", coords, " is ", game.mainWorld.getTileAt(coords).coords);
+        assert(coords == game.mainWorld.getTileAt(coords).coords);
     }
-    assert(testWorld.getDistanceBetween([0, 0], [1, 1]) == 1);
+    assert(game.mainWorld.getDistanceBetween([0, 0], [1, 1]) == 1);
     int runNumForGettingDistances = 5;
     for(int i = 0; i < runNumForGettingDistances; i++){
-        int[][] coords = [testWorld.getRandomCoords(), testWorld.getRandomCoords()];
-        writeln("The distance between ", coords[0], " and ", coords[1], " is ", testWorld.getDistanceBetween(coords[0], coords[1]));
+        int[][] coords = [game.mainWorld.getRandomCoords(), game.mainWorld.getRandomCoords()];
+        writeln("The distance between ", coords[0], " and ", coords[1], " is ", game.mainWorld.getDistanceBetween(coords[0], coords[1]));
     }
 }
 

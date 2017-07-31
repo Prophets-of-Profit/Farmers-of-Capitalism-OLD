@@ -1,14 +1,16 @@
-module world.plant.Plant;
+module item.plant.Plant;
 
-import world.improvement.Item;
-import world.plant.PlantTraits;
-import player.Player;
+import item.Item;
+import item.plant.PlantTraits;
+import character.Player;
 import std.random;
 import world.HexTile;
 import world.World;
 import app;
 import std.math;
-import PlantTraits;
+import item.plant.PlantTraits;
+import item.plant.Seedling;
+import std.algorithm;
 
 /**
 * A parent class for all plant objects.
@@ -42,7 +44,7 @@ class Plant : Item{
     * Returns owner of HexTile if not patented. Returns placer of plant if patented.
     */
     override Player getOwner(){
-        return (Attribute.PATENT in this.attributes)? this.placer : mainWorld.getTileAt(this.source.coords).owner;
+        return (Attribute.PATENT in this.attributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
     }
 
     /**
@@ -51,7 +53,7 @@ class Plant : Item{
     *     placementCandidateCoords = the location of where to check if this plant can be placed
     */
     override bool canBePlaced(int[] placementCandidateCoords){
-        HexTile tile = mainWorld.getTileAt(placementCandidateCoords);
+        HexTile tile = game.mainWorld.getTileAt(placementCandidateCoords);
         foreach(statType; tile.climate.byKey()){
             if(tile.climate[statType] < this.survivableClimate[statType][0] || tile.climate[statType] > this.survivableClimate[statType][1]){
                 return false;
@@ -107,8 +109,8 @@ class Plant : Item{
             foreach(action; this.steppedOnActions){
                 action(stepper);
             }
-            if(uniform(0, this.stats["Resilience"]) == 0){
-                this.getDestroyed();
+            if(uniform(0, this.stats[PlantReq.RESILIENCE]) == 0){
+                this.die();
             }
         }
     }
@@ -140,7 +142,7 @@ class Plant : Item{
                action(player);
            }
        }else{
-           this.getPlaced(player.coords);
+           this.getPlaced(player, player.coords);
        }
     }
 
@@ -201,39 +203,24 @@ class Plant : Item{
     * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
     */
     public double getClimateFavorability(){
-        double optimalTemperature = (this.survivableClimate["Temperature"][0] + this.survivableClimate["Temperature"][1])/2;
-        double optimalWater = (this.survivableClimate["Water"][0] + this.survivableClimate["Water"][1])/2;
-        double optimalSoil = (this.survivableClimate["Soil"][0] + this.survivableClimate["Soil"][1])/2;
-        double optimalElevation = (this.survivableClimate["Elevation"][0] + this.survivableClimate["Elevation"][1])/2;
-
-        HexTile tile = mainWorld.getTileAt(this.source.coords);
-        double temperatureIntervalLength = this.survivableClimate["Temperature"][1] - this.survivableClimate["Temperature"][0];
-        double waterIntervalLength = this.survivableClimate["Water"][1] - this.survivableClimate["Water"][0];
-        double soilIntervalLength = this.survivableClimate["Soil"][1] - this.survivableClimate["Soil"][0];
-        double elevationIntervalLength = this.survivableClimate["Elevation"][1] - this.survivableClimate["Elevation"][0];
-
-        double temperatureDifference = (tile.temperature - optimalTemperature)/temperatureIntervalLength;
-        double waterDifference = (tile.water - optimalWater)/waterIntervalLength;
-        double soilDifference = (tile.soil - optimalSoil)/soilIntervalLength;
-        double elevationDifference =(tile.elevation - optimalElevation)/elevationIntervalLength;
-
-        return sqrt((pow(temperatureDifference, 2) + pow(waterDifference, 2) + pow(soilDifference, 2) + pow(elevationDifference, 2))/4);
+        //TODO remake this method so it works
+        return 0;
     }
 
     /**
     * Increases the plant's growth based on climate favorability and other factors.
     */
     public void grow(){
-        int[] invasiveLevels = checkOtherPlants("Invasive");
-        int[] symbioticLevels = "Invasive" in this.attributes ? [] : checkOtherPlants("Symbiotic");
+        int[] invasiveLevels = checkOtherPlants(Attribute.INVASIVE);
+        int[] symbioticLevels = (Attribute.INVASIVE in this.attributes)? null : checkOtherPlants(Attribute.SYMBIOTIC);
         double growthModifier = 0;
         foreach(level; invasiveLevels){
-            growthModifier -= cast(double)(level*0.05 - this.stats["Resilience"/2]);
+            growthModifier -= cast(double)(level * 0.05 - this.stats[PlantReq.RESILIENCE] / 2);
         }
         foreach(level; symbioticLevels){
             growthModifier += cast(double)(level*0.05);
         }
-        double growth = this.stats["Growth"]*growthModifier/10;
+        double growth = this.stats[PlantReq.GROWTH]*growthModifier/10;
         this.completion += growth;
 
     }
@@ -241,22 +228,30 @@ class Plant : Item{
     /**
     * Checks all other plants in the tile for an attribute.
     */
-    public int[] checkOtherPlants(string attribute){
-        int[] levels = 0;
+    public int[] checkOtherPlants(Attribute attribute){
+        int[] levels;
         Item[] sourceItems = this.source.items;
         foreach(item; sourceItems){
-            if(cast(Plant)item){
-                if((attribute in item.attributes) !is null){ levels ~= item.attributes[attribute]; }
+            if(cast(Plant) item){
+                Plant plant = cast(Plant) item;
+                if(attribute in plant.attributes){
+                    levels ~= plant.attributes[attribute];
+                }
             }
         }
         return levels;
     }
 
-    bool canGetTrait(trait){
+    /**
+     * Makes sure that a given trait will be able to be added to the seedling without conflicting with another trait
+     */
+    bool canGetTrait(Attribute trait){
         foreach(exclusivity; mutuallyExclusiveAttributes){
             if(exclusivity.canFind(trait)){
-                foreach(attribute;exclusivity){
-                    if(attribute in this.attributes){ return false; }
+                foreach(attribute; exclusivity){
+                    if(attribute in this.attributes){
+                        return false;
+                    }
                 }
             }
         }

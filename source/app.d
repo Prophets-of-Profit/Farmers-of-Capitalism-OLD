@@ -1,12 +1,12 @@
 module app;
 
 import world.World;
-import player.Player;
-
-static Main main; ///The entire game
+import character.Player;
 
 /**
  * The entire game class
+ * Stores all game data in one object that can be serialized and deserialized
+ * Allows for game saves
  */
 class Main{
 
@@ -26,6 +26,8 @@ class Main{
     }
 
 }
+
+static Main game;
 
 void main(){
 

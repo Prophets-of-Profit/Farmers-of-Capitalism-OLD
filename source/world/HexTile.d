@@ -2,11 +2,11 @@ module world.HexTile;
 
 import app;
 import world.World;
-import player.Player;
-import world.improvement.Item;
-import player.Inventory;
+import character.Player;
+import item.Inventory;
 import std.math;
 import std.conv;
+import std.algorithm.comparison;
 
 /**
  * An enum for directions
@@ -15,7 +15,7 @@ import std.conv;
 public enum Direction{
     NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
 }
-    
+
 /**
  * Types of stats a tile has
  * Temperature is the temperature of the tile in C
@@ -77,7 +77,7 @@ class HexTile{
         }
         int[][] adjacentTiles = null;
         foreach(int[] coord; adjacentCandidates){
-            adjacentTiles ~= (mainWorld.getTileAt(coord) !is null)? coord : null;
+            adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : null;
         }
         return adjacentTiles;
     }
@@ -118,15 +118,15 @@ class HexTile{
 
 unittest{
     import std.stdio;
-    
+
     writeln("Running unittest of HexTile");
-    
+
     int ringNumsToTest = 5;
-    mainWorld = new World(ringNumsToTest);
-    writeln("Adjacencies of [0, 0] : ", mainWorld.getTileAt([0, 0]).getAdjacentCoords());
+    game = new Main(0, ringNumsToTest);
+    writeln("Adjacencies of [0, 0] : ", game.mainWorld.getTileAt([0, 0]).getAdjacentCoords());
     int testRunNum = 4;
     for(int i = 0; i < testRunNum; i++){
-        int[] coords = mainWorld.getRandomCoords();
-        writeln("Adjacencies of ", coords, " : ", mainWorld.getTileAt(coords).getAdjacentCoords());
+        int[] coords = game.mainWorld.getRandomCoords();
+        writeln("Adjacencies of ", coords, " : ", game.mainWorld.getTileAt(coords).getAdjacentCoords());
     }
 }
