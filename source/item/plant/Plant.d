@@ -2,7 +2,7 @@ module item.plant.Plant;
 
 import item.Item;
 import item.plant.PlantTraits;
-import character.Player;
+import character.Character;
 import std.random;
 import world.HexTile;
 import world.World;
@@ -19,13 +19,13 @@ import std.algorithm;
 class Plant : Item{
 
     public void delegate()[] incrementalActions;                 ///Actions taken every turn
-    public void delegate(Player stepper)[] steppedOnActions;     ///Actions taken when stepped on
-    public void delegate(Player player)[] mainActions;           ///Actions taken when interacted with
-    public void delegate(Player destroyer)[] destroyedActions;   ///Actions taken when destroyed
-    public void delegate(Player placer)[] placedActions;         ///Actions taken when placed
+    public void delegate(Character stepper)[] steppedOnActions;     ///Actions taken when stepped on
+    public void delegate(Character player)[] mainActions;           ///Actions taken when interacted with
+    public void delegate(Character destroyer)[] destroyedActions;   ///Actions taken when destroyed
+    public void delegate(Character placer)[] placedActions;         ///Actions taken when placed
     public int[Attribute] attributes;                            ///Passive (constantly applied) attributes with levels from (usually) 1 to 5 in the form of ints.
     public double[][TileStat] survivableClimate;                 ///Bounds of survivable temperature, water, soil, elevation.
-    private Player placer;                                       ///The person who planted the plant.
+    protected Character placer;                                    ///The person who planted the plant.
     public int[PlantReq] stats;                                  ///Contains base stats of plant.
 
     /**
@@ -43,7 +43,7 @@ class Plant : Item{
     /**
     * Returns owner of HexTile if not patented. Returns placer of plant if patented.
     */
-    override Player getOwner(){
+    override Character getOwner(){
         return (Attribute.PATENT in this.attributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
     }
 
@@ -86,7 +86,7 @@ class Plant : Item{
     *   placer = the person who is attempting to place this plant
     *   newLocation = the location of where this plant should be placed
     */
-    override bool getPlaced(Player placer, int[] newLocation){
+    override bool getPlaced(Character placer, int[] newLocation){
         if(!this.isPlaced && this.canBePlaced(newLocation)){
             foreach(action; this.placedActions){
                 action(placer);
@@ -104,7 +104,7 @@ class Plant : Item{
     * Params:
     *   stepper = the person who stepped on the plant
     */
-    override void getSteppedOn(Player stepper){
+    override void getSteppedOn(Character stepper){
         if(this.isPlaced){
             foreach(action; this.steppedOnActions){
                 action(stepper);
@@ -136,7 +136,7 @@ class Plant : Item{
     * Params:
     *   player = the player who triggered the main action of the plant
     */
-    override void doMainAction(Player player){
+    override void doMainAction(Character player){
        if(this.isPlaced){
            foreach(action; this.mainActions){
                action(player);
@@ -152,7 +152,7 @@ class Plant : Item{
     * Params:
     *   destroyer = the player who destroyed the plant
     */
-    override void getDestroyed(Player destroyer){
+    override void getDestroyed(Character destroyer){
         if(this.isPlaced){
             foreach(action; this.destroyedActions){
                 action(destroyer);

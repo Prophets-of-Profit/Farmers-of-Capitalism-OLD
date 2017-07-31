@@ -1,7 +1,7 @@
 module item.Item;
 
 import item.Inventory;
-import character.Player;
+import character.Character;
 import app;
 
 /**
@@ -42,14 +42,14 @@ abstract class Item{
         }
     }
 
-    public abstract Player getOwner();                                  ///Gets the owner of the Item
+    public abstract Character getOwner();                               ///Gets the owner of the Item
     public abstract bool canBePlaced(int[] placementCandidateCoords);   ///Returns whether the Item can be placed
-    public abstract bool getPlaced(Player placer, int[] newLocation);   ///What the Item should do when created
+    public abstract bool getPlaced(Character placer, int[] newLocation);///What the Item should do when created
     public abstract double getMovementCost();                           ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
-    public abstract void getSteppedOn(Player stepper);                  ///What the Item should do when stepped on
+    public abstract void getSteppedOn(Character stepper);               ///What the Item should do when stepped on
     public abstract void doIncrementalAction();                         ///What the Item should do every turn
-    public abstract void doMainAction(Player player);                   ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
-    public abstract void getDestroyed(Player destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
+    public abstract void doMainAction(Character player);                ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
+    public abstract void getDestroyed(Character destroyer);             ///What/how the Item gets destroyed and what it will do when destroyed
     public abstract Item clone();                                       ///Returns a copy of the Item
 
 }

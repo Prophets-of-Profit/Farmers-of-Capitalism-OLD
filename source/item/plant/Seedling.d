@@ -3,7 +3,7 @@
 */
 module item.plant.Seedling;
 
-import character.Player;
+import character.Character;
 import item.plant.Plant;
 import app;
 import world.World;
@@ -17,7 +17,6 @@ import std.conv;
 */
 class Seedling : Plant{
 
-    public Player placer;                                        ///The person who planted the plant.
     public Plant parent;                                         ///The parent plant from which the seedling was created.
 
     /**

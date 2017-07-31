@@ -6,13 +6,13 @@
 */
 module item.plant.PlantTraits;
 
-import character.Player;
+import character.Character;
 
 void delegate()[]                   naturallyPossibleIncrementalActions;
-void delegate(Player stepper)[]     naturallyPossibleSteppedOnActions;
-void delegate(Player player)[]      naturallyPossibleMainActions;
-void delegate(Player destroyer)[]   naturallyPossibleDestroyedActions;
-void delegate(Player placer)[]      naturallyPossiblePlacedActions;
+void delegate(Character stepper)[]     naturallyPossibleSteppedOnActions;
+void delegate(Character player)[]      naturallyPossibleMainActions;
+void delegate(Character destroyer)[]   naturallyPossibleDestroyedActions;
+void delegate(Character placer)[]      naturallyPossiblePlacedActions;
 
 Attribute[][] mutuallyExclusiveAttributes;
 
