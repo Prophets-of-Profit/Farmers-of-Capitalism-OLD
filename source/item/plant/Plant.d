@@ -13,20 +13,20 @@ import item.plant.Seedling;
 import std.algorithm;
 
 /**
-* A parent class for all plant objects.
-* Contains basic (non-functional) traits and methods shared between all plants.
-*/
+ * A parent class for all plant objects.
+ * Contains basic (non-functional) traits and methods shared between all plants.
+ */
 class Plant : Item{
 
-    public void delegate()[] incrementalActions;                 ///Actions taken every turn
+    public void delegate()[] incrementalActions;                    ///Actions taken every turn
     public void delegate(Character stepper)[] steppedOnActions;     ///Actions taken when stepped on
     public void delegate(Character player)[] mainActions;           ///Actions taken when interacted with
     public void delegate(Character destroyer)[] destroyedActions;   ///Actions taken when destroyed
     public void delegate(Character placer)[] placedActions;         ///Actions taken when placed
-    public int[Attribute] attributes;                            ///Passive (constantly applied) attributes with levels from (usually) 1 to 5 in the form of ints.
-    public double[][TileStat] survivableClimate;                 ///Bounds of survivable temperature, water, soil, elevation.
-    protected Character placer;                                    ///The person who planted the plant.
-    public int[PlantReq] stats;                                  ///Contains base stats of plant.
+    public int[Attribute] attributes;                               ///Passive (constantly applied) attributes with levels from (usually) 1 to 5 in the form of ints.
+    public double[][TileStat] survivableClimate;                    ///Bounds of survivable temperature, water, soil, elevation.
+    protected Character placer;                                     ///The person who planted the plant.
+    public int[PlantReq] stats;                                     ///Contains base stats of plant.
 
     /**
     * The constructor for a plant.
@@ -182,8 +182,8 @@ class Plant : Item{
     }
 
     /**
-    * Creates a seedling
-    */
+     * Creates a seedling
+     */
     public Seedling createSeedling(){
         Seedling child = new Seedling();
         child.incrementalActions = this.incrementalActions;
@@ -200,16 +200,16 @@ class Plant : Item{
     }
 
     /**
-    * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
-    */
+     * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
+     */
     public double getClimateFavorability(){
         //TODO remake this method so it works
         return 0;
     }
 
     /**
-    * Increases the plant's growth based on climate favorability and other factors.
-    */
+     * Increases the plant's growth based on climate favorability and other factors.
+     */
     public void grow(){
         int[] invasiveLevels = checkOtherPlants(Attribute.INVASIVE);
         int[] symbioticLevels = (Attribute.INVASIVE in this.attributes)? null : checkOtherPlants(Attribute.SYMBIOTIC);
@@ -226,8 +226,8 @@ class Plant : Item{
     }
 
     /**
-    * Checks all other plants in the tile for an attribute.
-    */
+     * Checks all other plants in the tile for an attribute.
+     */
     public int[] checkOtherPlants(Attribute attribute){
         int[] levels;
         Item[] sourceItems = this.source.items;
@@ -263,5 +263,6 @@ unittest{
     import std.stdio;
 
     writeln("Running unittest of Plant");
-    //TODO
+
+    //TODO make plant unittest
 }

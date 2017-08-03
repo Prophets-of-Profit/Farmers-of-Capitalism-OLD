@@ -26,7 +26,7 @@ Attribute[][] mutuallyExclusiveAttributes;
  *         Level 3: Can be moved if maturity <= 60%.
  *         Level 4: Can be moved if maturity <= 80%.
  *         Level 5: Can be moved.
- *     *Invasive: Inhibits other plants on the same tile. Slowed by Resilience of other plants. TODO: Implement
+ *     *Invasive: Inhibits other plants on the same tile. Slowed by Resilience of other plants. TODO: Implement Resilience
  *         Level 1: Slows growth for all other plants on tile by 25%.
  *         Level 2: Slows growth for all other plants on tile by 50%.
  *         Level 3: Slows growth for all other plants on tile by 75%.

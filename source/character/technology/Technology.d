@@ -2,8 +2,26 @@ module character.technology.Technology;
 
 import character.Player;
 import std.algorithm;
+import std.conv;
 
-static Technology[] allTechnologies;
+/**
+ * A list of names of the technologies
+ * Once added here, the technology will automatically get imported and added to allTechnologies
+ */
+enum TechnologyName{
+    Agriculture
+}
+
+///A list of all of the technologies in the game
+Technology[TechnologyName] allTechnologies;
+
+///Initializes all of the technologies by importing them and adding them to allTechnologies
+static this(){
+    foreach(name; __traits(allMembers, TechnologyName)){
+        mixin("import character.technology." ~ name.to!string ~ ";");
+        mixin("allTechnologies[TechnologyName." ~ name ~ "] = new " ~ name ~ "();");
+    }
+}
 
 /**
  * A class that defines a technology
@@ -12,42 +30,45 @@ static Technology[] allTechnologies;
  */
 abstract class Technology {
 
-    Technology[] dependencies;          ///The technology(ies) required to research this one
-    string name;                        ///The name of this technology
-    //TODO add some requirement field here?
+    TechnologyName name;                ///The name of this technology
+    TechnologyName[] dependencies;      ///The technology(ies) that immediately lead to this one
 
     /**
-     * Constructor for any technology
-     * Will add the technology to a list of all technologies
-     */
-    this(){
-        allTechnologies ~= this;
-    }
-
-    /**
-    * Returns a list of technologies that would be helped by acquiring this technology
+    * Returns a list of technologies that would be helped eventually by acquiring this technology
+    * TODO actually look through and test this method; it may infinitely run :(
     */
-    Technology[] leadsTo(){
-        Technology[] leads;
-        foreach(tech; allTechnologies){
-            if(tech.dependencies.canFind(this)){
-                foreach(candidate; tech ~ tech.leadsTo()){
-                    if(!leads.canFind(candidate)){
-                        leads ~= candidate;
-                    }
+    TechnologyName[] leadsTo(){
+        TechnologyName[] leadsTo;
+        foreach(dependant; this.immediatelyLeadsTo()){
+            foreach(tech; dependant ~ allTechnologies[dependant].leadsTo()){
+                if(!leadsTo.canFind(tech)){
+                    leadsTo ~= tech;
                 }
             }
         }
-        return leads;
+        return leadsTo;
     }
 
-    abstract bool canBeUnlockedBy(Player player); ///Returns whether a certain player can unlock the current technology
+    /**
+     * Returns a list of technologies that would be helped immediately by acquiring this technology
+     */
+    TechnologyName[] immediatelyLeadsTo(){
+        TechnologyName[] leadsTo;
+        foreach(tech; allTechnologies.byValue){
+            if(tech.dependencies.canFind(this.name) && !leadsTo.canFind(tech.name)){
+                leadsTo ~= tech.name;
+            }
+        }
+        return leadsTo;
+    }
 
     /**
      * An action that happens when a player unlocks a technology
      */
-    abstract void onUnlock(Player player){
-        player.researched ~= this;
+    void onUnlock(Player player){
+        player.researched ~= this.name;
     }
+
+    abstract bool canBeUnlockedBy(Player player); ///Returns whether a certain player can unlock the current technology
 
 }

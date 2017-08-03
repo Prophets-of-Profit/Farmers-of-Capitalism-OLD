@@ -12,14 +12,26 @@ import character.technology.Technology;
 public class Player: Character{
 
     public Inventory inventory = new Inventory();   ///The player's inventory
-    public Technology[] researched;                 ///The technologies the player has researched
+    public TechnologyName[] researched;             ///The technologies the player has researched
 
     /**
-     * A constructor for a player that just calls the Character constructor
+     * A constructor for a player that just calls the Character constructor and initializes an inventory
      */
     this(int[] coords){
         super(coords);
         this.inventory.accessibleTo = [this];
+        allTechnologies[TechnologyName.Agriculture].onUnlock(this);
     }
 
+}
+
+unittest{
+    import std.stdio;
+
+    writeln("Running unittests of Player");
+
+    Player testPlayer = new Player([-1, -1]);
+    writeln("A player starts out with the technologies of ", testPlayer.researched);
+    assert(testPlayer.researched.length == 1);
+    //TODO add more testing here
 }

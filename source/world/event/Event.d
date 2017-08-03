@@ -5,7 +5,7 @@ module world.event.Event;
  */
 abstract class Event{
 
-    public bool isInProgress;                ///Whether the event is happening right now
+    public bool isInProgress;   ///Whether the event is happening right now
 
     /**
      * The action taken when the event starts.

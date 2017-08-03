@@ -15,6 +15,8 @@ class Worker: Character{
 
     /**
      * A constructor for a player that just calls the Character constructor
+     * Params:
+     *      coords = the coordinates of the worker
      */
     this(int[] coords){
         super(coords);

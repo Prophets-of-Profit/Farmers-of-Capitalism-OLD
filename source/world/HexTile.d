@@ -32,7 +32,7 @@ class HexTile{
     public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
     public double[TileStat] climate;                ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
-    public Direction direction;                    ///Direction of wind or water flow TODO limit to 0-5
+    public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
     public Player owner;                            ///The owner of this tile; if none, owner is null
 
@@ -123,10 +123,10 @@ unittest{
 
     int ringNumsToTest = 5;
     game = new Main(0, ringNumsToTest);
-    writeln("Adjacencies of [0, 0] : ", game.mainWorld.getTileAt([0, 0]).getAdjacentCoords());
+    writeln("Adjacencies of [0, 0] are ", game.mainWorld.getTileAt([0, 0]).getAdjacentCoords());
     int testRunNum = 4;
     for(int i = 0; i < testRunNum; i++){
         int[] coords = game.mainWorld.getRandomCoords();
-        writeln("Adjacencies of ", coords, " : ", game.mainWorld.getTileAt(coords).getAdjacentCoords());
+        writeln("Adjacencies of ", coords, " are ", game.mainWorld.getTileAt(coords).getAdjacentCoords());
     }
 }

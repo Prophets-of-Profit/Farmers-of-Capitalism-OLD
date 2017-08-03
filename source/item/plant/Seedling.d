@@ -1,6 +1,3 @@
-/**
-* Contains Seedling class.
-*/
 module item.plant.Seedling;
 
 import character.Character;
@@ -13,25 +10,23 @@ import item.Item;
 import std.conv;
 
 /**
-* A class that holds information about its parents and is a result of plant breeding.
-*/
+ * A class that holds information about its parents and is a result of plant breeding.
+ */
 class Seedling : Plant{
 
-    public Plant parent;                                         ///The parent plant from which the seedling was created.
+    public Plant parent;    ///The parent plant from which the seedling was created.
 
     /**
-    * Constructor for Seedling actually moves the seedling and deposits it on a random tile.
-    */
+     * Constructor for Seedling actually moves the seedling and deposits it on a random tile.
+     */
     this(){
         int[] coords = parent.source.coords;
         double depositChance = 0;
-        bool deposited = false;
-        while(!deposited){
+        while(true){
             Direction direction = game.mainWorld.getTileAt(coords).direction;
             Direction oppositeDirection = to!Direction((direction + 3) % 6);
             int directionSelection = uniform(0, 41);
             Direction chosenDirection;
-
             if(directionSelection < 2){
                 chosenDirection = oppositeDirection;
             }else if(directionSelection < 8){
@@ -43,7 +38,7 @@ class Seedling : Plant{
             }
             coords = game.mainWorld.getTileAt(coords).getAdjacentCoordInDirection(chosenDirection);
             if(uniform(0, 11 - depositChance) == 0){
-                deposited = true;
+                break;
             }else{
                 depositChance++;
             }

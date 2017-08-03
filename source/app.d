@@ -27,8 +27,8 @@ class Main{
 
 }
 
-static Main game;
+Main game;
 
 void main(){
-
+    //TODO write engine
 }
