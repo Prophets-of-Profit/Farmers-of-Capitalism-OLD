@@ -103,5 +103,5 @@ unittest{
     assert(testInv.add(null));
     assert(testInv.add(null));
     //TODO assert(testInv.add(someItem));
-    //TODO assert(!testInv.add(someItem));
+    //assert(!testInv.add(someItem));
 }

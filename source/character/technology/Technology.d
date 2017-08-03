@@ -15,7 +15,9 @@ enum TechnologyName{
 ///A list of all of the technologies in the game
 Technology[TechnologyName] allTechnologies;
 
-///Initializes all of the technologies by importing them and adding them to allTechnologies
+/**
+ * Initializes all of the technologies by importing them and adding them to allTechnologies
+ */
 static this(){
     foreach(name; __traits(allMembers, TechnologyName)){
         mixin("import character.technology." ~ name.to!string ~ ";");
@@ -34,9 +36,9 @@ abstract class Technology {
     TechnologyName[] dependencies;      ///The technology(ies) that immediately lead to this one
 
     /**
-    * Returns a list of technologies that would be helped eventually by acquiring this technology
-    * TODO actually look through and test this method; it may infinitely run :(
-    */
+     * Returns a list of technologies that would be helped eventually by acquiring this technology
+     * TODO actually look through and test this method; it may infinitely run :(
+     */
     TechnologyName[] leadsTo(){
         TechnologyName[] leadsTo;
         foreach(dependant; this.immediatelyLeadsTo()){
