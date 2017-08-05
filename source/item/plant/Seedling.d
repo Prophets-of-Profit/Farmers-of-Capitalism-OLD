@@ -20,7 +20,7 @@ class Seedling : Plant{
      * Constructor for Seedling actually moves the seedling and deposits it on a random tile.
      */
     this(){
-        int[] coords = parent.source.coords;
+        Coordinate coords = parent.source.coords;
         double depositChance = 0;
         while(true){
             Direction direction = game.mainWorld.getTileAt(coords).direction;

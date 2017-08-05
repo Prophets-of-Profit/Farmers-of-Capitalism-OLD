@@ -2,6 +2,7 @@ module character.Worker;
 
 import character.Character;
 import item.Item;
+import world.World;
 
 /**
  * A basic class for a worker
@@ -18,7 +19,7 @@ class Worker: Character{
      * Params:
      *      coords = the coordinates of the worker
      */
-    this(int[] coords){
+    this(Coordinate coords){
         super(coords);
     }
 

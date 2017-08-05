@@ -29,7 +29,7 @@ enum TileStat{
 
 class HexTile{
 
-    public immutable int[] coords;                  ///Location of the tile stored as [ringNumber, positionInRing]
+    public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
     public double[TileStat] climate;                ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
     public Direction direction;                     ///Direction of wind or water flow
@@ -43,7 +43,7 @@ class HexTile{
      * Params:
      *      coords = the coordinates of the new hextile
      */
-    this(immutable int[] coords){
+    this(Coordinate coords){
         this.coords = coords;
     }
 
@@ -55,29 +55,33 @@ class HexTile{
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
      * TODO rework order of returned coordinates such that order is: NORTH, NORTHEAST, SOUTHEAST, SOUTH, SOUTHWEST, NORTHWEST (clockwise starting north)
      */
-    public int[][] getAdjacentCoords(){
-        int[][] adjacentCandidates = null;
+    public Coordinate[] getAdjacentCoords(){
+        Coordinate[] adjacentCandidates = null;
         int cornerNum = (this.coords[0] == 0)? 0 : this.coords[1] / this.coords[0];
         if(coords[0] == 0){
-            return [[1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5]];
+            return [Coordinate(1, 0), Coordinate(1, 1), Coordinate(1, 2), Coordinate(1, 3), Coordinate(1, 4), Coordinate(1, 5)];
         }else if(this.coords[1] % this.coords[0] == 0){
-            adjacentCandidates = [[this.coords[0], this.coords[1] - 1],
-                    [this.coords[0], this.coords[1] + 1],
-                    [this.coords[0] - 1, (this.coords[0] - 1) * cornerNum],
-                    [this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1],
-                    [this.coords[0] + 1, (this.coords[0] + 1) * cornerNum],
-                    [this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1]];
+            adjacentCandidates = [
+                Coordinate(this.coords[0], this.coords[1] - 1),
+                Coordinate(this.coords[0], this.coords[1] + 1),
+                Coordinate(this.coords[0] - 1, (this.coords[0] - 1) * cornerNum),
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1),
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum),
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1)
+            ];
         }else{
-            adjacentCandidates = [[this.coords[0], this.coords[1] - 1],
-                    [this.coords[0], this.coords[1] + 1],
-                    [this.coords[0] + 1, this.coords[1] + cornerNum + 1],
-                    [this.coords[0] + 1, this.coords[1] + cornerNum],
-                    [this.coords[0] - 1, this.coords[1] - cornerNum - 1],
-                    [this.coords[0] - 1, this.coords[1] - cornerNum + 1]];
+            adjacentCandidates = [
+                Coordinate(this.coords[0], this.coords[1] - 1),
+                Coordinate(this.coords[0], this.coords[1] + 1),
+                Coordinate(this.coords[0] + 1, this.coords[1] + cornerNum + 1),
+                Coordinate(this.coords[0] + 1, this.coords[1] + cornerNum),
+                Coordinate(this.coords[0] - 1, this.coords[1] - cornerNum - 1),
+                Coordinate(this.coords[0] - 1, this.coords[1] - cornerNum + 1)
+            ];
         }
-        int[][] adjacentTiles = null;
-        foreach(int[] coord; adjacentCandidates){
-            adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : null;
+        Coordinate[] adjacentTiles = null;
+        foreach(coord; adjacentCandidates){
+            adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : Coordinate(-1, -1);
         }
         return adjacentTiles;
     }
@@ -88,7 +92,7 @@ class HexTile{
      * Params:
      *      directionOfAdjacent = the direction enum or integer of which side the given adjacent coordinate should be
      */
-    public int[] getAdjacentCoordInDirection(Direction directionOfAdjacent){
+    public Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent){
         return this.getAdjacentCoords()[directionOfAdjacent];
     }
 
@@ -123,10 +127,10 @@ unittest{
 
     int ringNumsToTest = 5;
     game = new Main(0, ringNumsToTest);
-    writeln("Adjacencies of [0, 0] are ", game.mainWorld.getTileAt([0, 0]).getAdjacentCoords());
+    writeln("Adjacencies of [0, 0] are ", game.mainWorld.getTileAt(Coordinate(0, 0)).getAdjacentCoords());
     int testRunNum = 4;
     for(int i = 0; i < testRunNum; i++){
-        int[] coords = game.mainWorld.getRandomCoords();
+        Coordinate coords = game.mainWorld.getRandomCoords();
         writeln("Adjacencies of ", coords, " are ", game.mainWorld.getTileAt(coords).getAdjacentCoords());
     }
 }

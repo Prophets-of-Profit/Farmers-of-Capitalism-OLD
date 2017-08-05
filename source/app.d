@@ -20,7 +20,7 @@ class Main{
 
     this(int numPlayers, int worldSize){
         for(int i = 0; i < numPlayers; i++){
-            players ~= new Player([0,0]);       //TODO: Add corner selection for player placement.
+            players ~= new Player(Coordinate(0, 0));       //TODO: Add corner selection for player placement.
         }
         mainWorld = new World(worldSize);
     }

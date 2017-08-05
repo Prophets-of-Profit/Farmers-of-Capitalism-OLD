@@ -52,7 +52,7 @@ class Plant : Item{
     * Params:
     *     placementCandidateCoords = the location of where to check if this plant can be placed
     */
-    override bool canBePlaced(int[] placementCandidateCoords){
+    override bool canBePlaced(Coordinate placementCandidateCoords){
         HexTile tile = game.mainWorld.getTileAt(placementCandidateCoords);
         foreach(statType; tile.climate.byKey()){
             if(tile.climate[statType] < this.survivableClimate[statType][0] || tile.climate[statType] > this.survivableClimate[statType][1]){
@@ -86,7 +86,7 @@ class Plant : Item{
     *   placer = the person who is attempting to place this plant
     *   newLocation = the location of where this plant should be placed
     */
-    override bool getPlaced(Character placer, int[] newLocation){
+    override bool getPlaced(Character placer, Coordinate newLocation){
         if(!this.isPlaced && this.canBePlaced(newLocation)){
             foreach(action; this.placedActions){
                 action(placer);

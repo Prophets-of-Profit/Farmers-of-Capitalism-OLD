@@ -17,7 +17,7 @@ public class Player: Character{
     /**
      * A constructor for a player that just calls the Character constructor and initializes an inventory
      */
-    this(int[] coords){
+    this(Coordinate coords){
         super(coords);
         this.inventory.accessibleTo = [this];
         allTechnologies[TechnologyName.Agriculture].onUnlock(this);
@@ -30,7 +30,7 @@ unittest{
 
     writeln("Running unittest of Player");
 
-    Player testPlayer = new Player([-1, -1]);
+    Player testPlayer = new Player(Coordinate(-1, -1));
     writeln("A player starts out with the technologies of ", testPlayer.researched);
     assert(testPlayer.researched.length == 1);
     //TODO add more testing here

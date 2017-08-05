@@ -3,6 +3,7 @@ module character.Character;
 import app;
 import std.algorithm;
 import std.array;
+import world.World;
 
 /**
  * A set of methods and instancedata for a character
@@ -10,7 +11,7 @@ import std.array;
  */
 class Character{
 
-    public int[] coords;                            ///The location of the character stored as [ringNum, pos]
+    public Coordinate coords;                       ///The location of the character stored as [ringNum, pos]
     public int maxTravellableDistance = 5;          ///The most distance the character can move in one turn
     public double numMovesLeft;                     ///The amount of moves the character can still do this turn
 
@@ -20,21 +21,21 @@ class Character{
      * Params:
      *      startingLocation = the coordinates of where the character starts
      */
-    this(int[] startingLocation){
-        this.coords = startingLocation.dup;
+    this(Coordinate startingLocation){
+        this.coords = startingLocation;
     }
 
     /**
      * Returns a list of coordinates of where the character can travel to based on how many moves they have left
      * Doesn't return the distance of those coordinates
      */
-    public int[][] getValidMoveLocations(){
+    public Coordinate[] getValidMoveLocations(){
         if(this.numMovesLeft == 0){
             return [this.coords];
         }
-        int[][] validMoveLocations = [this.coords];
+        Coordinate[] validMoveLocations = [this.coords];
         foreach(adjacentCoord; game.mainWorld.getTileAt(this.coords).getAdjacentCoords()){
-            if(adjacentCoord is null){
+            if(adjacentCoord == Coordinate(-1, -1)){
                 break;
             }
             Character copy = new Character(adjacentCoord);
@@ -43,7 +44,7 @@ class Character{
                 if(!validMoveLocations.canFind(adjacentCoord)){
                     validMoveLocations ~= adjacentCoord;
                 }
-                foreach(int[] validMoveLocation ; copy.getValidMoveLocations()){
+                foreach(validMoveLocation; copy.getValidMoveLocations()){
                     if(!validMoveLocations.canFind(validMoveLocation)){
                         validMoveLocations ~= validMoveLocation;
                     }
@@ -60,9 +61,9 @@ class Character{
      * Params:
      *      pathToNewLocation = the path to the to-be location of the character
      */
-    public bool setLocation(int[][] pathToNewLocation){
+    public bool setLocation(Coordinate[] pathToNewLocation){
         assert(pathToNewLocation[0] != this.coords && game.mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
-        foreach(location ; pathToNewLocation){
+        foreach(location; pathToNewLocation){
             if(this.numMovesLeft <= 0 || location == this.coords || !this.getValidMoveLocations().canFind(location)){
                 return false;
             }
@@ -84,12 +85,12 @@ unittest{
     writeln("Running unittest of Character");
 
     game = new Main(0, 7);
-    Character testPlayer = new Character([0, 0]);
+    Character testPlayer = new Character(Coordinate(0, 0));
     testPlayer.numMovesLeft = 1;
     writeln("A character at [0, 0] who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     int numPlayersToTest = 4;
     for(int i = 0; i < numPlayersToTest; i++){
-        int[] coords = game.mainWorld.getRandomCoords();
+        Coordinate coords = game.mainWorld.getRandomCoords();
         testPlayer = new Character(coords);
         testPlayer.numMovesLeft = uniform(0, 5);
         writeln("A character at ", coords, " who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
