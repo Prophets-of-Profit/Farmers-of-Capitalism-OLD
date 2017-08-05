@@ -10,6 +10,29 @@ import app;
 import core.thread;
 
 /**
+ * A struct that stores coordinates
+ * Coordinates are stored as ringNum and pos:
+ *  ringNum is the ring number or the number of rings from the center if the center was ring 0
+ *  pos is how far clockwise along the ring the coordinate is
+ * Coordinates are immutable
+ */
+immutable struct Coordinate{
+
+    int ringNum;        ///The ring number of the coordinate or how many rings from the center this coordinate is if the center ring is ring 0
+    int pos;            ///The position of the coordinate within the ring or how far clockwise along the ring the coordinate is
+    alias coords this;  ///Sets the struct to also be an int[2] of [ringNum, pos]
+
+    /**
+     * Returns a int[2] of the coordinate in the form of [ringNum, pos]
+     * Just so that the Coordinate can be accessed and used like an array if needed
+     */
+    @property int[2] coords(){
+        return [ringNum, pos];
+    }
+
+}
+
+/**
  * A general class that should only ever be instantiated once
  * Contains an array of tiles sorted by their ringNum (distance from the center) and pos (how far clockwise along the ring the tile is)
  */
