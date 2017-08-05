@@ -20,7 +20,7 @@ Technology[TechnologyName] allTechnologies;
  */
 static this(){
     foreach(name; __traits(allMembers, TechnologyName)){
-        mixin("import character.technology." ~ name.to!string ~ ";");
+        mixin("import character.technology." ~ name ~ ";");
         mixin("allTechnologies[TechnologyName." ~ name ~ "] = new " ~ name ~ "();");
     }
 }

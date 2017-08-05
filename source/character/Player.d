@@ -28,7 +28,7 @@ public class Player: Character{
 unittest{
     import std.stdio;
 
-    writeln("Running unittests of Player");
+    writeln("Running unittest of Player");
 
     Player testPlayer = new Player([-1, -1]);
     writeln("A player starts out with the technologies of ", testPlayer.researched);
