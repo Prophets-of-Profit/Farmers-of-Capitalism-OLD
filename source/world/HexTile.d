@@ -61,24 +61,29 @@ class HexTile{
         if(coords[0] == 0){
             return [Coordinate(1, 0), Coordinate(1, 1), Coordinate(1, 2), Coordinate(1, 3), Coordinate(1, 4), Coordinate(1, 5)];
         }else if(this.coords[1] % this.coords[0] == 0){
+            //If the coordinate input is at a corner of a ring.
             adjacentCandidates = [
-                Coordinate(this.coords[0], this.coords[1] - 1),
+                //Store adjacent coords in clockwise order starting from the one farthest from the center.
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum),
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1),
                 Coordinate(this.coords[0], this.coords[1] + 1),
                 Coordinate(this.coords[0] - 1, (this.coords[0] - 1) * cornerNum),
-                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1),
-                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum),
-                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1)
+                Coordinate(this.coords[0], this.coords[1] - 1),
+                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1)
             ];
         }else{
             adjacentCandidates = [
-                Coordinate(this.coords[0], this.coords[1] - 1),
-                Coordinate(this.coords[0], this.coords[1] + 1),
-                Coordinate(this.coords[0] + 1, this.coords[1] + cornerNum + 1),
+                //Store adjacent coords in clockwise order starting from the tile on the outer ring to the counterclockwise direction.
                 Coordinate(this.coords[0] + 1, this.coords[1] + cornerNum),
+                Coordinate(this.coords[0] + 1, this.coords[1] + cornerNum + 1),
+                Coordinate(this.coords[0], this.coords[1] + 1),
+                Coordinate(this.coords[0] - 1, this.coords[1] - cornerNum + 1),
                 Coordinate(this.coords[0] - 1, this.coords[1] - cornerNum - 1),
-                Coordinate(this.coords[0] - 1, this.coords[1] - cornerNum + 1)
+                Coordinate(this.coords[0], this.coords[1] - 1)
             ];
         }
+        //Rotate the adjacencies by cornerNum to keep it in an order that matches the order of Direction enum.
+        adjacentCandidates = adjacentCandidates[cornerNum..$] ~ adjacentCandidates[0..cornerNum];
         Coordinate[] adjacentTiles = null;
         foreach(coord; adjacentCandidates){
             adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : Coordinate(-1, -1);

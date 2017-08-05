@@ -105,11 +105,11 @@ class World{
         int distance = 0;
         Coordinate[] checked = [firstLocation];
         while(!checked.canFind(secondLocation)){
-            Coordinate[] prevChecked = checked.dup;
+            Coordinate[] prevChecked = checked;
             checked = null;
             distance++;
             foreach(coord; prevChecked){
-                if(coord == Coordinate(-1, -1)){
+                if(coord != Coordinate(-1, -1)){
                     checked ~= this.getTileAt(coord).getAdjacentCoords();
                 }
             }
