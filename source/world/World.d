@@ -1,13 +1,15 @@
 module world.World;
 
-import world.HexTile;
-import character.Player;
-import core.exception;
 import std.algorithm;
-import std.random;
 import std.conv;
-import app;
+import std.random;
+
+import core.exception;
 import core.thread;
+
+import app;
+import character.Player;
+import world.HexTile;
 
 /**
  * A struct that stores coordinates

@@ -1,13 +1,12 @@
-/**
-* Contains all possible functional attributes of plants.
-* Each active trait can be implemented in certain sockets of Plant (incrementalActions, steppedOnActions, etc.) and does something.
-* Each passive trait is stored in Plant.attribute and checked for in Plant functions.
-* Passive traits:
-*/
 module item.plant.PlantTraits;
 
 import character.Character;
 
+/**
+ * Contains all possible functional attributes of plants.
+ * Each active trait can be implemented in certain sockets of Plant (incrementalActions, steppedOnActions, etc.) and does something.
+ * Each passive trait is stored in Plant.attribute and checked for in Plant functions.
+ */
 void delegate()[]                      naturallyPossibleIncrementalActions;
 void delegate(Character stepper)[]     naturallyPossibleSteppedOnActions;
 void delegate(Character player)[]      naturallyPossibleMainActions;

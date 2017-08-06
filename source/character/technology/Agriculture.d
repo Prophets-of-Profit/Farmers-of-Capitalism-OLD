@@ -1,7 +1,7 @@
 module character.technology.Agriculture;
 
-import character.technology.Technology;
 import character.Player;
+import character.technology.Technology;
 
 class Agriculture : Technology {
 

@@ -1,8 +1,8 @@
 module item.Item;
 
-import item.Inventory;
-import character.Character;
 import app;
+import character.Character;
+import item.Inventory;
 import world.World;
 
 /**

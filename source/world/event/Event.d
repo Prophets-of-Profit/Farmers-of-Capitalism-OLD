@@ -1,5 +1,7 @@
 module world.event.Event;
 
+import world.World;
+
 /**
  * Handles all (possibly RNG) events during the game.
  */
@@ -21,8 +23,8 @@ abstract class Event{
         this.isInProgress = false;
     }
 
-    public abstract void turnAction();          ///The action taken when the event is occuring.
-    public abstract int[][] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
-    public abstract bool canHappen();           ///Returns whether the even can happen.
+    public abstract void turnAction();               ///The action taken when the event is occuring.
+    public abstract Coordinate[] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
+    public abstract bool canHappen();                ///Returns whether the even can happen.
 
 }

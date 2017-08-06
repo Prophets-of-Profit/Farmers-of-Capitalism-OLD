@@ -1,9 +1,9 @@
 module character.Player;
 
-import world.World;
-import item.Inventory;
 import character.Character;
 import character.technology.Technology;
+import item.Inventory;
+import world.World;
 
 /**
  * A class for each player

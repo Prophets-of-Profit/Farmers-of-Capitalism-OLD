@@ -1,13 +1,14 @@
 module item.plant.Seedling;
 
-import character.Character;
-import item.plant.Plant;
-import app;
-import world.World;
-import world.HexTile;
-import std.random;
-import item.Item;
 import std.conv;
+import std.random;
+
+import app;
+import character.Character;
+import item.Item;
+import item.plant.Plant;
+import world.HexTile;
+import world.World;
 
 /**
  * A class that holds information about its parents and is a result of plant breeding.

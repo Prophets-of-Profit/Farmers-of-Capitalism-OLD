@@ -1,18 +1,18 @@
 module item.plant.Plant;
 
+import std.algorithm;
+import std.conv;
+import std.math;
+import std.random;
+
+import app;
+import character.Character;
 import item.Item;
 import item.plant.PlantTraits;
-import character.Character;
-import std.random;
-import world.HexTile;
-import world.World;
-import app;
-import std.math;
-import item.plant.PlantTraits;
 import item.plant.Seedling;
-import std.algorithm;
+import world.HexTile;
 import world.Range;
-import std.conv;
+import world.World;
 
 /**
  * A parent class for all plant objects.

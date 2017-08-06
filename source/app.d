@@ -26,8 +26,8 @@
  */
 module app;
 
-import world.World;
 import character.Player;
+import world.World;
 
 /**
  * The entire game class

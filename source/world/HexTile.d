@@ -1,13 +1,14 @@
 module world.HexTile;
 
-import app;
-import world.World;
-import world.Range;
-import character.Player;
-import item.Inventory;
 import std.math;
 import std.conv;
 import std.algorithm.comparison;
+
+import app;
+import character.Player;
+import item.Inventory;
+import world.Range;
+import world.World;
 
 /**
  * An enum for directions

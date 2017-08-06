@@ -1,10 +1,11 @@
 module character.Character;
 
-import app;
 import std.algorithm;
 import std.array;
-import world.World;
+
+import app;
 import world.Range;
+import world.World;
 
 /**
  * A set of methods and instancedata for a character
@@ -81,8 +82,8 @@ class Character{
 }
 
 unittest{
-    import std.stdio;
     import std.random;
+    import std.stdio;
 
     writeln("Running unittest of Character");
 

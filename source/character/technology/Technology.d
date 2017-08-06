@@ -1,8 +1,9 @@
 module character.technology.Technology;
 
-import character.Player;
 import std.algorithm;
 import std.conv;
+
+import character.Player;
 
 /**
  * A list of names of the technologies

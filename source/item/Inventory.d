@@ -1,10 +1,12 @@
 module item.Inventory;
 
-import character.Player;
-import item.Item;
-import core.exception;
 import std.algorithm;
 import std.conv;
+
+import core.exception;
+
+import character.Player;
+import item.Item;
 import world.World;
 
 /**
