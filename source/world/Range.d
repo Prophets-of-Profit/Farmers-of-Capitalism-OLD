@@ -92,7 +92,7 @@ struct Range(T){
 unittest{
     import std.stdio;
 
-    writeln("Running unittest of Range");
+    writeln("\nRunning unittest of Range");
 
     Range!(int) testRange = Range!(int)(0, 5, 3);
     assert(testRange.isInRange(testRange.current));

@@ -32,7 +32,7 @@ class Character{
      * Returns a list of coordinates of where the character can travel to based on how many moves they have left
      * Doesn't return the distance of those coordinates
      */
-    public Coordinate[] getValidMoveLocations(){
+    Coordinate[] getValidMoveLocations(){
         if(this.numMovesLeft == 0){
             return [this.coords];
         }
@@ -64,7 +64,7 @@ class Character{
      * Params:
      *      pathToNewLocation = the path to the to-be location of the character
      */
-    public bool setLocation(Coordinate[] pathToNewLocation){
+    bool setLocation(Coordinate[] pathToNewLocation){
         assert(pathToNewLocation[0] != this.coords && game.mainWorld.isContiguous([this.coords] ~ pathToNewLocation)); //TODO automatically correct pathToNewLocation if incorrect rather than erroring (allows for more flexibility)
         foreach(location; pathToNewLocation){
             if(this.numMovesLeft <= 0 || location == this.coords || !this.getValidMoveLocations().canFind(location)){
@@ -85,7 +85,7 @@ unittest{
     import std.random;
     import std.stdio;
 
-    writeln("Running unittest of Character");
+    writeln("\nRunning unittest of Character");
 
     game = new Main(0, 7);
     Character testPlayer = new Character(Coordinate(0, 0));

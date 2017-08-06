@@ -12,19 +12,19 @@ abstract class Event{
     /**
      * The action taken when the event starts.
      */
-    public abstract void startAction(){
+    void startAction(){
         this.isInProgress = true;
     }
 
     /**
      * The action taken when the event ends.
      */
-    public abstract void endAction(){
+    void endAction(){
         this.isInProgress = false;
     }
 
-    public abstract void turnAction();               ///The action taken when the event is occuring.
-    public abstract Coordinate[] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
-    public abstract bool canHappen();                ///Returns whether the even can happen.
+    void turnAction();               ///The action taken when the event is occuring.
+    Coordinate[] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
+    bool canHappen();                ///Returns whether the even can happen.
 
 }

@@ -184,7 +184,7 @@ class Plant : Item{
     /**
      * Creates a seedling
      */
-    public Seedling createSeedling(){
+    Seedling createSeedling(){
         Seedling child = new Seedling();
         child.incrementalActions = this.incrementalActions;
         child.steppedOnActions = this.steppedOnActions;
@@ -202,7 +202,7 @@ class Plant : Item{
     /**
      * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
      */
-    public double getClimateFavorability(){
+    double getClimateFavorability(){
         //TODO remake this method so it works
         return 0;
     }
@@ -210,7 +210,7 @@ class Plant : Item{
     /**
      * Increases the plant's growth based on climate favorability and other factors.
      */
-    public void grow(){
+    void grow(){
         int[] invasiveLevels = checkOtherPlants(Attribute.INVASIVE);
         int[] symbioticLevels = (Attribute.INVASIVE in this.attributes)? null : checkOtherPlants(Attribute.SYMBIOTIC);
         double growthModifier = 0;
@@ -230,7 +230,7 @@ class Plant : Item{
      * Params:
      *      attribute = the attribute to check the other plants for
      */
-    public int[] checkOtherPlants(Attribute attribute){
+    int[] checkOtherPlants(Attribute attribute){
         int[] levels;
         Item[] sourceItems = this.source.items;
         foreach(item; sourceItems){
@@ -266,7 +266,7 @@ class Plant : Item{
 unittest{
     import std.stdio;
 
-    writeln("Running unittest of Plant");
+    writeln("\nRunning unittest of Plant");
 
     //TODO make plant unittest
 }

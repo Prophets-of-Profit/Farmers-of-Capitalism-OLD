@@ -19,7 +19,7 @@ abstract class Item{
      * Kills the current item
      * Just removes the item from the source inventory if it exists
      */
-    public void die(){
+    void die(){
         this.getDestroyed(null);
         if(this.source !is null){
             this.source.remove(this);
@@ -31,7 +31,7 @@ abstract class Item{
      * Params:
      *      newSource = the new inventory to be moved to
      */
-    public bool getMovedTo(Inventory newSource){
+    bool getMovedTo(Inventory newSource){
         Inventory oldSource = this.source;
         this.source.remove(this);
         if(newSource.add(this)){
@@ -43,14 +43,14 @@ abstract class Item{
         }
     }
 
-    public abstract Character getOwner();                                    ///Gets the owner of the Item
-    public abstract bool canBePlaced(Coordinate placementCandidateCoords);   ///Returns whether the Item can be placed
-    public abstract bool getPlaced(Character placer, Coordinate newLocation);///What the Item should do when created
-    public abstract double getMovementCost();                                ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
-    public abstract void getSteppedOn(Character stepper);                    ///What the Item should do when stepped on
-    public abstract void doIncrementalAction();                              ///What the Item should do every turn
-    public abstract void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
-    public abstract void getDestroyed(Character destroyer);                  ///What/how the Item gets destroyed and what it will do when destroyed
-    public abstract Item clone();                                            ///Returns a copy of the Item
+    Character getOwner();                                    ///Gets the owner of the Item
+    bool canBePlaced(Coordinate placementCandidateCoords);   ///Returns whether the Item can be placed
+    bool getPlaced(Character placer, Coordinate newLocation);///What the Item should do when created
+    double getMovementCost();                                ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
+    void getSteppedOn(Character stepper);                    ///What the Item should do when stepped on
+    void doIncrementalAction();                              ///What the Item should do every turn
+    void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
+    void getDestroyed(Character destroyer);                  ///What/how the Item gets destroyed and what it will do when destroyed
+    Item clone();                                            ///Returns a copy of the Item
 
 }

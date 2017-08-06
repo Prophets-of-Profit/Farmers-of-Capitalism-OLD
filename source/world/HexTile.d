@@ -14,7 +14,7 @@ import world.World;
  * An enum for directions
  * Each direction is assigned an integer for which element in getAdjacentCoords of a tile will be in the given direction
  */
-public enum Direction{
+enum Direction{
     NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
 }
 
@@ -63,7 +63,7 @@ class HexTile{
      *  c) just any tile
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
      */
-    public Coordinate[] getAdjacentCoords(){
+    Coordinate[] getAdjacentCoords(){
         Coordinate[] adjacentCandidates = null;
         int cornerNum = (this.coords[0] == 0)? 0 : this.coords[1] / this.coords[0];
         if(coords[0] == 0){
@@ -104,14 +104,14 @@ class HexTile{
      * Params:
      *      directionOfAdjacent = the direction enum or integer of which side the given adjacent coordinate should be
      */
-    public Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent){
+    Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent){
         return this.getAdjacentCoords()[directionOfAdjacent];
     }
 
     /**
      * Gets how much movement the tile costs based on the tiles movement cost and its items' movement cost
      */
-    public double getPassabilityCost(){
+    double getPassabilityCost(){
         return max(1 + to!int(ceil(this.contained.getCollectiveMovementCost())), 0);
     }
 
@@ -120,7 +120,7 @@ class HexTile{
      * If this hextile were to change, the copy wouldn't reflect those changes
      * If the owner of the copy changes, that change is reflected in the copy
      */
-    public HexTile clone(){
+    HexTile clone(){
         HexTile copy = new HexTile(this.coords);
         copy.climate = this.climate;
         copy.isWater = this.isWater;
@@ -135,7 +135,7 @@ class HexTile{
 unittest{
     import std.stdio;
 
-    writeln("Running unittest of HexTile");
+    writeln("\nRunning unittest of HexTile");
 
     int ringNumsToTest = 5;
     game = new Main(0, ringNumsToTest);

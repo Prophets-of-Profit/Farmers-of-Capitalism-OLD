@@ -39,7 +39,7 @@ class Inventory{
      * Params:
      *      itemToAdd = the item to add to the inventory
      */
-    public bool add(Item itemToAdd){
+    bool add(Item itemToAdd){
         if(this.maxSize < 0){
             this.items ~= itemToAdd;
             return true;
@@ -59,7 +59,7 @@ class Inventory{
      * Params:
      *      itemToRemove = the item to remove from the inventory
      */
-    public bool remove(Item itemToRemove){
+    bool remove(Item itemToRemove){
         int index = this.items.countUntil(itemToRemove).to!int;
         if(index >= 0){
             this.items[index] = null;
@@ -71,7 +71,7 @@ class Inventory{
     /**
      * Gets the movement cost of all of the items in the inventory
      */
-    public double getCollectiveMovementCost(){
+    double getCollectiveMovementCost(){
         double moveCost = 0;
         foreach(item; this.items){
            if(item !is null && item.isPlaced){
@@ -86,7 +86,7 @@ class Inventory{
      * Changes in this inventory are not reflected in the copy
      * Changes in players are reflected in the copy, however
      */
-    public Inventory clone(){
+    Inventory clone(){
         Inventory copy = new Inventory(this.maxSize);
         for(int i = 0; i < this.items.length; i++){
             copy.items[i] = this.items[i].clone();
@@ -101,7 +101,7 @@ class Inventory{
 unittest{
     import std.stdio;
 
-    writeln("Running unittest of Inventory");
+    writeln("\nRunning unittest of Inventory");
 
     Inventory testInv = new Inventory(1);
     assert(testInv.add(null));

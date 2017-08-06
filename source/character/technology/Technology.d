@@ -72,6 +72,6 @@ abstract class Technology {
         player.researched ~= this.name;
     }
 
-    abstract bool canBeUnlockedBy(Player player); ///Returns whether a certain player can unlock the current technology
+    bool canBeUnlockedBy(Player player); ///Returns whether a certain player can unlock the current technology
 
 }
