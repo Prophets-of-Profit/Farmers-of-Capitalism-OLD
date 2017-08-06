@@ -9,6 +9,7 @@ import world.World;
 
 /**
  * A class for an object that holds other objects
+ * TODO add inventory space and items space cost; items take up certain amounts of space in an inventory, and an inventory only has so much space
  */
 class Inventory{
 
@@ -16,7 +17,7 @@ class Inventory{
     public Item[] items;            ///All the items inside of the inventory
     alias items this;               ///Sets the access of this object as the array of items it contains
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
-    public Coordinate coords;            ///The location of the tile or the player or inventorycontainer with this inventory
+    public Coordinate coords;       ///The location of the tile or the player or inventorycontainer with this inventory
 
     /**
      * A constructor for an inventory
