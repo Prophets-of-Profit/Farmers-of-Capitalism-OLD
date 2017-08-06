@@ -28,6 +28,13 @@ enum TileStat{
     TEMPERATURE, WATER, SOIL, ELEVATION
 }
 
+/**
+ * A basic unit or sub-division of the map
+ * Is an aptly-named hexagon-shaped tile which has many stats and properties pertaining to what it is used for in the game
+ * Contains utility methods
+ * Most hex tiles differ from each other at least slightly and the player will have the ability to alter increasingly more parts of a hextile as the game progresses
+ * Is a regular hexagon where the angles face east and west
+ */
 class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
