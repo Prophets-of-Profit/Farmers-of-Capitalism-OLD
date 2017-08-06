@@ -4,6 +4,7 @@ import app;
 import std.algorithm;
 import std.array;
 import world.World;
+import world.Range;
 
 /**
  * A set of methods and instancedata for a character
@@ -11,9 +12,10 @@ import world.World;
  */
 class Character{
 
-    public Coordinate coords;                       ///The location of the character stored as [ringNum, pos]
-    public int maxTravellableDistance = 5;          ///The most distance the character can move in one turn
-    public double numMovesLeft;                     ///The amount of moves the character can still do this turn
+    public Coordinate coords;                                  ///The location of the character stored as [ringNum, pos]
+    public int maxTravellableDistance = 5;                     ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?
+    public double numMovesLeft;                                ///The amount of moves the character can still do this turn
+    public Range!(int) health = Range!(int)(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
 
     /**
      * A constructor for a character

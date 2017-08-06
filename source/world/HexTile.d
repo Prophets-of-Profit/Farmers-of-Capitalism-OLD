@@ -2,6 +2,7 @@ module world.HexTile;
 
 import app;
 import world.World;
+import world.Range;
 import character.Player;
 import item.Inventory;
 import std.math;
@@ -30,7 +31,7 @@ enum TileStat{
 class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
-    public double[TileStat] climate;                ///The tile's climate information
+    public Range!(double)[TileStat] climate;        ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
     public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
@@ -53,7 +54,6 @@ class HexTile{
      *  and then performing different actions based on whether the tile is a) the center, b) straight off the side of the center hex, or
      *  c) just any tile
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
-     * TODO rework order of returned coordinates such that order is: NORTH, NORTHEAST, SOUTHEAST, SOUTH, SOUTHWEST, NORTHWEST (clockwise starting north)
      */
     public Coordinate[] getAdjacentCoords(){
         Coordinate[] adjacentCandidates = null;
@@ -93,7 +93,6 @@ class HexTile{
 
     /*
      * Returns a tile of distance 1 away from this tile in the direction given
-     * TODO this function won't work because getAdjacentCoords returns adjacencies in an arbitrary order
      * Params:
      *      directionOfAdjacent = the direction enum or integer of which side the given adjacent coordinate should be
      */

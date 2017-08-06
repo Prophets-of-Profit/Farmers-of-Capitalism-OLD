@@ -9,9 +9,10 @@ module world.Range;
  */
 struct Range(T){
 
-    private T min;  ///The minimum value of the range, is private so property methods would be used instead
-    private T max;  ///The maximum value of the range, is private so property methods would be used instead
-    private T cur;  ///The current value of the range, is private so property methods would be used instead
+    private T min;      ///The minimum value of the range, is private so property methods would be used instead
+    private T max;      ///The maximum value of the range, is private so property methods would be used instead
+    private T cur;      ///The current value of the range, is private so property methods would be used instead
+    alias current this; ///Allows the range to be accessed as its current value
 
     /**
      * Returns the minimum of the range

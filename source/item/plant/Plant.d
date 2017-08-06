@@ -11,6 +11,8 @@ import std.math;
 import item.plant.PlantTraits;
 import item.plant.Seedling;
 import std.algorithm;
+import world.Range;
+import std.conv;
 
 /**
  * A parent class for all plant objects.
@@ -24,7 +26,7 @@ class Plant : Item{
     public void delegate(Character destroyer)[] destroyedActions;   ///Actions taken when destroyed
     public void delegate(Character placer)[] placedActions;         ///Actions taken when placed
     public int[Attribute] attributes;                               ///Passive (constantly applied) attributes with levels from (usually) 1 to 5 in the form of ints.
-    public double[][TileStat] survivableClimate;                    ///Bounds of survivable temperature, water, soil, elevation.
+    public Range!(double)[TileStat] survivableClimate;              ///Bounds of survivable temperature, water, soil, elevation.
     protected Character placer;                                     ///The person who planted the plant.
     public int[PlantReq] stats;                                     ///Contains base stats of plant.
 
@@ -33,11 +35,9 @@ class Plant : Item{
     * Adds actions, attributes, and stats to object.
     */
     this(){
-        this.stats[PlantReq.GROWTH] = 1;
-        this.stats[PlantReq.RESILIENCE] = 1;
-        this.stats[PlantReq.YIELD] = 1;
-        this.stats[PlantReq.SEED_QUANTITY] = 1;
-        this.stats[PlantReq.SEED_STRENGTH] = 1;
+        foreach(req; __traits(allMembers, PlantReq)){
+            this.stats[req.to!PlantReq] = 1;
+        }
     }
 
     /**
@@ -55,7 +55,7 @@ class Plant : Item{
     override bool canBePlaced(Coordinate placementCandidateCoords){
         HexTile tile = game.mainWorld.getTileAt(placementCandidateCoords);
         foreach(statType; tile.climate.byKey()){
-            if(tile.climate[statType] < this.survivableClimate[statType][0] || tile.climate[statType] > this.survivableClimate[statType][1]){
+            if(!this.survivableClimate[statType].isInRange(tile.climate[statType])){
                 return false;
             }
         }
@@ -227,6 +227,8 @@ class Plant : Item{
 
     /**
      * Checks all other plants in the tile for an attribute.
+     * Params:
+     *      attribute = the attribute to check the other plants for
      */
     public int[] checkOtherPlants(Attribute attribute){
         int[] levels;
@@ -244,6 +246,8 @@ class Plant : Item{
 
     /**
      * Makes sure that a given trait will be able to be added to the seedling without conflicting with another trait
+     * Params:
+     *      trait = the trait to check for whether the plant can receive it
      */
     bool canGetTrait(Attribute trait){
         foreach(exclusivity; mutuallyExclusiveAttributes){

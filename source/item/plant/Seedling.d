@@ -43,7 +43,7 @@ class Seedling : Plant{
                 depositChance++;
             }
         }
-        if(!game.mainWorld.getTileAt(coords).contained.add(this)){
+        if(!this.getMovedTo(game.mainWorld.getTileAt(coords).contained)){
             this.die();
         }
     }

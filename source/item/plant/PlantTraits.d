@@ -8,7 +8,7 @@ module item.plant.PlantTraits;
 
 import character.Character;
 
-void delegate()[]                   naturallyPossibleIncrementalActions;
+void delegate()[]                      naturallyPossibleIncrementalActions;
 void delegate(Character stepper)[]     naturallyPossibleSteppedOnActions;
 void delegate(Character player)[]      naturallyPossibleMainActions;
 void delegate(Character destroyer)[]   naturallyPossibleDestroyedActions;
