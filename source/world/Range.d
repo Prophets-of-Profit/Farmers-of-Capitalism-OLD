@@ -15,6 +15,14 @@ struct Range(T){
     alias current this; ///Allows the range to be accessed as its current value
 
     /**
+     * Makes it so that a range can furthermore be used as its current value
+     * Any assignment operators with numerical inputs used on the range happen to its current value
+     */
+    void opOpAssign(string op)(T newCurrent){
+        mixin("this.current = this.current " ~ op ~ " newCurrent;");
+    }
+
+    /**
      * Returns the minimum of the range
      */
     @property T minimum(){

@@ -3,6 +3,7 @@ module item.Item;
 import app;
 import character.Character;
 import item.Inventory;
+import world.Range;
 import world.World;
 
 /**
@@ -11,9 +12,9 @@ import world.World;
  */
 abstract class Item{
 
-    public double completion;       ///How close the Item is towards being complete: once it won't function until it has reached completion
-    public Inventory source;        ///The source inventory for where the item is/came from
-    public bool isPlaced = false;   ///Whether the Item is in a hextile or not
+    public Range!(double) completion = Range!(double)(0, 1, 0);     ///How close the Item is towards being complete: once it won't function until it has reached completion
+    public Inventory source;                                        ///The source inventory for where the item is/came from
+    public bool isPlaced = false;                                   ///Whether the Item is in a hextile or not
 
     /**
      * Kills the current item
