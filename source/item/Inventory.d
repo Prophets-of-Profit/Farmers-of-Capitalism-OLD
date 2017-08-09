@@ -44,7 +44,7 @@ class Inventory{
             this.items ~= itemToAdd;
             return true;
         }
-        for(int i = 0; i < this.items.length; i++){
+        foreach(i; 0..this.items.length){
             if(this.items[i] is null){
                 this.items[i] = itemToAdd;
                 return true;
@@ -88,7 +88,7 @@ class Inventory{
      */
     Inventory clone(){
         Inventory copy = new Inventory(this.maxSize);
-        for(int i = 0; i < this.items.length; i++){
+        foreach(i; 0..this.items.length){
             copy.items[i] = this.items[i].clone();
         }
         copy.accessibleTo = this.accessibleTo;

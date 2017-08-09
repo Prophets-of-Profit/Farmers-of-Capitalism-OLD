@@ -51,7 +51,7 @@ class Main{
     this(int numPlayers, int worldSize){
         mainWorld = new World(worldSize);
         players = new Player[numPlayers];
-        for(int i = 0; i < numPlayers; i++){
+        foreach(i; 0..numPlayers){
             Coordinate startLocation = Coordinate(worldSize, i * getSizeOfRing(worldSize) / numPlayers);
             players[i] = new Player(startLocation);
             mainWorld.getTileAt(startLocation).owner = players[i];

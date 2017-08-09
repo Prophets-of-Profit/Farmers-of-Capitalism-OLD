@@ -141,7 +141,7 @@ unittest{
     game = new Main(0, ringNumsToTest);
     writeln("Adjacencies of [0, 0] are ", game.mainWorld.getTileAt(Coordinate(0, 0)).getAdjacentCoords());
     int testRunNum = 4;
-    for(int i = 0; i < testRunNum; i++){
+    foreach(i; 0..testRunNum){
         Coordinate coords = game.mainWorld.getRandomCoords();
         writeln("Adjacencies of ", coords, " are ", game.mainWorld.getTileAt(coords).getAdjacentCoords());
     }

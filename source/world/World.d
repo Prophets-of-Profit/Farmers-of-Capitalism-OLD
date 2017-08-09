@@ -53,8 +53,8 @@ class World{
      */
     this(int numRings){
         this.numRings = numRings;
-        for(int i = 0; i < numRings; i++){
-            for(int j = 0; j < getSizeOfRing(i); j++){
+        foreach(i; 0..numRings){
+            foreach(j; 0..getSizeOfRing(i)){
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
@@ -72,7 +72,7 @@ class World{
         try{
             location[1] = location[1] % getSizeOfRing(location[0]);
             int previousTiles;
-            for(int i = 0; i < location[0]; i++){
+            foreach(i; 0..location[0]){
                 previousTiles += getSizeOfRing(i);
             }
             return this.tiles[previousTiles + location[1]];
@@ -166,7 +166,7 @@ class World{
      */
     bool isContiguous(Coordinate[] path){
         assert(path.length >= 2);
-        for(int i = 0; i < path.length - 1; i++){
+        foreach(i; 0..path.length - 1){
             if(!this.getTileAt(path[i]).getAdjacentCoords().canFind(path[i + 1])){
                 return false;
             }
@@ -182,7 +182,7 @@ class World{
      */
     World clone(){
         World copy = new World(this.numRings);
-        for(int i = 0; i < this.getNumTiles(); i++){
+        foreach(i; 0..this.getNumTiles()){
             copy.tiles[i] = this.tiles[i].clone();
         }
         return copy;
@@ -196,19 +196,19 @@ unittest{
     writeln("\nRunning unittest of World");
 
     int maxWorldRingsToCheck = 5;
-    for(int i = 1; i < maxWorldRingsToCheck + 1; i++){
+    foreach(i; 1..maxWorldRingsToCheck + 1){
         game = new Main(0, i);
         writeln("A world with ", i, " rings has ", game.mainWorld.getNumTiles(), " tiles with an outer ring of ", getSizeOfRing(i), " tiles");
     }
     int runNumForGettingLocations = 3;
-    for(int i = 0; i < runNumForGettingLocations; i++){
+    foreach(i; 0..runNumForGettingLocations){
         Coordinate coords = game.mainWorld.getRandomCoords();
         writeln("The position of a tile at ", coords, " is ", game.mainWorld.getTileAt(coords).coords);
         assert(coords == game.mainWorld.getTileAt(coords).coords);
     }
     assert(game.mainWorld.getDistanceBetween(Coordinate(0, 0), Coordinate(1, 1)) == 1);
     int runNumForGettingDistances = 5;
-    for(int i = 0; i < runNumForGettingDistances; i++){
+    foreach(i; 0..runNumForGettingDistances){
         Coordinate[] coords = [game.mainWorld.getRandomCoords(), game.mainWorld.getRandomCoords()];
         writeln("The distance between ", coords[0], " and ", coords[1], " is ", game.mainWorld.getDistanceBetween(coords[0], coords[1]));
     }

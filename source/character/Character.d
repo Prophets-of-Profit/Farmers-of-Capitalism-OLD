@@ -92,7 +92,7 @@ unittest{
     testPlayer.numMovesLeft = 1;
     writeln("A character at [0, 0] who can move ", testPlayer.numMovesLeft, " tiles can move to ", testPlayer.getValidMoveLocations());
     int numPlayersToTest = 4;
-    for(int i = 0; i < numPlayersToTest; i++){
+    foreach(i; 0..numPlayersToTest){
         Coordinate coords = game.mainWorld.getRandomCoords();
         testPlayer = new Character(coords);
         testPlayer.numMovesLeft = uniform(0, 5);
