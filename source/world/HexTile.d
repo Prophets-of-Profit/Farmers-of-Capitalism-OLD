@@ -64,7 +64,7 @@ class HexTile{
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
      */
     Coordinate[] getAdjacentCoords(){
-        Coordinate[] adjacentCandidates = null;
+        Coordinate[] adjacentCandidates;
         int cornerNum = (this.coords[0] == 0)? 0 : this.coords[1] / this.coords[0];
         if(coords[0] == 0){
             return [Coordinate(1, 0), Coordinate(1, 1), Coordinate(1, 2), Coordinate(1, 3), Coordinate(1, 4), Coordinate(1, 5)];
@@ -76,8 +76,8 @@ class HexTile{
                 Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1),
                 Coordinate(this.coords[0], this.coords[1] + 1),
                 Coordinate(this.coords[0] - 1, (this.coords[0] - 1) * cornerNum),
-                Coordinate(this.coords[0], this.coords[1] - 1),
-                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1)
+                Coordinate(this.coords[0], (this.coords[1] + getSizeOfRing(this.coords[0]) - 1) % getSizeOfRing(this.coords[0])),
+                Coordinate(this.coords[0] + 1, ((this.coords[0] + 1) * cornerNum + getSizeOfRing(this.coords[0]) - 1) % getSizeOfRing(this.coords[0]))
             ];
         }else{
             adjacentCandidates = [

@@ -40,7 +40,7 @@ struct Coordinate{
  */
 class World{
 
-    HexTile[] tiles;                ///The storage array of all tiles; stored in order of ringNum and then pos
+    HexTile[] tiles;                        ///The storage array of all tiles; stored in order of ringNum and then pos
     public immutable int numRings;          ///The number of rings the hexmap (World) has
     public Player[] players;                ///A list of all of the players in the game
     public immutable double variance = 1.0; ///How much each adjacent hextile can differ
