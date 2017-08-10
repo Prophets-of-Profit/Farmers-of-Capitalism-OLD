@@ -76,8 +76,8 @@ class HexTile{
                 Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum + 1),
                 Coordinate(this.coords[0], this.coords[1] + 1),
                 Coordinate(this.coords[0] - 1, (this.coords[0] - 1) * cornerNum),
-                Coordinate(this.coords[0], this.coords[1] - 1),
-                Coordinate(this.coords[0] + 1, (this.coords[0] + 1) * cornerNum - 1)
+                Coordinate(this.coords[0], (this.coords[1] + getSizeOfRing(this.coords[0])-1)%getSizeOfRing(this.coords[0])),
+                Coordinate(this.coords[0] + 1, ((this.coords[0] + 1) * cornerNum  + getSizeOfRing(this.coords[0])-1)%getSizeOfRing(this.coords[0]))
             ];
         }else{
             adjacentCandidates = [
@@ -140,6 +140,7 @@ unittest{
     int ringNumsToTest = 5;
     game = new Main(0, ringNumsToTest);
     writeln("Adjacencies of [0, 0] are ", game.mainWorld.getTileAt(Coordinate(0, 0)).getAdjacentCoords());
+    writeln("Adjacencies of [3, 0] are ", game.mainWorld.getTileAt(Coordinate(3, 0)).getAdjacentCoords());
     int testRunNum = 4;
     foreach(i; 0..testRunNum){
         Coordinate coords = game.mainWorld.getRandomCoords();
