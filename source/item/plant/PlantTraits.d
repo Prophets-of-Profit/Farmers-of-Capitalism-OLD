@@ -35,8 +35,8 @@ Attribute[][] mutuallyExclusiveAttributes;
  *     *Slowing: Increases movement cost for a tile.
  *         Movement cost increase is equal to level.
  */
-enum Attribute{
-    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING, SYMBIOTIC
+enum PlantAttribute{
+    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING, SYMBIOTIC, MUTABLE
 }
 
 /**

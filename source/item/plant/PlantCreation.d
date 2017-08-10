@@ -14,9 +14,10 @@ import std.stdio;
 
 
 /**
-* Generates a random plant on the specified coordinates.
-* Should be used during worldgen.
-TODO rework all of this into world or plant constructor and delete this file
+ * Generates a random plant on the specified coordinates.
+ * Should be used during worldgen.
+ TODO rework all of this into world or plant constructor and delete this file
+ */
 Plant createPlant(int[] creationCoords, int statsToGive){
     HexTile tile = mainWorld.getTileAt(creationCoords);
     Plant plant = new Plant();
@@ -86,4 +87,4 @@ unittest{
         writeln("Seedling stats:", seedling.stats);
         writeln("Seedling Survivable Climate:", seedling.survivableClimate);
     }
-}*/
+}

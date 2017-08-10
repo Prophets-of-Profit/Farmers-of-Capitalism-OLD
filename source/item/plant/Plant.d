@@ -25,14 +25,14 @@ class Plant : Item{
     public void delegate(Character player)[] mainActions;           ///Actions taken when interacted with
     public void delegate(Character destroyer)[] destroyedActions;   ///Actions taken when destroyed
     public void delegate(Character placer)[] placedActions;         ///Actions taken when placed
-    public int[Attribute] attributes;                               ///Passive (constantly applied) attributes with levels from (usually) 1 to 5 in the form of ints.
+    public int[PlantAttribute] PlantAttributes;                               ///Passive (constantly applied) PlantAttributes with levels from (usually) 1 to 5 in the form of ints.
     public Range!(double)[TileStat] survivableClimate;              ///Bounds of survivable temperature, water, soil, elevation.
     protected Character placer;                                     ///The person who planted the plant.
     public int[PlantReq] stats;                                     ///Contains base stats of plant.
 
     /**
     * The constructor for a plant.
-    * Adds actions, attributes, and stats to object.
+    * Adds actions, PlantAttributes, and stats to object.
     */
     this(){
         foreach(req; __traits(allMembers, PlantReq)){
@@ -44,7 +44,7 @@ class Plant : Item{
     * Returns owner of HexTile if not patented. Returns placer of plant if patented.
     */
     override Character getOwner(){
-        return (Attribute.PATENT in this.attributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
+        return (PlantAttribute.PATENT in this.PlantAttributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
     }
 
     /**
@@ -59,10 +59,10 @@ class Plant : Item{
                 return false;
             }
         }
-        if(tile.isWater != ((Attribute.AQUATIC in this.attributes) !is null)){
+        if(tile.isWater != ((PlantAttribute.AQUATIC in this.PlantAttributes) !is null)){
             return false;
-        }else if(Attribute.MOVABLE in this.attributes){
-            return this.completion <= this.attributes[Attribute.MOVABLE]/5.0;
+        }else if(PlantAttribute.MOVABLE in this.PlantAttributes){
+            return this.completion <= this.PlantAttributes[PlantAttribute.MOVABLE]/5.0;
         }
         return this.completion == 0;
     }
@@ -71,10 +71,10 @@ class Plant : Item{
     * Returns the influence the plant has on the tile's movement cost; inherited from Item.
     */
     override double getMovementCost(){
-        if(Attribute.SLOWING in this.attributes){
-            return this.attributes[Attribute.SLOWING];
-        }else if(Attribute.SPEEDING in this.attributes){
-            return this.attributes[Attribute.SPEEDING];
+        if(PlantAttribute.SLOWING in this.PlantAttributes){
+            return this.PlantAttributes[PlantAttribute.SLOWING];
+        }else if(PlantAttribute.SPEEDING in this.PlantAttributes){
+            return this.PlantAttributes[PlantAttribute.SPEEDING];
         }
         return 0;
     }
@@ -174,7 +174,7 @@ class Plant : Item{
         copy.mainActions = this.mainActions;
         copy.destroyedActions = this.destroyedActions;
         copy.placedActions = this.placedActions;
-        copy.attributes = this.attributes;
+        copy.PlantAttributes = this.PlantAttributes;
         copy.stats = this.stats;
         copy.survivableClimate = this.survivableClimate;
         copy.placer = this.placer;
@@ -191,7 +191,7 @@ class Plant : Item{
         child.mainActions = this.mainActions;
         child.destroyedActions = this.destroyedActions;
         child.placedActions = this.placedActions;
-        child.attributes = this.attributes;
+        child.PlantAttributes = this.PlantAttributes;
         child.stats = this.stats;
         child.survivableClimate = this.survivableClimate;
         child.placer = this.placer;
@@ -211,8 +211,8 @@ class Plant : Item{
      * Increases the plant's growth based on climate favorability and other factors.
      */
     void grow(){
-        int[] invasiveLevels = checkOtherPlants(Attribute.INVASIVE);
-        int[] symbioticLevels = (Attribute.INVASIVE in this.attributes)? null : checkOtherPlants(Attribute.SYMBIOTIC);
+        int[] invasiveLevels = checkOtherPlants(PlantAttribute.INVASIVE);
+        int[] symbioticLevels = (PlantAttribute.INVASIVE in this.PlantAttributes)? null : checkOtherPlants(PlantAttribute.SYMBIOTIC);
         double growthModifier = 0;
         foreach(level; invasiveLevels){
             growthModifier -= cast(double)(level * 0.05 - this.stats[PlantReq.RESILIENCE] / 2);
@@ -226,18 +226,18 @@ class Plant : Item{
     }
 
     /**
-     * Checks all other plants in the tile for an attribute.
+     * Checks all other plants in the tile for an PlantAttribute.
      * Params:
-     *      attribute = the attribute to check the other plants for
+     *      PlantAttribute = the PlantAttribute to check the other plants for
      */
-    int[] checkOtherPlants(Attribute attribute){
+    int[] checkOtherPlants(PlantAttribute PlantAttribute){
         int[] levels;
         Item[] sourceItems = this.source.items;
         foreach(item; sourceItems){
             if(cast(Plant) item){
                 Plant plant = cast(Plant) item;
-                if(attribute in plant.attributes){
-                    levels ~= plant.attributes[attribute];
+                if(PlantAttribute in plant.PlantAttributes){
+                    levels ~= plant.PlantAttributes[PlantAttribute];
                 }
             }
         }
@@ -249,11 +249,11 @@ class Plant : Item{
      * Params:
      *      trait = the trait to check for whether the plant can receive it
      */
-    bool canGetTrait(Attribute trait){
-        foreach(exclusivity; mutuallyExclusiveAttributes){
+    bool canGetTrait(PlantAttribute trait){
+        foreach(exclusivity; mutuallyExclusivePlantAttributes){
             if(exclusivity.canFind(trait)){
-                foreach(attribute; exclusivity){
-                    if(attribute in this.attributes){
+                foreach(PlantAttribute; exclusivity){
+                    if(PlantAttribute in this.PlantAttributes){
                         return false;
                     }
                 }
