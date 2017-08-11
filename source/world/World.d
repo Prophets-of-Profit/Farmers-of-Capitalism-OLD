@@ -1,6 +1,7 @@
 module world.World;
 
 import std.algorithm;
+import std.array;
 import std.random;
 import std.conv;
 
@@ -9,6 +10,7 @@ import core.exception;
 import app;
 import character.Player;
 import world.HexTile;
+import world.Range;
 
 /**
  * A struct that stores coordinates
@@ -41,7 +43,6 @@ class World{
 
     HexTile[] tiles;                        ///The storage array of all tiles; stored in order of ringNum and then pos
     public immutable int numRings;          ///The number of rings the hexmap (World) has
-    public immutable double variance = 1.0; ///How much each adjacent hextile can differ
 
     /**
      * The constructor for a world
@@ -56,7 +57,23 @@ class World{
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
-        /*TODO insert Kadin's generation of hextiles and Elia's generation of plants*/
+        /*TODO insert Kadin's generation of hextiles instead of below; below doesn't even do rivers*/
+        Coordinate[] prevChosen = [this.getRandomCoords];
+        foreach(tileStat; __traits(allMembers, TileStat)){
+            TileStat stat = tileStat.to!TileStat;
+            this.getTileAt(prevChosen[0]).climate[stat] = Range!double(0, 1, uniform(0.0, 1.0));
+        }
+        while(prevChosen.length < this.getNumTiles){
+            Coordinate chosen;
+            do{
+                chosen = this.getTileAt(prevChosen[uniform(0, $)]).getAdjacentCoords(false).filter!(a => this.getTileAt(a) !is null).array[uniform(0, $)];
+            }while(prevChosen.canFind(chosen));
+            prevChosen ~= chosen;
+            foreach(tileStat; __traits(allMembers, TileStat)){
+                TileStat stat = tileStat.to!TileStat;
+                this.getTileAt(prevChosen[$ - 1]).climate[stat] = Range!double(0, 1, this.getTileAt(prevChosen[$ - 2]).climate[stat] + uniform!("[]")(-0.1, 0.1));
+            }
+        }
     }
 
     /**

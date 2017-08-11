@@ -64,6 +64,7 @@ class Plant : Item{
         }
         foreach(actionType; __traits(allMembers, ActionType)){
             ActionType type = actionType.to!ActionType;
+            //TODO below line will throw a range violation because naturalActions hasn't yet been initialized
             foreach(possibleAttribute; naturalActions[type]){
                 possiblyDoActionBasedOnChanceBound({this.actions[type] ~= possibleAttribute;});
             }
@@ -292,7 +293,7 @@ unittest{
     import std.stdio;
 
     writeln("\nRunning unittest of Plant");
-    
+
     int worldSize = 5;
     game.mainWorld = new World(worldSize);
     int numRuns = 10;

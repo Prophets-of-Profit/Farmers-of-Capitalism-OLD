@@ -39,7 +39,7 @@ enum TileStat{
 class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
-    public Range!(double)[TileStat] climate;        ///The tile's climate information
+    public Range!double[TileStat] climate;          ///The tile's climate information
     public bool isWater;                            ///Determines if the tile is a water tile
     public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
@@ -63,7 +63,7 @@ class HexTile{
      *  c) just any tile
      * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
      */
-    Coordinate[] getAdjacentCoords(){
+    Coordinate[] getAdjacentCoords(bool checkTileExistence = true){
         Coordinate[] adjacentCandidates;
         int cornerNum = (this.coords[0] == 0)? 0 : this.coords[1] / this.coords[0];
         if(coords[0] == 0){
@@ -92,6 +92,9 @@ class HexTile{
         }
         //Rotate the adjacencies by cornerNum to keep it in an order that matches the order of Direction enum.
         adjacentCandidates = adjacentCandidates[cornerNum..$] ~ adjacentCandidates[0..cornerNum];
+        if(!checkTileExistence){
+            return adjacentCandidates;
+        }
         Coordinate[] adjacentTiles = null;
         foreach(coord; adjacentCandidates){
             adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : Coordinate(-1, -1);
