@@ -7,6 +7,7 @@ import std.random;
 
 import app;
 import character.Character;
+import item.Inventory;
 import item.Item;
 import item.plant.PlantTraits;
 import item.plant.Seedling;
@@ -14,29 +15,62 @@ import world.HexTile;
 import world.Range;
 import world.World;
 
+enum ActionType{
+    STEPPED, MAIN, DESTROYED, PLACED, INCREMENTAL
+}
+
 /**
  * A parent class for all plant objects.
  * Contains basic (non-functional) traits and methods shared between all plants.
  */
 class Plant : Item{
 
-    public void delegate()[] incrementalActions;                    ///Actions taken every turn
-    public void delegate(Character stepper)[] steppedOnActions;     ///Actions taken when stepped on
-    public void delegate(Character player)[] mainActions;           ///Actions taken when interacted with
-    public void delegate(Character destroyer)[] destroyedActions;   ///Actions taken when destroyed
-    public void delegate(Character placer)[] placedActions;         ///Actions taken when placed
-    public int[PlantAttribute] PlantAttributes;                               ///Passive (constantly applied) PlantAttributes with levels from (usually) 1 to 5 in the form of ints.
-    public Range!(double)[TileStat] survivableClimate;              ///Bounds of survivable temperature, water, soil, elevation.
+    public void delegate(Character actor)[][ActionType] actions;    ///All the actions the plant does
+    public int[PlantAttribute] plantAttributes;                     ///Passive (constantly applied) plantAttributes with levels from (usually) 1 to 5 in the form of ints.
+    public Range!double[TileStat] survivableClimate;                ///Bounds of survivable temperature, water, soil, elevation.
     protected Character placer;                                     ///The person who planted the plant.
-    public int[PlantReq] stats;                                     ///Contains base stats of plant.
+    public Range!int[PlantReq] stats;                               ///Contains base stats of plant.
 
     /**
-    * The constructor for a plant.
-    * Adds actions, PlantAttributes, and stats to object.
-    */
-    this(){
+     * The constructor for a plant.
+     * Adds actions, plantAttributes, and stats to object.
+     */
+    this(Inventory source){
+        this.getMovedTo(source);
         foreach(req; __traits(allMembers, PlantReq)){
-            this.stats[req.to!PlantReq] = 1;
+            this.stats[req.to!PlantReq] = Range!int(0, 5, 1);
+        }
+        HexTile tile = game.mainWorld.getTileAt(this.source.coords);
+        foreach(statType; __traits(allMembers, TileStat)){
+            TileStat stat = statType.to!TileStat;
+            this.survivableClimate[stat] = Range!(double)(tile.climate[stat] - uniform(0.0, 0.1), tile.climate[stat] + uniform(0.0, 0.1));
+        }
+        if(tile.isWater){
+            this.plantAttributes[PlantAttribute.AQUATIC] = 1;
+        }
+        double chanceBound = 1.0;
+        void possiblyDoActionBasedOnChanceBound(void delegate() action){
+            if(uniform(0.0, chanceBound) > 0.8){
+                action();
+                chanceBound -= 0.4;
+            }
+        }
+        foreach(possibleAttribute; naturalAttributes){
+            possiblyDoActionBasedOnChanceBound({
+                if(this.canGetTrait(possibleAttribute)){
+                    this.plantAttributes[possibleAttribute] = uniform(1,3);
+                }
+            });
+        }
+        foreach(actionType; __traits(allMembers, ActionType)){
+            ActionType type = actionType.to!ActionType;
+            foreach(possibleAttribute; naturalActions[type]){
+                possiblyDoActionBasedOnChanceBound({this.actions[type] ~= possibleAttribute;});
+            }
+        }
+        int statsToGive = 5;
+        foreach(i; 0..statsToGive){
+            this.stats[uniform(0, PlantReq.max).to!PlantReq] += 1;
         }
     }
 
@@ -44,7 +78,7 @@ class Plant : Item{
     * Returns owner of HexTile if not patented. Returns placer of plant if patented.
     */
     override Character getOwner(){
-        return (PlantAttribute.PATENT in this.PlantAttributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
+        return (PlantAttribute.PATENT in this.plantAttributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
     }
 
     /**
@@ -59,10 +93,10 @@ class Plant : Item{
                 return false;
             }
         }
-        if(tile.isWater != ((PlantAttribute.AQUATIC in this.PlantAttributes) !is null)){
+        if(tile.isWater != ((PlantAttribute.AQUATIC in this.plantAttributes) !is null)){
             return false;
-        }else if(PlantAttribute.MOVABLE in this.PlantAttributes){
-            return this.completion <= this.PlantAttributes[PlantAttribute.MOVABLE]/5.0;
+        }else if(PlantAttribute.MOVABLE in this.plantAttributes){
+            return this.completion <= this.plantAttributes[PlantAttribute.MOVABLE]/5.0;
         }
         return this.completion == 0;
     }
@@ -71,10 +105,10 @@ class Plant : Item{
     * Returns the influence the plant has on the tile's movement cost; inherited from Item.
     */
     override double getMovementCost(){
-        if(PlantAttribute.SLOWING in this.PlantAttributes){
-            return this.PlantAttributes[PlantAttribute.SLOWING];
-        }else if(PlantAttribute.SPEEDING in this.PlantAttributes){
-            return this.PlantAttributes[PlantAttribute.SPEEDING];
+        if(PlantAttribute.SLOWING in this.plantAttributes){
+            return this.plantAttributes[PlantAttribute.SLOWING];
+        }else if(PlantAttribute.SPEEDING in this.plantAttributes){
+            return this.plantAttributes[PlantAttribute.SPEEDING];
         }
         return 0;
     }
@@ -88,7 +122,7 @@ class Plant : Item{
     */
     override bool getPlaced(Character placer, Coordinate newLocation){
         if(!this.isPlaced && this.canBePlaced(newLocation)){
-            foreach(action; this.placedActions){
+            foreach(action; this.actions[ActionType.PLACED]){
                 action(placer);
             }
             this.isPlaced = true;
@@ -106,7 +140,7 @@ class Plant : Item{
     */
     override void getSteppedOn(Character stepper){
         if(this.isPlaced){
-            foreach(action; this.steppedOnActions){
+            foreach(action; this.actions[ActionType.STEPPED]){
                 action(stepper);
             }
             if(uniform(0, this.stats[PlantReq.RESILIENCE]) == 0){
@@ -121,8 +155,8 @@ class Plant : Item{
     */
     override void doIncrementalAction(){
         if(this.isPlaced){
-            foreach(action; this.incrementalActions){
-                action();
+            foreach(action; this.actions[ActionType.INCREMENTAL]){
+                action(null);
             }
             if(uniform(0, getClimateFavorability()) == 0){
                 grow();
@@ -138,7 +172,7 @@ class Plant : Item{
     */
     override void doMainAction(Character player){
        if(this.isPlaced){
-           foreach(action; this.mainActions){
+           foreach(action; this.actions[ActionType.MAIN]){
                action(player);
            }
        }else{
@@ -154,7 +188,7 @@ class Plant : Item{
     */
     override void getDestroyed(Character destroyer){
         if(this.isPlaced){
-            foreach(action; this.destroyedActions){
+            foreach(action; this.actions[ActionType.DESTROYED]){
                 action(destroyer);
             }
             this.isPlaced = false;
@@ -168,13 +202,8 @@ class Plant : Item{
      * Only changes in player will be reflected in this clone
      */
     override Plant clone(){
-        Plant copy = new Plant();
-        copy.incrementalActions = this.incrementalActions;
-        copy.steppedOnActions = this.steppedOnActions;
-        copy.mainActions = this.mainActions;
-        copy.destroyedActions = this.destroyedActions;
-        copy.placedActions = this.placedActions;
-        copy.PlantAttributes = this.PlantAttributes;
+        Plant copy = new Plant(this.source.clone());
+        copy.actions = this.actions;
         copy.stats = this.stats;
         copy.survivableClimate = this.survivableClimate;
         copy.placer = this.placer;
@@ -185,13 +214,9 @@ class Plant : Item{
      * Creates a seedling
      */
     Seedling createSeedling(){
-        Seedling child = new Seedling();
-        child.incrementalActions = this.incrementalActions;
-        child.steppedOnActions = this.steppedOnActions;
-        child.mainActions = this.mainActions;
-        child.destroyedActions = this.destroyedActions;
-        child.placedActions = this.placedActions;
-        child.PlantAttributes = this.PlantAttributes;
+        Seedling child = new Seedling(this);
+        child.actions = this.actions;
+        child.plantAttributes = this.plantAttributes;
         child.stats = this.stats;
         child.survivableClimate = this.survivableClimate;
         child.placer = this.placer;
@@ -212,15 +237,15 @@ class Plant : Item{
      */
     void grow(){
         int[] invasiveLevels = checkOtherPlants(PlantAttribute.INVASIVE);
-        int[] symbioticLevels = (PlantAttribute.INVASIVE in this.PlantAttributes)? null : checkOtherPlants(PlantAttribute.SYMBIOTIC);
+        int[] symbioticLevels = (PlantAttribute.INVASIVE in this.plantAttributes)? null : checkOtherPlants(PlantAttribute.SYMBIOTIC);
         double growthModifier = 0;
         foreach(level; invasiveLevels){
-            growthModifier -= cast(double)(level * 0.05 - this.stats[PlantReq.RESILIENCE] / 2);
+            growthModifier -= level * 0.05 - this.stats[PlantReq.RESILIENCE] / 2;
         }
         foreach(level; symbioticLevels){
-            growthModifier += cast(double)(level*0.05);
+            growthModifier += level * 0.05;
         }
-        double growth = this.stats[PlantReq.GROWTH]*growthModifier/10;
+        double growth = this.stats[PlantReq.GROWTH] * growthModifier / 10;
         this.completion += growth;
 
     }
@@ -236,8 +261,8 @@ class Plant : Item{
         foreach(item; sourceItems){
             if(cast(Plant) item){
                 Plant plant = cast(Plant) item;
-                if(PlantAttribute in plant.PlantAttributes){
-                    levels ~= plant.PlantAttributes[PlantAttribute];
+                if(PlantAttribute in plant.plantAttributes){
+                    levels ~= plant.plantAttributes[PlantAttribute];
                 }
             }
         }
@@ -250,10 +275,10 @@ class Plant : Item{
      *      trait = the trait to check for whether the plant can receive it
      */
     bool canGetTrait(PlantAttribute trait){
-        foreach(exclusivity; mutuallyExclusivePlantAttributes){
+        foreach(exclusivity; mutuallyExclusiveAttributes){
             if(exclusivity.canFind(trait)){
                 foreach(PlantAttribute; exclusivity){
-                    if(PlantAttribute in this.PlantAttributes){
+                    if(PlantAttribute in this.plantAttributes){
                         return false;
                     }
                 }
@@ -267,6 +292,20 @@ unittest{
     import std.stdio;
 
     writeln("\nRunning unittest of Plant");
-
-    //TODO make plant unittest
+    
+    int worldSize = 5;
+    game.mainWorld = new World(worldSize);
+    int numRuns = 10;
+    foreach(i; 0..numRuns){
+        Coordinate coords = game.mainWorld.getRandomCoords();
+        int statsToGive = uniform(6, 15);
+        Plant seedling = new Plant(game.mainWorld.getTileAt(coords).contained);
+        writeln("Conditions at ", coords, " are");
+        foreach(tileStat; __traits(allMembers, TileStat)){
+            writeln(tileStat, ": ", game.mainWorld.getTileAt(coords).climate[tileStat.to!TileStat]);
+        }
+        writeln("Seedling strength (statsToGive):", statsToGive);
+        writeln("Seedling stats:", seedling.stats);
+        writeln("Seedling Survivable Climate:", seedling.survivableClimate);
+    }
 }

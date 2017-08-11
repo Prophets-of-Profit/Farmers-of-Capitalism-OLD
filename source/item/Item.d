@@ -33,15 +33,18 @@ abstract class Item{
      *      newSource = the new inventory to be moved to
      */
     bool getMovedTo(Inventory newSource){
-        Inventory oldSource = this.source;
-        this.source.remove(this);
-        if(newSource.add(this)){
-            this.source = newSource;
-            return true;
-        }else{
-            getMovedTo(oldSource);
+        if(newSource is null){
             return false;
         }
+        if(this.source !is null){
+            Inventory oldSource = this.source;
+            this.source.remove(this);
+            if(!newSource.add(this)){
+                return this.getMovedTo(oldSource);
+            }
+        }
+        this.source = newSource;
+        return newSource.add(this);
     }
 
     Character getOwner();                                    ///Gets the owner of the Item

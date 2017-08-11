@@ -1,13 +1,14 @@
 module world.World;
 
-import world.HexTile;
-import character.Player;
-import core.exception;
 import std.algorithm;
 import std.random;
 import std.conv;
+
+import core.exception;
+
 import app;
-import core.thread;
+import character.Player;
+import world.HexTile;
 
 /**
  * A struct that stores coordinates
@@ -38,9 +39,8 @@ struct Coordinate{
  */
 class World{
 
-    private HexTile[] tiles;                ///The storage array of all tiles; stored in order of ringNum and then pos
+    HexTile[] tiles;                        ///The storage array of all tiles; stored in order of ringNum and then pos
     public immutable int numRings;          ///The number of rings the hexmap (World) has
-    public Player[] players;                ///A list of all of the players in the game
     public immutable double variance = 1.0; ///How much each adjacent hextile can differ
 
     /**
@@ -51,8 +51,8 @@ class World{
      */
     this(int numRings){
         this.numRings = numRings;
-        for(int i = 0; i < numRings; i++){
-            for(int j = 0; j < getSizeOfRing(i); j++){
+        foreach(i; 0..numRings){
+            foreach(j; 0..getSizeOfRing(i)){
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
@@ -66,11 +66,11 @@ class World{
      *  Params:
      *      location = the coordinates of the tile to get as [ringNum, pos]
      */
-    public HexTile getTileAt(Coordinate location){
+    HexTile getTileAt(Coordinate location){
         try{
             location[1] = location[1] % getSizeOfRing(location[0]);
             int previousTiles;
-            for(int i = 0; i < location[0]; i++){
+            foreach(i; 0..location[0]){
                 previousTiles += getSizeOfRing(i);
             }
             return this.tiles[previousTiles + location[1]];
@@ -82,7 +82,7 @@ class World{
     /**
      * Returns the coordinates of a random tile
      */
-	public Coordinate getRandomCoords(){
+	Coordinate getRandomCoords(){
         return this.tiles[uniform(0, this.getNumTiles())].coords;
     }
 
@@ -90,7 +90,7 @@ class World{
      *  Returns the amount of tiles that exists within the world
      *  Isn't probably going to be used for much
      */
-    public int getNumTiles(){
+    int getNumTiles(){
         return to!int(this.tiles.length);
     }
 
@@ -100,7 +100,7 @@ class World{
      *      firstLocation = the coordinates of the first point
      *      secondLocation = the coordinates of the second point
      */
-    public int getDistanceBetween(Coordinate firstLocation, Coordinate secondLocation){
+    int getDistanceBetween(Coordinate firstLocation, Coordinate secondLocation){
         assert(this.getTileAt(firstLocation) !is null && this.getTileAt(secondLocation) !is null);
         int distance = 0;
         Coordinate[] checked = [firstLocation];
@@ -109,7 +109,7 @@ class World{
             checked = null;
             distance++;
             foreach(coord; prevChecked){
-                if(coord == Coordinate(-1, -1)){
+                if(coord != Coordinate(-1, -1)){
                     checked ~= this.getTileAt(coord).getAdjacentCoords();
                 }
             }
@@ -126,7 +126,7 @@ class World{
      *      secondLocation = where the cheapest path should end
      *      maxAllowablePathCost = the maximum cost allowed for the cheapest path between two coords: if no path is found under this value, null is returned: a smaller max cost makes this function faster
      */
-    public Coordinate[] getCheapestPathBetween(Coordinate firstLocation, Coordinate secondLocation, double maxAllowablePathCost = double.max){
+    Coordinate[] getCheapestPathBetween(Coordinate firstLocation, Coordinate secondLocation, double maxAllowablePathCost = double.max){
         if(maxAllowablePathCost < 0){
             return null;
         }
@@ -162,9 +162,9 @@ class World{
      * Params:
      *      path = the list of coordinates to check for contiguity
      */
-    public bool isContiguous(Coordinate[] path){
+    bool isContiguous(Coordinate[] path){
         assert(path.length >= 2);
-        for(int i = 0; i < path.length - 1; i++){
+        foreach(i; 0..path.length - 1){
             if(!this.getTileAt(path[i]).getAdjacentCoords().canFind(path[i + 1])){
                 return false;
             }
@@ -178,9 +178,9 @@ class World{
      * If a change were to happen to one of this world's tiles, it wouldn't be reflected in the copy's tiles
      * This does not hold for the owner for each tile, as the stored owner of a tile would reflect changes in that player
      */
-    public World clone(){
+    World clone(){
         World copy = new World(this.numRings);
-        for(int i = 0; i < this.getNumTiles(); i++){
+        foreach(i; 0..this.getNumTiles){
             copy.tiles[i] = this.tiles[i].clone();
         }
         return copy;
@@ -194,19 +194,19 @@ unittest{
     writeln("Running unittest of World");
 
     int maxWorldRingsToCheck = 5;
-    for(int i = 1; i < maxWorldRingsToCheck + 1; i++){
+    foreach(i; 1..maxWorldRingsToCheck + 1){
         game = new Main(0, i);
         writeln("A world with ", i, " rings has ", game.mainWorld.getNumTiles(), " tiles with an outer ring of ", getSizeOfRing(i-1), " tiles");
     }
     int runNumForGettingLocations = 3;
-    for(int i = 0; i < runNumForGettingLocations; i++){
+    foreach(i; 0..runNumForGettingLocations){
         Coordinate coords = game.mainWorld.getRandomCoords();
         writeln("The position of a tile at ", coords, " is ", game.mainWorld.getTileAt(coords).coords);
         assert(coords == game.mainWorld.getTileAt(coords).coords);
     }
     assert(game.mainWorld.getDistanceBetween(Coordinate(0, 0), Coordinate(1, 1)) == 1);
     int runNumForGettingDistances = 5;
-    for(int i = 0; i < runNumForGettingDistances; i++){
+    foreach(i; 0..runNumForGettingDistances){
         Coordinate[] coords = [game.mainWorld.getRandomCoords(), game.mainWorld.getRandomCoords()];
         writeln("The distance between ", coords[0], " and ", coords[1], " is ", game.mainWorld.getDistanceBetween(coords[0], coords[1]));
     }
@@ -217,6 +217,6 @@ unittest{
  * Params:
  *      ringNum = the ring for which the number of tiles will be ascertained
  */
-public static int getSizeOfRing(int ringNum){
+int getSizeOfRing(int ringNum){
     return (ringNum == 0)? 1 : 6 * ringNum;
 }

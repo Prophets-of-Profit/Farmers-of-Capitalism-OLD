@@ -1,19 +1,11 @@
 module item.plant.PlantTraits;
 
 import character.Character;
+import item.plant.Plant;
 
-/**
- * Contains all possible functional attributes of plants.
- * Each active trait can be implemented in certain sockets of Plant (incrementalActions, steppedOnActions, etc.) and does something.
- * Each passive trait is stored in Plant.attribute and checked for in Plant functions.
- */
-void delegate()[]                      naturallyPossibleIncrementalActions;
-void delegate(Character stepper)[]     naturallyPossibleSteppedOnActions;
-void delegate(Character player)[]      naturallyPossibleMainActions;
-void delegate(Character destroyer)[]   naturallyPossibleDestroyedActions;
-void delegate(Character placer)[]      naturallyPossiblePlacedActions;
-
-Attribute[][] mutuallyExclusiveAttributes;
+void delegate(Character actor)[][ActionType] naturalActions;    ///A list of all possible natural actions in the game sorted by ActionType
+PlantAttribute[] naturalAttributes;                             ///A list of all natural attributes in the game
+PlantAttribute[][] mutuallyExclusiveAttributes;                 ///A list of mutually exclusive attributes (eg. a plant cannot have 2 mutually exclusive attributes)
 
 /**
  * Attributes a plant can have

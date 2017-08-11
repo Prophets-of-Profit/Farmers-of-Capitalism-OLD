@@ -8,6 +8,7 @@ import app;
 import character.Character;
 import item.Item;
 import item.plant.Plant;
+import item.plant.PlantTraits;
 import world.HexTile;
 import world.World;
 
@@ -21,7 +22,10 @@ class Seedling : Plant{
     /**
      * Constructor for Seedling moves the seedling and deposits it on a random tile.
      */
-    this(){
+    this(Plant parent){
+        super(parent.source);
+        this.parent = parent;
+        this.source.remove(this);
         Coordinate coords = parent.source.coords;
         double depositChance = 0;
         while(true){
@@ -57,18 +61,19 @@ class Seedling : Plant{
      */
     override void doIncrementalAction(){
         Seedling[] otherSeedlings;
-        foreach(item; sourceItems){
+        foreach(item; this.source){
             if(cast(Seedling) item){
-                otherSeedlings ~= item;
+                otherSeedlings ~= item.to!Seedling;
             }
         }
+        Plant child;
         if(otherSeedlings !is null){
             Seedling mate = otherSeedlings[uniform(0, otherSeedlings.length)];
             this.source.remove(mate);
-            Plant child = this.crossBreed(mate);
+            child = this.crossBreed(mate);
 
         }else{
-            Plant child = this.clone()
+            child = this.clone();
         }
         this.source.remove(this);
         this.source.add(child);
@@ -78,15 +83,15 @@ class Seedling : Plant{
      * Generates a child plant based on traits from this and mate.
      */
     Plant crossBreed(Seedling mate){
-        Plant child = new Plant()
+        Plant child = new Plant(this.source);
         //The base stats are the average of the parents' stats plus some variance. TODO: add MUTABILE trait to calculation.
         foreach(req; __traits(allMembers, PlantReq)){
             child.stats[req.to!PlantReq] = max(min((this.stats[req.to!PlantReq] + mate.stats[req.to!PlantReq] + uniform(-1, 2))/2, 5), 1);
         }
         //The attributes are randomly chosen, with a 50% chance to be taken for each attribute for each parent. TODO: Add MUTABLE trait into calculation.
-        foreach(attribute; this.attributes ~ mate.attributes){
+        foreach(attribute; this.plantAttributes.keys ~ mate.plantAttributes.keys){
             if(uniform(0, 1) == 0){
-                child.attributes ~= (this.attributes ~ mate.attributes)[attribute];
+                child.plantAttributes[attribute] += (this.plantAttributes.keys ~ mate.plantAttributes.keys)[attribute];
             }
         }
         //TODO: get inheritance for actions.
