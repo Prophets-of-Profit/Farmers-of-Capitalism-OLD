@@ -5,7 +5,7 @@ import std.conv;
 
 import core.exception;
 
-import character.Player;
+import character.Character;
 import item.Item;
 import world.World;
 
@@ -15,11 +15,32 @@ import world.World;
  */
 class Inventory{
 
-    public Player[] accessibleTo;   ///A list of players who can access the inventory
+    public Character[] accessibleTo;///A list of characters who can access the inventory
     public Item[] items;            ///All the items inside of the inventory
     alias items this;               ///Sets the access of this object as the array of items it contains
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
     public Coordinate coords;       ///The location of the tile or the player or inventorycontainer with this inventory
+
+    /**
+     * The player who owns this inventory
+     * Is just the first player in the accessibleTo list
+     */
+    @property Character owner(){
+        return this.accessibleTo[0];
+    }
+
+    /**
+     * A property method that sets the owner of this inventory by making it the first element in the list of
+     * Characters who can access this inventory
+     */
+    @property Character owner(Character newOwner){
+        if(this.accessibleTo.canFind(newOwner)){
+            //this.accessibleTo.remove(newOwner); wouldn't work, so this is a workaround
+            this.accessibleTo = this.accessibleTo[0..this.accessibleTo.countUntil(newOwner)] ~ this.accessibleTo[this.accessibleTo.countUntil(newOwner) + 1..$];
+        }
+        this.accessibleTo = newOwner ~ this.accessibleTo;
+        return newOwner;
+    }
 
     /**
      * A constructor for an inventory

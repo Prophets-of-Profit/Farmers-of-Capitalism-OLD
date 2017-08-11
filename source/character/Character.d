@@ -13,10 +13,25 @@ import world.World;
  */
 class Character{
 
-    public Coordinate coords;                                  ///The location of the character stored as [ringNum, pos]
+    Coordinate location;                                       ///The location of the character stored as [ringNum, pos]
     public int maxTravellableDistance = 5;                     ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?
     public double numMovesLeft;                                ///The amount of moves the character can still do this turn
     public Range!(int) health = Range!(int)(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
+
+    /**
+     * A property method that just returns the player's location
+     */
+    @property Coordinate coords(){
+        return this.location;
+    }
+
+    /**
+     * A property method that sets the character's location
+     */
+    @property Coordinate coords(Coordinate newCoords){
+        this.location = newCoords;
+        return newCoords;
+    }
 
     /**
      * A constructor for a character

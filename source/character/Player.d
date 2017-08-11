@@ -15,6 +15,15 @@ public class Player: Character{
     public TechnologyName[] researched;             ///The technologies the player has researched
 
     /**
+     * A property method that sets the player's and its inventory's location
+     */
+    override @property Coordinate coords(Coordinate newCoords){
+        this.location = newCoords;
+        this.inventory.coords = newCoords;
+        return newCoords;
+    }
+
+    /**
      * A constructor for a player that just calls the Character constructor and initializes an inventory
      */
     this(Coordinate coords){

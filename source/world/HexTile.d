@@ -5,7 +5,7 @@ import std.conv;
 import std.algorithm.comparison;
 
 import app;
-import character.Player;
+import character.Character;
 import item.Inventory;
 import world.Range;
 import world.World;
@@ -43,7 +43,23 @@ class HexTile{
     public bool isWater;                            ///Determines if the tile is a water tile
     public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
-    public Player owner;                            ///The owner of this tile; if none, owner is null
+    Character propertyOf;                           ///Who owns this tile; accessed through property methods
+
+    /**
+     * A property method that just returns the owner of this tile
+     */
+    @property Character owner(){
+        return this.propertyOf;
+    }
+
+    /**
+     * A property method that sets this tile's owner and its' inventory's owner
+     */
+    @property Character owner(Character newOwner){
+        this.propertyOf = newOwner;
+        this.contained.owner = newOwner;
+        return newOwner;
+    }
 
     /**
      * The constructor for a hextile
@@ -54,6 +70,7 @@ class HexTile{
      */
     this(Coordinate coords){
         this.coords = coords;
+        this.contained.coords = coords;
     }
 
     /**
