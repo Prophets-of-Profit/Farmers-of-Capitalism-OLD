@@ -43,20 +43,18 @@ class HexTile{
     public bool isWater;                            ///Determines if the tile is a water tile
     public Direction direction;                     ///Direction of wind or water flow
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
-    Character propertyOf;                           ///Who owns this tile; accessed through property methods
 
     /**
-     * A property method that just returns the owner of this tile
+     * A property method that just returns the owner of this tile which is just the owner of the contained inventory
      */
     @property Character owner(){
-        return this.propertyOf;
+        return this.contained.owner;
     }
 
     /**
-     * A property method that sets this tile's owner and its' inventory's owner
+     * A property method that sets this tile's owner by setting its inventory's owner
      */
     @property Character owner(Character newOwner){
-        this.propertyOf = newOwner;
         this.contained.owner = newOwner;
         return newOwner;
     }
