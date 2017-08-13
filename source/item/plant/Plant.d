@@ -271,6 +271,13 @@ class Plant : Item{
     }
 
     /**
+     * Plants are size 1 by default.
+     */
+    override int getSize(){
+        return 1;
+    }
+
+    /**
      * Makes sure that a given trait will be able to be added to the seedling without conflicting with another trait
      * Params:
      *      trait = the trait to check for whether the plant can receive it

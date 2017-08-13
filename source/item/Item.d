@@ -55,6 +55,7 @@ abstract class Item{
     void doIncrementalAction();                              ///What the Item should do every turn
     void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
     void getDestroyed(Character destroyer);                  ///What/how the Item gets destroyed and what it will do when destroyed
+    int getSize();                                           ///Gets the amount of space this item takes up in an inventory
     Item clone();                                            ///Returns a copy of the Item
 
 }

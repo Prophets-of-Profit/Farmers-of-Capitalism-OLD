@@ -44,14 +44,12 @@ class Inventory{
 
     /**
      * A constructor for an inventory
-     * Usually for players, but may also be needed for improvements/plants
      * Takes in a size, but if the inventory size is negative, the inventory has infinite size
      * Params:
      *      maxSize = the maximum amount of items the inventory can hold; if it is negative, the inventory won't have a maximum size
      */
     this(int maxSize = -1){
         this.maxSize = maxSize;
-        items = (maxSize < 0)? null : new Item[maxSize];
     }
 
     /**
@@ -61,17 +59,11 @@ class Inventory{
      *      itemToAdd = the item to add to the inventory
      */
     bool add(Item itemToAdd){
-        if(this.maxSize < 0){
-            this.items ~= itemToAdd;
-            return true;
+        if(itemToAdd is null || countSpaceRemaining() - itemToAdd.getSize() < 0){
+            return false;
         }
-        foreach(i; 0..this.items.length){
-            if(this.items[i] is null){
-                this.items[i] = itemToAdd;
-                return true;
-            }
-        }
-        return false;
+        items ~= itemToAdd;
+        return true;
     }
 
     /**
@@ -81,9 +73,9 @@ class Inventory{
      *      itemToRemove = the item to remove from the inventory
      */
     bool remove(Item itemToRemove){
-        int index = this.items.countUntil(itemToRemove).to!int;
+        int index = items.countUntil(itemToRemove).to!int;
         if(index >= 0){
-            this.items[index] = null;
+            items = items.remove(index);
             return true;
         }
         return false;
@@ -100,6 +92,25 @@ class Inventory{
            }
         }
         return moveCost;
+    }
+
+    /**
+     * Returns the amount of space taken up in this inventory.
+     */
+    int countSpaceUsed(){
+        int spaceUsed;
+        foreach(item; items){
+            spaceUsed += item.getSize();
+        }
+        assert(spaceUsed <= maxSize || maxSize < 0);
+        return spaceUsed;
+    }
+
+    /**
+     * Returns the space remaining in this inventory
+     */
+    int countSpaceRemaining(){
+        return maxSize - countSpaceUsed();
     }
 
     /**
@@ -125,8 +136,4 @@ unittest{
     writeln("\nRunning unittest of Inventory");
 
     Inventory testInv = new Inventory(1);
-    assert(testInv.add(null));
-    assert(testInv.add(null));
-    //TODO assert(testInv.add(someItem));
-    //assert(!testInv.add(someItem));
 }

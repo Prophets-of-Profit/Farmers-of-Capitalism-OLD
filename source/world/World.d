@@ -65,13 +65,15 @@ class World{
         }
         while(prevChosen.length < this.getNumTiles){
             Coordinate chosen;
+            Coordinate prev;
             do{
-                chosen = this.getTileAt(prevChosen[uniform(0, $)]).getAdjacentCoords(false).filter!(a => this.getTileAt(a) !is null).array[uniform(0, $)];
+                prev = prevChosen[uniform(0, $)];
+                chosen = this.getTileAt(prev).getAdjacentCoords(false).filter!(a => this.getTileAt(a) !is null).array[uniform(0, $)];
             }while(prevChosen.canFind(chosen));
             prevChosen ~= chosen;
             foreach(tileStat; __traits(allMembers, TileStat)){
                 TileStat stat = tileStat.to!TileStat;
-                this.getTileAt(prevChosen[$ - 1]).climate[stat] = Range!double(0, 1, this.getTileAt(prevChosen[$ - 2]).climate[stat] + uniform!("[]")(-0.1, 0.1));
+                this.getTileAt(prevChosen[$ - 1]).climate[stat] = Range!double(0, 1, this.getTileAt(prev).climate[stat] + uniform!("[]")(-0.1, 0.1));
             }
         }
     }
