@@ -11,7 +11,6 @@ import world.World;
 
 /**
  * A class for an object that holds other objects
- * TODO add inventory space and items space cost; items take up certain amounts of space in an inventory, and an inventory only has so much space
  */
 class Inventory{
 

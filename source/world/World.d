@@ -205,6 +205,13 @@ class World{
         return copy;
     }
 
+    /**
+     * Updates all aspects of the world including tiles and contained items
+     */
+    void update(){
+
+    }
+
 }
 
 unittest{

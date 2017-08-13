@@ -4,7 +4,7 @@
  *
  * "You've beat me at my own game!"
  * "Don't fool yourself; you were never even a Player(Coordinate coords);"
- *      -Elia Gorkhovsky
+ *      -Elia Gorokhovsky
  *
  * "Some crappy quote about being a tool"
  *      -Kadin Tucker
@@ -70,5 +70,21 @@ Main game; ///The main object stored in a static variable "game"
  * Graphics hooks into the game object and draws it based off of what the game is and is completely separate from this method's handling of the game logic
  */
 void main(){
-    //TODO write engine
+    //TODO Write game
+    //TODO Check type of game in Main Menu
+
+    //if(gameType == NEW_GAME){
+        //TODO Get number of players and world size in world creation
+        int numPlayers = 3;   //Placeholder, get rid of this when selection is implemented.
+        int worldSize = 100;
+        game = new Main(numPlayers, worldSize);
+    //}
+    while(true){
+        foreach(player; game.players){
+            //TODO Player action
+        }
+        game.mainWorld.update();
+    }
+
+
 }
