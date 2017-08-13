@@ -34,8 +34,7 @@ class Inventory{
      */
     @property Character owner(Character newOwner){
         if(this.accessibleTo.canFind(newOwner)){
-            //this.accessibleTo.remove(newOwner); wouldn't work, so this is a workaround
-            this.accessibleTo = this.accessibleTo[0..this.accessibleTo.countUntil(newOwner)] ~ this.accessibleTo[this.accessibleTo.countUntil(newOwner) + 1..$];
+            this.accessibleTo.remove(this.accessibleTo.countUntil(newOwner));
         }
         this.accessibleTo = newOwner ~ this.accessibleTo;
         return newOwner;
@@ -58,10 +57,10 @@ class Inventory{
      *      itemToAdd = the item to add to the inventory
      */
     bool add(Item itemToAdd){
-        if(itemToAdd is null || countSpaceRemaining() - itemToAdd.getSize() < 0){
+        if(itemToAdd is null || this.countSpaceRemaining - itemToAdd.getSize() < 0){
             return false;
         }
-        items ~= itemToAdd;
+        this.items ~= itemToAdd;
         return true;
     }
 
@@ -72,9 +71,8 @@ class Inventory{
      *      itemToRemove = the item to remove from the inventory
      */
     bool remove(Item itemToRemove){
-        int index = items.countUntil(itemToRemove).to!int;
-        if(index >= 0){
-            items = items.remove(index);
+        if(this.items.canFind(itemToRemove)){
+            this.items = this.items.remove(this.items.countUntil(itemToRemove));
             return true;
         }
         return false;
@@ -98,18 +96,21 @@ class Inventory{
      */
     int countSpaceUsed(){
         int spaceUsed;
-        foreach(item; items){
-            spaceUsed += item.getSize();
+        foreach(item; this.items){
+            spaceUsed += item.getSize;
         }
-        assert(spaceUsed <= maxSize || maxSize < 0);
+        assert(spaceUsed <= this.maxSize || this.maxSize < 0);
         return spaceUsed;
     }
 
     /**
      * Returns the space remaining in this inventory
+     * A negative value means there is infinite space remaining
      */
     int countSpaceRemaining(){
-        return maxSize - countSpaceUsed();
+        int spaceRemaining = maxSize - countSpaceUsed();
+        assert(this.maxSize >= 0 && spaceRemaining >= 0 || this.maxSize < 0 && spaceRemaining < 0);
+        return spaceRemaining;
     }
 
     /**
