@@ -209,7 +209,11 @@ class World{
      * Updates all aspects of the world including tiles and contained items
      */
     void update(){
-
+        foreach(tile; this.tiles){
+            foreach(item; tile.contained){
+                item.doIncrementalAction();
+            }
+        }
     }
 
 }
