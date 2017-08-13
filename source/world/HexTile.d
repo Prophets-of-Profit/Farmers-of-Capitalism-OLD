@@ -9,6 +9,7 @@ import character.Character;
 import item.Inventory;
 import world.Range;
 import world.World;
+import world.Weather;
 
 /**
  * An enum for directions
@@ -16,6 +17,14 @@ import world.World;
  */
 enum Direction{
     NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
+}
+
+/**
+ * An enum for water flow.
+ * Tiles without water will have a value of -1.
+ */
+enum WaterFlow{
+    NO_WATER = -1, NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
 }
 
 /**
@@ -40,8 +49,9 @@ class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
     public Range!double[TileStat] climate;          ///The tile's climate information
-    public bool isWater;                            ///Determines if the tile is a water tile
-    public Direction direction;                     ///Direction of wind or water flow
+    public WaterFlow waterFlow;                     ///Direction of water flow; -1 if not a water tile
+    public Direction direction;                     ///Direction of wind
+    public Weather weather;                         ///The weather object of this tile
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
 
     /**
