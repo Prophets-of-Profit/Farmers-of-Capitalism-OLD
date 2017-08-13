@@ -16,15 +16,7 @@ import world.Weather;
  * Each direction is assigned an integer for which element in getAdjacentCoords of a tile will be in the given direction
  */
 enum Direction{
-    NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
-}
-
-/**
- * An enum for water flow.
- * Tiles without water will have a value of -1.
- */
-enum WaterFlow{
-    NO_WATER = -1, NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
+    NONE = -1, NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
 }
 
 /**
@@ -49,10 +41,17 @@ class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
     public Range!double[TileStat] climate;          ///The tile's climate information
-    public WaterFlow waterFlow;                     ///Direction of water flow; -1 if not a water tile
-    public Direction direction;                     ///Direction of wind
+    public Direction waterFlow;                     ///Direction of water flow; -1 if not a water tile
+    public Direction direction;                     ///Direction of wind; -1 if no wind flow
     public Weather weather;                         ///The weather object of this tile
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
+
+    /**
+     * A property method that returns whether this tile is water or not
+     */
+    @property bool isWater(){
+        return this.waterFlow >= 0;
+    }
 
     /**
      * A property method that just returns the owner of this tile which is just the owner of the contained inventory
@@ -151,8 +150,8 @@ class HexTile{
     HexTile clone(){
         HexTile copy = new HexTile(this.coords);
         copy.climate = this.climate;
-        copy.isWater = this.isWater;
         copy.direction = this.direction;
+        copy.waterFlow = this.waterFlow;
         copy.contained = this.contained.clone();
         copy.owner = this.owner;
         return copy;

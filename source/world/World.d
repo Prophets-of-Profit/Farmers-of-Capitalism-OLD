@@ -221,7 +221,7 @@ class World{
 unittest{
     import std.stdio;
 
-    writeln("Running unittest of World");
+    writeln("\nRunning unittest of World");
 
     int maxWorldRingsToCheck = 5;
     foreach(i; 1..maxWorldRingsToCheck + 1){

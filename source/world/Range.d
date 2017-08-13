@@ -5,7 +5,7 @@ module world.Range;
  * Has a minimum and a maximum, and an optional current
  * Will always keep the current value within the minimum and the maximum
  * Can also check if any other numbers are within the minimum and maximum
- * Is a range from (minimum, maximum) or minimum to maximum exclusive on both ends
+ * Is a range from [minimum, maximum] or minimum to maximum inclusive on both ends
  */
 struct Range(T){
 
@@ -92,7 +92,7 @@ struct Range(T){
      * Would be "bool isInRange(T valToBeInRange = this.cur)", but that declaration errors and would always be true anyways
      */
     bool isInRange(T valToBeInRange){
-        return valToBeInRange > this.min && valToBeInRange < this.max;
+        return valToBeInRange >= this.min && valToBeInRange <= this.max;
     }
 
 }
@@ -105,8 +105,14 @@ unittest{
     Range!(int) testRange = Range!(int)(0, 5, 3);
     assert(testRange.isInRange(testRange.current));
     int minToTest = 3;
-    int maxToTest = 5;
+    int maxToTest = 6;
     testRange = Range!(int)(minToTest, maxToTest);
     writeln("Given a minimum of ", minToTest, " and a maximum of ", maxToTest, " a constructed range has the minimum of ", testRange.minimum, " and a maximum of ", testRange.maximum);
+    int minValToTest = 0;
+    int maxValToTest = 9;
+    foreach(i; minValToTest..maxValToTest + 1){
+        assert((minToTest <= i && i <= maxToTest) == testRange.isInRange(i));
+        writeln(i, " is", (testRange.isInRange(i))? "" : "n't", " in the range.");
+    }
     assert(testRange.isInRange((minToTest + maxToTest) / 2));
 }

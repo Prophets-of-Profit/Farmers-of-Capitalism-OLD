@@ -3,13 +3,13 @@ module world.Weather;
 import world.HexTile;
 import world.World;
 
-public double season;       ///The amount of temperature change based on the season.
+public double season;       ///The amount of temperature change based on the season. TODO make this an enum?
 
 class Weather {
 
-    Hextile tile;
-    double cloudCover;
-    double relativeHumidity;
+    HexTile tile;           ///The tile of where the weather is
+    double cloudCover;      ///TODO
+    double relativeHumidity;///TODO
 
     /**
      * Constructor for the Weather object.
@@ -20,8 +20,13 @@ class Weather {
         this.tile = tile;
     }
 
+    /**
+     * TODO
+     * Params:
+     *      world = ?
+     */
     void generateClouds(World world){
-        
+
     }
 
 }
