@@ -15,17 +15,13 @@ import world.HexTile;
 import world.Range;
 import world.World;
 
-enum ActionType{
-    STEPPED, MAIN, DESTROYED, PLACED, INCREMENTAL
-}
-
 /**
  * A parent class for all plant objects.
  * Contains basic (non-functional) traits and methods shared between all plants.
  */
 class Plant : Item{
 
-    public void delegate(Character actor)[][ActionType] actions;    ///All the actions the plant does
+    public PlantAction[][ActionType] actions;                       ///All the actions the plant does
     public int[PlantAttribute] plantAttributes;                     ///Passive (constantly applied) plantAttributes with levels from (usually) 1 to 5 in the form of ints.
     public Range!double[TileStat] survivableClimate;                ///Bounds of survivable temperature, water, soil, elevation.
     protected Character placer;                                     ///The person who planted the plant.
@@ -64,8 +60,7 @@ class Plant : Item{
         }
         foreach(actionType; __traits(allMembers, ActionType)){
             ActionType type = actionType.to!ActionType;
-            //TODO below line will throw a range violation because naturalActions hasn't yet been initialized
-            foreach(possibleAttribute; naturalActions[type]){
+            foreach(possibleAttribute; getNaturalActions[type]){
                 possiblyDoActionBasedOnChanceBound({this.actions[type] ~= possibleAttribute;});
             }
         }
