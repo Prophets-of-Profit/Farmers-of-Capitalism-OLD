@@ -21,29 +21,36 @@ import world.World;
  */
 class Plant : Item{
 
-    public PlantAction[][ActionType] actions;                       ///All the actions the plant does
+    public PlantAction[] actions;                                   ///All the actions the plant does
     public int[PlantAttribute] plantAttributes;                     ///Passive (constantly applied) plantAttributes with levels from (usually) 1 to 5 in the form of ints.
     public Range!double[TileStat] survivableClimate;                ///Bounds of survivable temperature, water, soil, elevation.
     protected Character placer;                                     ///The person who planted the plant.
     public Range!int[PlantReq] stats;                               ///Contains base stats of plant.
 
     /**
-     * The constructor for a plant.
+     * The constructor for a plant if the plant were to be generated naturally.
      * Adds actions, plantAttributes, and stats to object.
+     * TODO add more plant constructors (eg. have a plant constructor that does what seedling does so seedling isn't necessary, constructor for cross-bred plants)
      */
-    this(Inventory source){
-        this.getMovedTo(source);
+    this(Coordinate coords){
+        //Gets the tile it will be placed at
+        HexTile tile = game.mainWorld.getTileAt(coords);
+        //Puts itself in the tile
+        this.getMovedTo(tile.contained);
+        //Initializes all of the plant stats with a range between 0 and 5 with a value of 1
         foreach(req; __traits(allMembers, PlantReq)){
             this.stats[req.to!PlantReq] = Range!int(0, 5, 1);
         }
-        HexTile tile = game.mainWorld.getTileAt(this.source.coords);
+        //Sets its survivable climate to a range with a +-0.1 difference from its tile's climate
         foreach(statType; __traits(allMembers, TileStat)){
             TileStat stat = statType.to!TileStat;
-            this.survivableClimate[stat] = Range!(double)(tile.climate[stat] - uniform(0.0, 0.1), tile.climate[stat] + uniform(0.0, 0.1));
+            this.survivableClimate[stat] = Range!double(tile.climate[stat] - uniform(0.0, 0.1), tile.climate[stat] + uniform(0.0, 0.1));
         }
+        //Makes the plant aquatic if the tile it is on is water
         if(tile.isWater){
             this.plantAttributes[PlantAttribute.AQUATIC] = 1;
         }
+        //TODO have elia document this
         double chanceBound = 1.0;
         void possiblyDoActionBasedOnChanceBound(void delegate() action){
             if(uniform(0.0, chanceBound) > 0.8){
@@ -58,12 +65,10 @@ class Plant : Item{
                 }
             });
         }
-        foreach(actionType; __traits(allMembers, ActionType)){
-            ActionType type = actionType.to!ActionType;
-            foreach(possibleAttribute; getNaturalActions[type]){
-                possiblyDoActionBasedOnChanceBound({this.actions[type] ~= possibleAttribute;});
-            }
+        foreach(possibleAttribute; getNaturalActions){
+            possiblyDoActionBasedOnChanceBound({this.actions ~= possibleAttribute;});
         }
+        //Plants in the wild start with a spread of 5 points to have in their stats
         int statsToGive = 5;
         foreach(i; 0..statsToGive){
             this.stats[uniform(0, PlantReq.max).to!PlantReq] += 1;
@@ -118,7 +123,7 @@ class Plant : Item{
     */
     override bool getPlaced(Character placer, Coordinate newLocation){
         if(!this.isPlaced && this.canBePlaced(newLocation)){
-            foreach(action; this.actions[ActionType.PLACED]){
+            foreach(action; getActionsOfType(ActionType.PLACED)){
                 action(placer);
             }
             this.isPlaced = true;
@@ -136,7 +141,7 @@ class Plant : Item{
     */
     override void getSteppedOn(Character stepper){
         if(this.isPlaced){
-            foreach(action; this.actions[ActionType.STEPPED]){
+            foreach(action; getActionsOfType(ActionType.STEPPED)){
                 action(stepper);
             }
             if(uniform(0, this.stats[PlantReq.RESILIENCE]) == 0){
@@ -151,7 +156,7 @@ class Plant : Item{
     */
     override void doIncrementalAction(){
         if(this.isPlaced){
-            foreach(action; this.actions[ActionType.INCREMENTAL]){
+            foreach(action; getActionsOfType(ActionType.INCREMENTAL)){
                 action(null);
             }
             if(uniform(0, getClimateFavorability()) == 0){
@@ -168,7 +173,7 @@ class Plant : Item{
     */
     override void doMainAction(Character player){
        if(this.isPlaced){
-           foreach(action; this.actions[ActionType.MAIN]){
+           foreach(action; getActionsOfType(ActionType.MAIN)){
                action(player);
            }
        }else{
@@ -184,7 +189,7 @@ class Plant : Item{
     */
     override void getDestroyed(Character destroyer){
         if(this.isPlaced){
-            foreach(action; this.actions[ActionType.DESTROYED]){
+            foreach(action; getActionsOfType(ActionType.DESTROYED)){
                 action(destroyer);
             }
             this.isPlaced = false;
@@ -198,7 +203,7 @@ class Plant : Item{
      * Only changes in player will be reflected in this clone
      */
     override Plant clone(){
-        Plant copy = new Plant(this.source.clone());
+        Plant copy = new Plant(this.source.coords);
         copy.actions = this.actions;
         copy.stats = this.stats;
         copy.survivableClimate = this.survivableClimate;
@@ -298,17 +303,13 @@ unittest{
 
     int worldSize = 5;
     game.mainWorld = new World(worldSize);
-    int numRuns = 10;
+    int numRuns = 5;
     foreach(i; 0..numRuns){
-        Coordinate coords = game.mainWorld.getRandomCoords();
-        int statsToGive = uniform(6, 15);
-        Plant seedling = new Plant(game.mainWorld.getTileAt(coords).contained);
-        writeln("Conditions at ", coords, " are");
-        foreach(tileStat; __traits(allMembers, TileStat)){
-            writeln(tileStat, ": ", game.mainWorld.getTileAt(coords).climate[tileStat.to!TileStat]);
-        }
-        writeln("Seedling strength (statsToGive):", statsToGive);
-        writeln("Seedling stats:", seedling.stats);
-        writeln("Seedling Survivable Climate:", seedling.survivableClimate);
+        Coordinate coords = game.mainWorld.getRandomCoords;
+        Plant testPlant = new Plant(coords);
+        writeln("Conditions at ", coords, " are ", game.mainWorld.getTileAt(coords).climate);
+        writeln("TestPlant stats: ", testPlant.stats);
+        writeln("TestPlant survivable climate: ", testPlant.survivableClimate);
+        writeln("------------------------------------------------");
     }
 }

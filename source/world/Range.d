@@ -1,5 +1,7 @@
 module world.Range;
 
+import std.conv;
+
 /**
  * A struct for numerical types
  * Has a minimum and a maximum, and an optional current
@@ -37,7 +39,7 @@ struct Range(T){
         if(newValue < this.max){
             this.min = newValue;
         }
-        this.fixCurrent;
+        this.fix(this.cur);
         return this.min;
     }
 
@@ -56,7 +58,7 @@ struct Range(T){
         if(newValue > this.min){
             this.max = newValue;
         }
-        this.fixCurrent;
+        this.fix(this.cur);
         return this.max;
     }
 
@@ -72,18 +74,18 @@ struct Range(T){
      */
     @property T current(T newValue){
         this.cur = newValue;
-        this.fixCurrent;
+        this.fix(this.cur);
         return this.cur;
     }
 
     /**
-     * A method that makes sure that current is in the range
+     * A method that makes sure that the given value is in the range
      */
-    private void fixCurrent(){
-        if(this.cur > this.max){
-            this.cur = this.max;
-        }else if(this.cur < this.min){
-            this.cur = this.min;
+    void fix(ref T val){
+        if(val > this.max){
+            val = this.max;
+        }else if(val < this.min){
+            val = this.min;
         }
     }
 
@@ -93,6 +95,13 @@ struct Range(T){
      */
     bool isInRange(T valToBeInRange){
         return valToBeInRange >= this.min && valToBeInRange <= this.max;
+    }
+
+    /**
+     * Returns a string representation of the range so that it can be printed
+     */
+    string toString(){
+        return this.minimum.to!string ~ " ≤ " ~ this.current.to!string ~ " ≤ " ~ this.maximum.to!string;
     }
 
 }

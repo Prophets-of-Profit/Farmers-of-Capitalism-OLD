@@ -11,13 +11,14 @@ import item.plant.Plant;
  * A struct that contains a function or an action that takes in a character and returns void
  * Is in such a format because most of the slottable functions a plant (or even an item) has will conform to that format
  * Is in a struct because whether the action is natural or not should be stored with the actual action itself
- * TODO store actionType in here and then just store arrays of actions instead of associative arrays of arrays of actions
+ * Stores ActionType which signifies where the action can slot
  */
 struct PlantAction{
 
     void delegate(Character actor) action;  ///The actual function or action this will do; returns nothing and takes in a character like most of the functions an item or plant requires
     alias action this;                      ///Makes it so that the plant action can be accessed as the actual function or action
     bool isNatural;                         ///Whether the action is natural; default is false
+    ActionType type;                        ///The type of action or where this action can slot
 
 }
 
@@ -67,16 +68,21 @@ enum PlantAttribute{
 
 PlantAttribute[] naturalAttributes;                             ///A list of all natural attributes in the game
 PlantAttribute[][] mutuallyExclusiveAttributes;                 ///A list of mutually exclusive attributes (eg. a plant cannot have 2 mutually exclusive attributes)
-PlantAction[][ActionType] allActions;                           ///A list of all possible natural actions in the game sorted by ActionType
+PlantAction[] allActions;                                       ///A list of all possible natural actions in the game sorted by ActionType
 
 /**
- * Returns an associative array of list of actions similar to allActions, but only containing natural actions from allActions
+ * Returns an array of actions similar to allActions, but only containing natural actions from allActions
  */
-PlantAction[][ActionType] getNaturalActions(){
-    PlantAction[][ActionType] natural;
-    foreach(type; __traits(allMembers, ActionType)){
-        ActionType actionType = type.to!ActionType;
-        natural[actionType] = allActions[actionType].filter!(a => a.isNatural).array;
-    }
-    return natural;
+PlantAction[] getNaturalActions(){
+    return  allActions.filter!(a => a.isNatural).array;
+}
+
+/**
+ * Gets all actions of a given ActionType from a source list
+ * Params:
+ *      type = the types of actions to return
+ *      filterFrom = the source list of actions to filter from
+ */
+PlantAction[] getActionsOfType(ActionType type, PlantAction[] filterFrom = allActions){
+    return filterFrom.filter!(a => a.type == type).array;
 }

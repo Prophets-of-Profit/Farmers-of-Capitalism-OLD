@@ -23,7 +23,7 @@ class Seedling : Plant{
      * Constructor for Seedling moves the seedling and deposits it on a random tile.
      */
     this(Plant parent){
-        super(parent.source);
+        super(parent.source.coords);
         this.parent = parent;
         this.source.remove(this);
         Coordinate coords = parent.source.coords;
@@ -83,7 +83,7 @@ class Seedling : Plant{
      * Generates a child plant based on traits from this and mate.
      */
     Plant crossBreed(Seedling mate){
-        Plant child = new Plant(this.source);
+        Plant child = new Plant(this.source.coords);
         //The base stats are the average of the parents' stats plus some variance. TODO: add MUTABILE trait to calculation.
         foreach(req; __traits(allMembers, PlantReq)){
             child.stats[req.to!PlantReq] = max(min((this.stats[req.to!PlantReq] + mate.stats[req.to!PlantReq] + uniform(-1, 2))/2, 5), 1);

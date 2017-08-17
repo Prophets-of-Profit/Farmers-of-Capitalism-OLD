@@ -57,7 +57,7 @@ class World{
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
-        /*TODO insert Kadin's generation of hextiles instead of below; below doesn't even do rivers*/
+        //TODO generation below is faulty, causes item/plant/Plant.d to error on line 47 occasionally because climate isn't initialized
         Coordinate[] prevChosen = [this.getRandomCoords];
         foreach(tileStat; __traits(allMembers, TileStat)){
             TileStat stat = tileStat.to!TileStat;
@@ -73,9 +73,10 @@ class World{
             prevChosen ~= chosen;
             foreach(tileStat; __traits(allMembers, TileStat)){
                 TileStat stat = tileStat.to!TileStat;
-                this.getTileAt(prevChosen[$ - 1]).climate[stat] = Range!double(0, 1, this.getTileAt(prev).climate[stat] + uniform!("[]")(-0.1, 0.1));
+                this.getTileAt(chosen).climate[stat] = Range!double(0, 1, this.getTileAt(prev).climate[stat] + uniform!("[]")(-0.1, 0.1));
             }
         }
+        //TODO add river generation
     }
 
     /**
