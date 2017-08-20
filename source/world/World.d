@@ -57,20 +57,15 @@ class World{
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
+
+        //Climate generation
         Coordinate[] prevChosen = [this.getRandomCoords];
         foreach(tileStat; __traits(allMembers, TileStat)){
             TileStat stat = tileStat.to!TileStat;
             this.getTileAt(prevChosen[0]).climate[stat] = Range!double(0, 1, uniform(0.0, 1.0));
         }
-        bool climateGenComplete(){
-            foreach(tile; this.tiles){
-                if(tile.climate.values.length != __traits(allMembers, TileStat).length){
-                    return false;
-                }
-            }
-            return true;
-        }
-        while(!climateGenComplete){
+        while(this.tiles.filter!(a => a.climate.values.length != __traits(allMembers, TileStat).length).array.length > 0){
+            //While the list of tiles that doesn't have a climate from this.tiles has at least 1 element
             Coordinate chosen;
             Coordinate prev;
             do{
@@ -83,7 +78,11 @@ class World{
                 this.getTileAt(chosen).climate[stat] = Range!double(0, 1, this.getTileAt(prev).climate[stat] + uniform!("[]")(-0.1, 0.1));
             }
         }
-        //TODO add river generation
+
+        //TODO make River generation method which is recursive and can call itself to make forks
+        void generateRiver(Coordinate start, Direction primaryDirection){
+
+        }
     }
 
     /**
@@ -110,7 +109,7 @@ class World{
      * Returns the coordinates of a random tile
      */
 	Coordinate getRandomCoords(){
-        return this.tiles[uniform(0, this.getNumTiles())].coords;
+        return this.tiles[uniform(0, $)].coords;
     }
 
     /**
@@ -118,7 +117,7 @@ class World{
      *  Isn't probably going to be used for much
      */
     int getNumTiles(){
-        return to!int(this.tiles.length);
+        return this.tiles.length.to!int;
     }
 
     /**
