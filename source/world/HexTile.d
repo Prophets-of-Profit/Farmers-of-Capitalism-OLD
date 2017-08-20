@@ -41,8 +41,8 @@ class HexTile{
 
     public Coordinate coords;                       ///Location of the tile stored as [ringNumber, positionInRing]
     public Range!double[TileStat] climate;          ///The tile's climate information
-    public Direction waterFlow;                     ///Direction of water flow; -1 if not a water tile
     public Direction direction;                     ///Direction of wind; -1 if no wind flow
+    public Direction[] waterFlow;                   ///Directions of water flow; if the list is empty, the tile isn't water
     public Weather weather;                         ///The weather object of this tile
     public Inventory contained = new Inventory(1);  ///Improvement(s) or building(s) or plant(s) that are on this tile
 
@@ -50,7 +50,7 @@ class HexTile{
      * A property method that returns whether this tile is water or not
      */
     @property bool isWater(){
-        return this.waterFlow >= 0;
+        return this.waterFlow.length > 0;
     }
 
     /**
@@ -132,9 +132,10 @@ class HexTile{
      * Returns a tile of distance 1 away from this tile in the direction given
      * Params:
      *      directionOfAdjacent = the direction enum or integer of which side the given adjacent coordinate should be
+     *      checkTileExistence = whether to allow getAdjacentCoords to check if an adjacent tile exists
      */
-    Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent){
-        return this.getAdjacentCoords()[directionOfAdjacent];
+    Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent, bool checkTileExistence = true){
+        return this.getAdjacentCoords(checkTileExistence)[directionOfAdjacent];
     }
 
     /**

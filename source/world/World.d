@@ -81,10 +81,36 @@ class World{
             }
         }
 
-        //TODO make River generation method which is recursive and can call itself to make forks
+        //River generation
         void generateRiver(Coordinate start, Direction primaryDirection){
-
+            int chanceToChangeDirection = 15;
+            int chanceToForkRiver = this.getNumTiles;
+            //Ensures that the coordinate can be made into a river; if the river generation runs into an edge and tries generating off the map, the river generation will end
+            HexTile tile = this.getTileAt(start);
+            if(tile is null){
+                return;
+            }
+            //Makes a function that returns a direction that is either the same or adjacent to a given primary direction
+            Direction delegate(Direction primaryDirection) makeNewDirection = (Direction primaryDirection) => ((primaryDirection + uniform!("[]")(-1, 1) + Direction.max) % Direction.max).to!Direction;
+            //Gets a direction which will usually be the same direction, but possibly an adjacent direction and then sets the tile's water flow to that direction and then calls this method to continue generating a river in the direction
+            Direction newDirection = uniform(0, chanceToChangeDirection + 1) == 0? makeNewDirection(primaryDirection) : primaryDirection;
+            tile.waterFlow ~= newDirection;
+            generateRiver(tile.getAdjacentCoordInDirection(newDirection, false), newDirection);
+            //Makes a possible direction this river will fork; if the rng allows and the fork direction is a different direction, this method will be called with the fork direction as well
+            Direction forkDirection = makeNewDirection(newDirection);
+            if(forkDirection != newDirection && uniform(0, chanceToForkRiver + 1) == 0){
+                tile.waterFlow ~= forkDirection;
+                generateRiver(tile.getAdjacentCoordInDirection(forkDirection, false), forkDirection);
+            }
         }
+        HexTile[] shuffledCoords = this.tiles.dup;
+        shuffledCoords.randomShuffle();
+        Coordinate edgeCoordinate = shuffledCoords.filter!(a => a.coords[0] == numRings - 1).array[0].coords;
+        //Takes the corner number, adds 3 (half of six sides) to get the opposite direction, makes sure that the opposite direction's corner num is in the range of directions with modulus, and turns that to a direction
+        Direction opposite = ((((edgeCoordinate.coords[0] == 0)? 0 : edgeCoordinate.coords[1] / edgeCoordinate.coords[0]) + 3) % Direction.max).to!Direction;
+        generateRiver(edgeCoordinate, opposite);
+
+        //TODO make lake generation
     }
 
     /**
