@@ -57,13 +57,20 @@ class World{
                 tiles ~= new HexTile(Coordinate(i, j));
             }
         }
-        //TODO generation below is faulty, causes item/plant/Plant.d to error on line 47 occasionally because climate isn't initialized
         Coordinate[] prevChosen = [this.getRandomCoords];
         foreach(tileStat; __traits(allMembers, TileStat)){
             TileStat stat = tileStat.to!TileStat;
             this.getTileAt(prevChosen[0]).climate[stat] = Range!double(0, 1, uniform(0.0, 1.0));
         }
-        while(prevChosen.length < this.getNumTiles){
+        bool climateGenComplete(){
+            foreach(tile; this.tiles){
+                if(tile.climate.values.length != __traits(allMembers, TileStat).length){
+                    return false;
+                }
+            }
+            return true;
+        }
+        while(!climateGenComplete){
             Coordinate chosen;
             Coordinate prev;
             do{

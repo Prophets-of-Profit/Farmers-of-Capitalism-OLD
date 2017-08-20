@@ -120,8 +120,11 @@ unittest{
     int minValToTest = 0;
     int maxValToTest = 9;
     foreach(i; minValToTest..maxValToTest + 1){
+        testRange = i;
+        writeln(i, " gets clamped to ", testRange.current);
+        assert(testRange.isInRange(testRange.current));
         assert((minToTest <= i && i <= maxToTest) == testRange.isInRange(i));
-        writeln(i, " is", (testRange.isInRange(i))? "" : "n't", " in the range.");
+        writeln(i, " is", (testRange.isInRange(i))? "" : "n't", " in the range");
     }
     assert(testRange.isInRange((minToTest + maxToTest) / 2));
 }
