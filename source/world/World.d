@@ -35,6 +35,8 @@ struct Coordinate{
 
 }
 
+immutable Coordinate nullCoord = Coordinate(-1, -1);  ///A coordinate that signifies a "null" coordinate or the absence of a coordinate
+
 /**
  * A general class that should only ever be instantiated once
  * Contains an array of tiles sorted by their ringNum (distance from the center) and pos (how far clockwise along the ring the tile is)
@@ -135,7 +137,7 @@ class World{
             checked = null;
             distance++;
             foreach(coord; prevChecked){
-                if(coord != Coordinate(-1, -1)){
+                if(coord != nullCoord){
                     checked ~= this.getTileAt(coord).getAdjacentCoords();
                 }
             }

@@ -39,7 +39,7 @@ unittest{
 
     writeln("\nRunning unittest of Player");
 
-    Player testPlayer = new Player(Coordinate(-1, -1));
+    Player testPlayer = new Player(nullCoord);
     writeln("A player starts out with the technologies of ", testPlayer.researched);
     assert(testPlayer.researched.length == 1);
     //TODO add more testing here

@@ -85,7 +85,9 @@ class HexTile{
      * Because the tiles are hexes, the process involves finding whether the tiles are straight off from one of the center hex's sides
      *  and then performing different actions based on whether the tile is a) the center, b) straight off the side of the center hex, or
      *  c) just any tile
-     * The method will make sure that the adjacent tiles actually exist in the map so that tiles such as map edges don't give adjacent tiles that dont' exist
+     * Unless told not to, the method will return nullCoord for a tile that doesn't exist in the main world
+     * Params:
+     *      checkTileExistence = whether to make sure that the given adjacent coords actually exist
      */
     Coordinate[] getAdjacentCoords(bool checkTileExistence = true){
         Coordinate[] adjacentCandidates;
@@ -121,7 +123,7 @@ class HexTile{
         }
         Coordinate[] adjacentTiles = null;
         foreach(coord; adjacentCandidates){
-            adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : Coordinate(-1, -1);
+            adjacentTiles ~= (game.mainWorld.getTileAt(coord) !is null)? coord : nullCoord;
         }
         return adjacentTiles;
     }

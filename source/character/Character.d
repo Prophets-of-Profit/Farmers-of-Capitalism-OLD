@@ -53,7 +53,7 @@ class Character{
         }
         Coordinate[] validMoveLocations = [this.coords];
         foreach(adjacentCoord; game.mainWorld.getTileAt(this.coords).getAdjacentCoords()){
-            if(adjacentCoord == Coordinate(-1, -1)){
+            if(adjacentCoord == nullCoord){
                 break;
             }
             Character copy = new Character(adjacentCoord);
