@@ -79,19 +79,6 @@ class Inventory{
     }
 
     /**
-     * Gets the movement cost of all of the items in the inventory
-     */
-    double getCollectiveMovementCost(){
-        double moveCost = 0;
-        foreach(item; this.items){
-           if(item !is null && item.isPlaced){
-                moveCost += item.getMovementCost();
-           }
-        }
-        return moveCost;
-    }
-
-    /**
      * Returns the amount of space taken up in this inventory.
      */
     int countSpaceUsed(){

@@ -2,6 +2,8 @@ module character.Character;
 
 import std.algorithm;
 import std.array;
+import std.conv;
+import std.math;
 
 import app;
 import world.Range;
@@ -13,10 +15,10 @@ import world.World;
  */
 class Character{
 
-    Coordinate location;                                       ///The location of the character stored as [ringNum, pos]
-    public int maxTravellableDistance = 5;                     ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?
-    public double numMovesLeft;                                ///The amount of moves the character can still do this turn
-    public Range!(int) health = Range!(int)(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
+    Coordinate location;                                   ///The location of the character stored as [ringNum, pos]
+    public int maxTravellableDistance = 5;                 ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?
+    public double numMovesLeft;                            ///The amount of moves the character can still do this turn
+    public Range!int health = Range!int(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
 
     /**
      * A property method that just returns the player's location
@@ -27,6 +29,7 @@ class Character{
 
     /**
      * A property method that sets the character's location
+     * While this could have been a public field, it was made into a property because Player overrides just the setter
      */
     @property Coordinate coords(Coordinate newCoords){
         this.location = newCoords;
@@ -57,7 +60,7 @@ class Character{
                 break;
             }
             Character copy = new Character(adjacentCoord);
-            copy.numMovesLeft = this.numMovesLeft - game.mainWorld.getTileAt(adjacentCoord).getPassabilityCost();
+            copy.numMovesLeft = this.numMovesLeft - this.getMovementCostAt(adjacentCoord);
             if(copy.numMovesLeft >= 0){
                 if(!validMoveLocations.canFind(adjacentCoord)){
                     validMoveLocations ~= adjacentCoord;
@@ -89,9 +92,20 @@ class Character{
             foreach(item; game.mainWorld.getTileAt(location).contained){
                 item.getSteppedOn(this);
             }
-            this.numMovesLeft -= game.mainWorld.getTileAt(location).getPassabilityCost();
+            this.numMovesLeft -= this.getMovementCostAt(location);
         }
         return true;
+    }
+
+    /**
+     * Gets the cost of moving to this tile for the current character
+     * Takes in several factors of consideration to get movement cost and is primarily character based rather than location based
+     * This means that a certain coordinate could have different movement costs for different players based on their attributes
+     * Params:
+     *      locationToFindCost = the location of where the movement cost of the player going in that area should be
+     */
+    int getMovementCostAt(Coordinate locationToFindCost){
+        return 1 + game.mainWorld.getTileAt(locationToFindCost).contained.items.map!(a => a.getMovementCost(this)).sum.floor.to!int;
     }
 
 }

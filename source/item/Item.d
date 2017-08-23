@@ -50,7 +50,7 @@ abstract class Item{
     Character getOwner();                                    ///Gets the owner of the Item
     bool canBePlaced(Coordinate placementCandidateCoords);   ///Returns whether the Item can be placed
     bool getPlaced(Character placer, Coordinate newLocation);///What the Item should do when created
-    double getMovementCost();                                ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
+    double getMovementCost(Character stepper);               ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
     void getSteppedOn(Character stepper);                    ///What the Item should do when stepped on
     void doIncrementalAction();                              ///What the Item should do every turn
     void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced

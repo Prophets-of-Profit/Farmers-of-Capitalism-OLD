@@ -8,7 +8,7 @@ import std.conv;
 import core.exception;
 
 import app;
-import character.Player;
+import character.Character;
 import world.HexTile;
 import world.Range;
 
@@ -178,37 +178,40 @@ class World{
      * Params:
      *      firstLocation = the initial starting location of where to get the cheapest path
      *      secondLocation = where the cheapest path should end
-     *      maxAllowablePathCost = the maximum cost allowed for the cheapest path between two coords: if no path is found under this value, null is returned: a smaller max cost makes this function faster
+     *      cheapestFor = the character for whom the path shall be cheapest for
      */
-    Coordinate[] getCheapestPathBetween(Coordinate firstLocation, Coordinate secondLocation, double maxAllowablePathCost = double.max){
-        if(maxAllowablePathCost < 0){
-            return null;
-        }
-        if(firstLocation == secondLocation){
-            return [secondLocation];
-        }
-        Coordinate[][] candidates = null;
-        foreach(coord ; this.getTileAt(firstLocation).getAdjacentCoords()){
-            Coordinate[] pathCandidate = this.getCheapestPathBetween(coord, secondLocation, maxAllowablePathCost - this.getTileAt(coord).getPassabilityCost());
-            if(pathCandidate !is null){
-                candidates ~= [coord] ~ pathCandidate;
+    Coordinate[] getCheapestPathBetween(Coordinate firstLocation, Coordinate secondLocation, Character cheapestFor){
+        Coordinate[] recursiveCheapest(Coordinate firstLocation, Coordinate secondLocation, Character cheapestFor, double maxAllowablePathCost){
+            if(maxAllowablePathCost < 0){
+                return null;
             }
-        }
-        double smallestCost = double.max;
-        Coordinate[] path = null;
-        foreach(Coordinate[] pathCandidate ; candidates){
-            double currentPathCost = 0;
-            foreach(Coordinate coord ; pathCandidate){
-                currentPathCost += this.getTileAt(coord).getPassabilityCost();
+            if(firstLocation == secondLocation){
+                return [secondLocation];
             }
-            if(currentPathCost < smallestCost){
-                path = pathCandidate;
+            Coordinate[][] candidates = null;
+            foreach(coord ; this.getTileAt(firstLocation).getAdjacentCoords()){
+                Coordinate[] pathCandidate = recursiveCheapest(coord, secondLocation, cheapestFor, maxAllowablePathCost = cheapestFor.getMovementCostAt(coord));
+                if(pathCandidate !is null){
+                    candidates ~= [coord] ~ pathCandidate;
+                }
             }
+            double smallestCost = double.max;
+            Coordinate[] path = null;
+            foreach(Coordinate[] pathCandidate ; candidates){
+                double currentPathCost = 0;
+                foreach(Coordinate coord ; pathCandidate){
+                    currentPathCost += cheapestFor.getMovementCostAt(coord);
+                }
+                if(currentPathCost < smallestCost){
+                    path = pathCandidate;
+                }
+            }
+            if(path !is null && path.length >= 2){
+                assert(this.isContiguous(path));
+            }
+            return path;
         }
-        if(path !is null && path.length >= 2){
-            assert(this.isContiguous(path));
-        }
-        return path;
+        return recursiveCheapest(firstLocation, secondLocation, cheapestFor, cheapestFor.maxTravellableDistance);
     }
 
     /**

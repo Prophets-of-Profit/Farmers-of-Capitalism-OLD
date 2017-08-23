@@ -1,8 +1,7 @@
 module world.HexTile;
 
-import std.math;
-import std.conv;
 import std.algorithm.comparison;
+import std.conv;
 
 import app;
 import character.Character;
@@ -136,13 +135,6 @@ class HexTile{
      */
     Coordinate getAdjacentCoordInDirection(Direction directionOfAdjacent, bool checkTileExistence = true){
         return this.getAdjacentCoords(checkTileExistence)[directionOfAdjacent];
-    }
-
-    /**
-     * Gets how much movement the tile costs based on the tiles movement cost and its items' movement cost
-     */
-    double getPassabilityCost(){
-        return max(1 + to!int(ceil(this.contained.getCollectiveMovementCost())), 0);
     }
 
     /**

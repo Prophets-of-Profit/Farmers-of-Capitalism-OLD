@@ -105,7 +105,7 @@ class Plant : Item{
     /**
     * Returns the influence the plant has on the tile's movement cost; inherited from Item.
     */
-    override double getMovementCost(){
+    override double getMovementCost(Character stepper){
         if(PlantAttribute.SLOWING in this.plantAttributes){
             return this.plantAttributes[PlantAttribute.SLOWING];
         }else if(PlantAttribute.SPEEDING in this.plantAttributes){
