@@ -101,7 +101,7 @@ struct Range(T){
      * Returns a string representation of the range so that it can be printed
      */
     string toString(){
-        return this.minimum.to!string ~ " ≤ " ~ this.current.to!string ~ " ≤ " ~ this.maximum.to!string;
+        return this.current.to!string ~ " ∈ [" ~ this.minimum.to!string ~ ", " ~ this.maximum.to!string ~ "]";
     }
 
 }
