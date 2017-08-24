@@ -62,14 +62,14 @@ double distanceBetween(Point first, Point second){
  * Stores them by the type of functions an item would require
  */
 struct AttributeSet{
-    Attribute!(Character delegate())[] getOwnerActions;
-    Attribute!(bool delegate(Coordinate))[] canBePlacedActions;
-    Attribute!(double delegate(Character))[] getMovementCostActions;
-    Attribute!(void delegate(Character))[] steppedOnActions;
-    Attribute!(void delegate())[] incrementedActions;
-    Attribute!(void delegate(Character))[] mainActions;
-    Attribute!(void delegate(Character))[] destroyedActions;
-    Attribute!(int delegate())[] getSizeActions;
+    Attribute!(Character delegate(Plant))[] getOwnerActions;
+    Attribute!(bool delegate(Coordinate, Plant))[] canBePlacedActions;
+    Attribute!(double delegate(Character, Plant))[] getMovementCostActions;
+    Attribute!(void delegate(Character, Plant))[] steppedOnActions;
+    Attribute!(void delegate(Plant))[] incrementedActions;
+    Attribute!(void delegate(Character, Plant))[] mainActions;
+    Attribute!(void delegate(Character, Plant))[] destroyedActions;
+    Attribute!(int delegate(Plant))[] getSizeActions;
 }
 
 /**
