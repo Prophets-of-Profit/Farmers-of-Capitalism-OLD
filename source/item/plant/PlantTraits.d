@@ -1,88 +1,86 @@
 module item.plant.PlantTraits;
 
-import std.algorithm;
-import std.array;
 import std.conv;
+import std.math;
 
 import character.Character;
-import item.plant.Plant;
+import world.World;
 
 /**
- * A struct that contains a function or an action that takes in a character and returns void
- * Is in such a format because most of the slottable functions a plant (or even an item) has will conform to that format
- * Is in a struct because whether the action is natural or not should be stored with the actual action itself
- * Stores ActionType which signifies where the action can slot
+ * Specifies how a trait should show up
+ * A higher inheritance type dominates over a lower inheritance type and so the lower ones would not show up
+ * Co-dominant and co-recessive traits can show up together, but can be dominated as well
+ * Does not support incomplete dominance where traits are mixed because of the slotting nature of attributes
  */
-struct PlantAction{
-
-    void delegate(Character actor) action;  ///The actual function or action this will do; returns nothing and takes in a character like most of the functions an item or plant requires
-    alias action this;                      ///Makes it so that the plant action can be accessed as the actual function or action
-    bool isNatural;                         ///Whether the action is natural; default is false
-    ActionType type;                        ///The type of action or where this action can slot
-
+enum VisibilityType{
+    WEAK_RECESSIVE, CO_RECESSIVE, STRONG_RECESSIVE, WEAK_DOMINANT, CO_DOMINANT, STRONG_DOMINANT
 }
 
 /**
-* Enums for the types of stats that a plant can have
-* Growth: Rate of growth.
-* Resilience: Resistance to invasive species and being stepped on.
-* Yield: Amount of products produced when destroyed.
-* Seed Quantity: Amount of seeds produced when naturally reproducing.
-* Seed Strength: Distance seeds can go before settling.
-*/
-enum PlantReq{
-    GROWTH, RESILIENCE, YIELD, SEED_QUANTITY, SEED_STRENGTH
-}
-
-/**
- * Types of actions a plant has
- * Almost directly correlates to the types of actions any item would have
+ * Stores an attribute name, how the attribute passes down, and what the attribute does when slotted
+ * Action is ideally a delegate
+ * Is as it is so that each attribute is slottable and has an effect in some way for when it is slotted
  */
-enum ActionType{
-    STEPPED, MAIN, DESTROYED, PLACED, INCREMENTAL
+struct Attribute(T){
+    string name;                    ///The name of this attribute
+    VisibilityType inheritance;     ///How the attribute would surface
+    T action;                       ///What this attribute would do when slotted; is ideally a delegate
+    Point difficulty;               ///The difficulty of this attribute; attributes close together are closely related and more likely to mutate into each other, but farther away attributes are more likely to be mutually exclusive and are harder to obtain together
+    alias action this;              ///Makes it so the attribute is accessible as what it does
 }
 
 /**
- * Attributes a plant can have
- *     *Patent: Ownership based on creator rather than tile owner.
- *         Level 1: Ownership determined based on immediate creator or creator of parents.
- *     *Moveable: Can be replanted after being planted, passing growth cycles, and being harvested.
- *         Level 1: Can be moved if maturity <= 20%.
- *         Level 2: Can be moved if maturity <= 40%.
- *         Level 3: Can be moved if maturity <= 60%.
- *         Level 4: Can be moved if maturity <= 80%.
- *         Level 5: Can be moved.
- *     *Invasive: Inhibits other plants on the same tile. Slowed by Resilience of other plants. TODO: Implement Resilience
- *         Level 1: Slows growth for all other plants on tile by 25%.
- *         Level 2: Slows growth for all other plants on tile by 50%.
- *         Level 3: Slows growth for all other plants on tile by 75%.
- *         Level 4: Stops growth for all other plants on tile.
- *         Level 5: All other plants on tile wither by 25% of growth rate instead of growing.
- *     *Aquatic: Can be planted on water tiles.
- *     *Slowing: Increases movement cost for a tile.
- *         Movement cost increase is equal to level.
+ * A point in 2 dimensional space
+ * Is only used to organize attributes into a plane to see how related attributes may be
+ * Attributes that are far away from each other are difficult to obtain in a single category
+ * If attributes are too far away from each other, they may be mutually exclusive
+ * Attributes close to the origin are naturally occuring
+ * The closer attributes are, the more related they are and the more likely one will mutate into the other were they to mutate
  */
-enum PlantAttribute{
-    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING, SYMBIOTIC, MUTABLE
-}
+struct Point{
+    int x;              ///The x value of the point
+    int y;              ///The y value of the point
+    alias coords this;  ///Allows the point to be accessed as an array of its points
 
-PlantAttribute[] naturalAttributes;                             ///A list of all natural attributes in the game
-PlantAttribute[][] mutuallyExclusiveAttributes;                 ///A list of mutually exclusive attributes (eg. a plant cannot have 2 mutually exclusive attributes)
-PlantAction[] allActions;                                       ///A list of all possible natural actions in the game sorted by ActionType
-
-/**
- * Returns an array of actions similar to allActions, but only containing natural actions from allActions
- */
-PlantAction[] getNaturalActions(){
-    return  allActions.filter!(a => a.isNatural).array;
+    /**
+     * Gets the point as an array of its points
+     */
+    @property int[] coords(){
+        return [x, y];
+    }
 }
 
 /**
- * Gets all actions of a given ActionType from a source list
- * Params:
- *      type = the types of actions to return
- *      filterFrom = the source list of actions to filter from
+ * Gets the distance between two points
  */
-PlantAction[] getActionsOfType(ActionType type, PlantAction[] filterFrom = allActions){
-    return filterFrom.filter!(a => a.type == type).array;
+double distanceBetween(Point first, Point second){
+    return sqrt(((first.x - second.x).pow(2) + (first.y - second.y).pow(2)).to!double);
 }
+
+/**
+ * A struct that stores a set of attributes
+ * Stores them by the type of functions an item would require
+ */
+struct AttributeSet{
+    Attribute!(Character delegate())[] getOwnerActions;
+    Attribute!(bool delegate(Coordinate))[] canBePlacedActions;
+    Attribute!(double delegate(Character))[] getMovementCostActions;
+    Attribute!(void delegate(Character))[] steppedOnActions;
+    Attribute!(void delegate())[] incrementedActions;
+    Attribute!(void delegate(Character))[] mainActions;
+    Attribute!(void delegate(Character))[] destroyedActions;
+    Attribute!(int delegate())[] getSizeActions;
+}
+
+/**
+ * A collection of things that would define a pre-defined plant
+ * Any plant would be compared to all default plants to figure out what species the plant is by whatever default plant it is closest to
+ */
+struct DefaultPlant{
+    string name;                    ///The name of this defualt plant so the player can find out what species their plant is
+    AttributeSet defaultAttributes; ///The set of attributes the plant has by default
+    bool isNatural;                 ///Whether the plant occurs naturally
+}
+
+AttributeSet allActions = AttributeSet();   ///Stores a set of all actions
+DefaultPlant[] allDefaultPlants;            ///Stores all default plants so that any plant can be compared to this list, and whichever plant it is closest to is its species
