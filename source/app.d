@@ -39,6 +39,7 @@ class Main{
 
     public World mainWorld;         ///The world on which the game is played.
     public Player[] players;        ///The players of the game. Length of array is how many players.
+    public World[] pastWorlds;      ///The world at some previous state of the game
 
     /**
      * Makes the main object of a game
@@ -52,7 +53,7 @@ class Main{
         mainWorld = new World(worldSize);
         players = new Player[numPlayers];
         foreach(i; 0..numPlayers){
-            Coordinate startLocation = Coordinate(worldSize, i * getSizeOfRing(worldSize) / numPlayers);
+            Coordinate startLocation = Coordinate(worldSize - 1, i * getSizeOfRing(worldSize - 1) / numPlayers);
             players[i] = new Player(startLocation);
             mainWorld.getTileAt(startLocation).owner = players[i];
         }
@@ -75,14 +76,15 @@ void main(){
 
     //if(gameType == NEW_GAME){
         //TODO Get number of players and world size in world creation
-        int numPlayers = 3;   //Placeholder, get rid of this when selection is implemented.
-        int worldSize = 100;
+        int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.
+        int worldSize = 25;     //TODO fix world generation time; anything too big takes hyperbolically forever to create
         game = new Main(numPlayers, worldSize);
     //}
-    while(true){
+    while(false){/*while(true){*/
         foreach(player; game.players){
             //TODO Player action
         }
+        game.pastWorlds ~= game.mainWorld.clone();
         game.mainWorld.update();
     }
 
