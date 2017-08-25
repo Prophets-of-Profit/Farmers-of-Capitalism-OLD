@@ -2,8 +2,10 @@ module item.plant.PlantTraits;
 
 import std.conv;
 import std.math;
+import std.random;
 
 import character.Character;
+import item.plant.Plant;
 import world.World;
 
 /**
@@ -17,23 +19,31 @@ enum VisibilityType{
 }
 
 /**
- * Stores an attribute name, how the attribute passes down, and what the attribute does when slotted
+ * Stores an attribute name, how the attribute is visible, and what the attribute does when slotted
  * Action is ideally a delegate
  * Is as it is so that each attribute is slottable and has an effect in some way for when it is slotted
  */
 struct Attribute(T){
     string name;                    ///The name of this attribute
-    VisibilityType inheritance;     ///How the attribute would surface
+    VisibilityType type;            ///How the attribute would surface
     T action;                       ///What this attribute would do when slotted; is ideally a delegate
     Point difficulty;               ///The difficulty of this attribute; attributes close together are closely related and more likely to mutate into each other, but farther away attributes are more likely to be mutually exclusive and are harder to obtain together
     alias action this;              ///Makes it so the attribute is accessible as what it does
 }
 
 /**
+ * Returns whether two attributes are mutually exclusive
+ * Mutually exclusive attributes are attributes that are respectively in cartesian quadrants 1 and 3 or 2 and 4
+ */
+bool canWorkTogether(T)(Attribute!T first, Attribute!T second){
+    return (first.x < 0) == (second.x < 0) || (firxt.y < 0) == (second.y < 0);
+}
+
+/**
  * A point in 2 dimensional space
  * Is only used to organize attributes into a plane to see how related attributes may be
  * Attributes that are far away from each other are difficult to obtain in a single category
- * If attributes are too far away from each other, they may be mutually exclusive
+ * Attributes that are on opposite axes (eg quadrants 1 and 3 or quadrants 2 and 4) are mutually exclusive
  * Attributes close to the origin are naturally occuring
  * The closer attributes are, the more related they are and the more likely one will mutate into the other were they to mutate
  */
@@ -66,10 +76,44 @@ struct AttributeSet{
     Attribute!(bool delegate(Coordinate, Plant))[] canBePlacedActions;
     Attribute!(double delegate(Character, Plant))[] getMovementCostActions;
     Attribute!(void delegate(Character, Plant))[] steppedOnActions;
-    Attribute!(void delegate(Plant))[] incrementedActions;
+    Attribute!(void delegate(Plant))[] incrementalActions;
     Attribute!(void delegate(Character, Plant))[] mainActions;
     Attribute!(void delegate(Character, Plant))[] destroyedActions;
     Attribute!(int delegate(Plant))[] getSizeActions;
+
+    /**
+     * Gets all the attributes from the set that would actually be visible
+     * So if a category were to, for example, have a dominant and a recessive trait in a category, it would return the category with only the dominant trait
+     */
+    AttributeSet getVisibleAttributes(){
+        //This is the method that actually filters each category into its visible attributes
+        Attribute!(T)[] filterVisible(T)(Attribute!(T)[] category){
+            Attribute!(T)[] visible = [category[0]];
+            foreach(attribute; category){
+                if(attribute.type > visible[0].type){
+                    visible = [attribute];
+                }else if(visible[0].type == attribute.type){
+                    if(attribute.type == VisibilityType.CO_RECESSIVE || attribute.type == VisibilityType.CO_DOMINANT){
+                        visible ~= attribute; //TODO account for canWorkTogether for mutually exclusive attributes
+                    }else{
+                        visible = [(uniform(0, 2) == 1)? visible[0] : attribute];
+                    }
+                }
+            }
+            return visible;
+        }
+        //Just returns the above method called on each category
+        return AttributeSet(
+            filterVisible(this.getOwnerActions),
+            filterVisible(this.canBePlacedActions),
+            filterVisible(this.getMovementCostActions),
+            filterVisible(this.steppedOnActions),
+            filterVisible(this.incrementalActions),
+            filterVisible(this.mainActions),
+            filterVisible(this.destroyedActions),
+            filterVisible(this.getSizeActions)
+        );
+    }
 }
 
 /**
