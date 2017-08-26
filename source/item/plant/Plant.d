@@ -1,12 +1,15 @@
 module item.plant.Plant;
 
 import std.algorithm;
+import std.conv;
 
 import app;
 import character.Character;
 import item.Inventory;
 import item.Item;
 import item.plant.PlantTraits;
+import world.HexTile;
+import world.Range;
 import world.World;
 
 /**
@@ -15,17 +18,74 @@ import world.World;
  */
 class Plant : Item{
 
-    AttributeSet attributes;        ///All the attributes this plant has and can pass down
-    AttributeSet usableAttributes;  ///The attributes that the plant can actually use
+    /**
+     * A collection of ranges
+     * The first range is the survival range for the plant
+     * The second range is the optimal range for the plant
+     */
+    struct Conditions{
+        Range!double survival;    ///The conditions which need to be met for the plant to live
+        Range!double optimal;     ///The conditions at which the plant thrives
+    }
+
+    AttributeSet attributes;                    ///All the attributes this plant has and can pass down
+    AttributeSet usableAttributes;              ///The attributes that the plant can actually use
+    Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant
 
     /**
-     * A constructor for a plant
+     * A constructor for a plant for all types of plant generation
      * Ensures that attributes are set
+     * All other plant constructors call this one
+     * Params:
+     *      source = the source inventory this plant will go to
+     *      allAttributes = the attributes this plant will have
      */
     this(Inventory source, AttributeSet allAttributes){
         this.attributes = allAttributes;
         this.usableAttributes = this.attributes.getVisibleAttributes();
         this.getMovedTo(source);
+        HexTile tileOfCreation = game.mainWorld.getTileAt(this.coords);
+        foreach(tileStat; __traits(allMembers, TileStat)){
+            TileStat stat = tileStat.to!TileStat;
+            double survivableDeviation = 0.25;
+            double optimalDeviation = 0.075;
+            Range!double survivable = Range!double(Range!double(0, 1, tileOfCreation.climate[stat] - survivableDeviation), Range!double(0, 1, tileOfCreation.climate[stat] + survivableDeviation));
+            Range!double optimal = Range!double(Range!double(0, 1, tileOfCreation.climate[stat] - optimalDeviation), Range!double(0, 1, tileOfCreation.climate[stat] + optimalDeviation));
+            plantRequirements[stat] = Conditions(survivable, optimal);
+        }
+    }
+
+    /**
+     * A constructor for a plant if generated naturally
+     * Natural plants are placed in the world and must be modeled after an existing DefaultPlant as natural plants shouldn't be anything new or unique
+     * Params:
+     *      location = where this natural plant will be generated
+     *      base = the DefaultPlant from which to model this plant
+     */
+    this(Coordinate location, DefaultPlant base){
+        this(game.mainWorld.getTileAt(location).contained, base.defaultAttributes);
+    }
+
+    /**
+     * The constructor for a plant if generated from another plant
+     * Only works if the plant can have a single parent
+     * The plant will place itself
+     * Params:
+     *      parent = the plant's parent
+     */
+    this(Plant parent){
+        //TODO
+    }
+
+    /**
+     * The constructor for a plant if generated from two other parents
+     * Works when the plant can be bred from two other plants
+     * Params:
+     *      firstParent = one of this plant's parents
+     *      secondParent = one of this plant's other parents
+     */
+    this(Plant firstParent, Plant secondParent){
+        //TODO
     }
 
     /**
@@ -132,8 +192,9 @@ class Plant : Item{
      */
     override Plant clone(){
         Plant clone = new Plant(null, this.attributes);
-        clone.usableAttributes = this.usableAttributes;
+        clone.usableAttributes = this.usableAttributes; //is called again because sometimes getVisibleAttributes() determines the visible attributes randomly as a tie breaker
         clone.source = this.source.clone; //clone isn't .getMovedTo the inventory clone because the clone already contains a copy of this plant
+        clone.plantRequirements = this.plantRequirements;
         return clone;
     }
 
