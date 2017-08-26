@@ -3,6 +3,7 @@ module character.Player;
 import character.Character;
 import character.technology.Technology;
 import item.Inventory;
+import item.Item;
 import world.World;
 
 /**
@@ -11,8 +12,8 @@ import world.World;
  */
 public class Player: Character{
 
-    public Inventory inventory = new Inventory();   ///The player's inventory
-    public TechnologyName[] researched;             ///The technologies the player has researched
+    public Inventory!Item inventory = new Inventory!Item();     ///The player's inventory
+    public TechnologyName[] researched;                         ///The technologies the player has researched
 
     /**
      * A property method that sets the player's and its inventory's location

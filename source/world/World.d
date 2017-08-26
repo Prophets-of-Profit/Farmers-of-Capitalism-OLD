@@ -2,8 +2,8 @@ module world.World;
 
 import std.algorithm;
 import std.array;
-import std.random;
 import std.conv;
+import std.random;
 
 import core.exception;
 

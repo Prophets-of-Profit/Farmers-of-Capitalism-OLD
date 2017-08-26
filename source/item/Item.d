@@ -12,8 +12,8 @@ import world.World;
  */
 abstract class Item{
 
-    public Range!(double) completion = Range!(double)(0, 1, 0);     ///How close the Item is towards being complete: once it won't function until it has reached completion
-    public Inventory source;                                        ///The source inventory for where the item is/came from
+    public Range!double completion = Range!double(0, 1, 0);         ///How close the Item is towards being complete: once it won't function until it has reached completion
+    public Inventory!Item source;                                   ///The source inventory for where the item is/came from
     public bool isPlaced = false;                                   ///Whether the Item is in a hextile or not
 
     /**
@@ -32,12 +32,12 @@ abstract class Item{
      * Params:
      *      newSource = the new inventory to be moved to
      */
-    bool getMovedTo(Inventory newSource){
+    bool getMovedTo(Inventory!Item newSource){
         if(newSource is null){
             return false;
         }
         if(this.source !is null){
-            Inventory oldSource = this.source;
+            Inventory!Item oldSource = this.source;
             this.source.remove(this);
             if(!newSource.add(this)){
                 return this.getMovedTo(oldSource);
