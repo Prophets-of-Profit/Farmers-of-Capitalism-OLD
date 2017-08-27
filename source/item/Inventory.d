@@ -12,17 +12,17 @@ import world.World;
 /**
  * A class for an object that holds other objects
  */
-class Inventory{
+class Inventory(T){
 
     public Character[] accessibleTo;///A list of characters who can access the inventory
-    public Item[] items;            ///All the items inside of the inventory
+    public T[] items;               ///All the items inside of the inventory
     alias items this;               ///Sets the access of this object as the array of items it contains
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
     public Coordinate coords;       ///The location of the tile or the player or inventorycontainer with this inventory
 
     /**
-     * The player who owns this inventory
-     * Is just the first player in the accessibleTo list
+     * The character who owns this inventory
+     * Is just the first character in the accessibleTo list
      */
     @property Character owner(){
         return this.accessibleTo[0];
@@ -44,7 +44,7 @@ class Inventory{
      * A constructor for an inventory
      * Takes in a size, but if the inventory size is negative, the inventory has infinite size
      * Params:
-     *      maxSize = the maximum amount of items the inventory can hold; if it is negative, the inventory won't have a maximum size
+     *      maxSize = the maximum amount of Ts the inventory can hold; if it is negative, the inventory won't have a maximum size
      */
     this(int maxSize = -1){
         this.maxSize = maxSize;
@@ -56,8 +56,8 @@ class Inventory{
      * Params:
      *      itemToAdd = the item to add to the inventory
      */
-    bool add(Item itemToAdd){
-        if(itemToAdd is null || this.countSpaceRemaining - itemToAdd.getSize() < 0){
+    bool add(T itemToAdd){
+        if(itemToAdd is null || this.countSpaceRemaining - getSize(itemToAdd) < 0){
             return false;
         }
         this.items ~= itemToAdd;
@@ -70,7 +70,7 @@ class Inventory{
      * Params:
      *      itemToRemove = the item to remove from the inventory
      */
-    bool remove(Item itemToRemove){
+    bool remove(T itemToRemove){
         if(this.items.canFind(itemToRemove)){
             this.items = this.items.remove(this.items.countUntil(itemToRemove));
             return true;
@@ -84,7 +84,7 @@ class Inventory{
     int countSpaceUsed(){
         int spaceUsed;
         foreach(item; this.items){
-            spaceUsed += item.getSize;
+            spaceUsed += getSize(item);
         }
         assert(spaceUsed <= this.maxSize || this.maxSize < 0);
         return spaceUsed;
@@ -101,14 +101,31 @@ class Inventory{
     }
 
     /**
+     * Gets the size of the given object
+     * Params:
+     *      objectToGetSizeOf = the object to get the size of
+     */
+    int getSize(T objectToGetSizeOf){
+        static if(__traits(hasMember, T, "getSize")){
+            return objectToGetSizeOf.getSize();
+        }else{
+            return 1;
+        }
+    }
+
+    /**
      * Returns a copy of this inventory
      * Changes in this inventory are not reflected in the copy
      * Changes in players are reflected in the copy, however
      */
     Inventory clone(){
         Inventory copy = new Inventory(this.maxSize);
-        foreach(i; 0..this.items.length){
-            copy.items[i] = this.items[i].clone();
+        static if(__traits(hasMember, T, "clone")){
+            foreach(i; 0..this.items.length){
+                copy.items[i] = this.items[i].clone();
+            }
+        }else{
+            copy.items = this.items;
         }
         copy.accessibleTo = this.accessibleTo;
         copy.coords = this.coords;
@@ -122,5 +139,5 @@ unittest{
 
     writeln("\nRunning unittest of Inventory");
 
-    Inventory testInv = new Inventory(1);
+    Inventory!Item testInv = new Inventory!Item(1);
 }
