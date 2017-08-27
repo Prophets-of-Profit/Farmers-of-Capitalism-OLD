@@ -6,6 +6,7 @@ import std.random;
 
 import character.Character;
 import item.plant.Plant;
+import world.Range;
 import world.World;
 
 /**
@@ -32,14 +33,6 @@ struct Attribute(T){
 }
 
 /**
- * Returns whether two attributes are mutually exclusive
- * Mutually exclusive attributes are attributes that are respectively in cartesian quadrants 1 and 3 or 2 and 4
- */
-bool canWorkTogether(T)(Attribute!T first, Attribute!T second){
-    return (first.x < 0) == (second.x < 0) || (firxt.y < 0) == (second.y < 0);
-}
-
-/**
  * A point in 2 dimensional space
  * Is only used to organize attributes into a plane to see how related attributes may be
  * Attributes that are far away from each other are difficult to obtain in a single category
@@ -63,8 +56,16 @@ struct Point{
 /**
  * Gets the distance between two points
  */
-double distanceBetween(Point first, Point second){
+double distance(Point first, Point second = Point(0, 0)){
     return sqrt(((first.x - second.x).pow(2) + (first.y - second.y).pow(2)).to!double);
+}
+
+/**
+ * Returns whether two attributes are mutually exclusive
+ * Mutually exclusive attributes are attributes that are respectively in cartesian quadrants 1 and 3 or 2 and 4
+ */
+bool canWorkTogether(T)(Attribute!T first, Attribute!T second){
+    return (first.difficulty.x < 0) == (second.difficulty.x < 0) || (first.difficulty.y < 0) == (second.difficulty.y < 0);
 }
 
 /**
@@ -93,10 +94,24 @@ struct AttributeSet{
                 if(attribute.type > visible[0].type){
                     visible = [attribute];
                 }else if(visible[0].type == attribute.type){
+                    void randVisible(){
+                        visible = [(uniform(0, 2) == 0)? visible[0] : attribute];
+                    }
                     if(attribute.type == VisibilityType.CO_RECESSIVE || attribute.type == VisibilityType.CO_DOMINANT){
-                        visible ~= attribute; //TODO account for canWorkTogether for mutually exclusive attributes
+                        if(canWorkTogether!T(visible[0], attribute)){
+                            visible ~= attribute;
+                        }else{
+                            randVisible();
+                        }
                     }else{
-                        visible = [(uniform(0, 2) == 1)? visible[0] : attribute];
+                        //Will choose the attribute with the lesser distance, or if the distances are the same, a random attribute
+                        double alreadyExistingDistance = visible[0].difficulty.distance;
+                        double challengerDistance = attribute.difficulty.distance;
+                        if(Range!double(alreadyExistingDistance - 0.000001, alreadyExistingDistance + 0.000001).isInRange(challengerDistance)){
+                            randVisible();
+                        }else{
+                            visible = [(alreadyExistingDistance < challengerDistance)? visible[0] : attribute];
+                        }
                     }
                 }
             }
