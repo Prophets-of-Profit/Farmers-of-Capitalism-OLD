@@ -2,6 +2,7 @@ module item.plant.Plant;
 
 import std.algorithm;
 import std.conv;
+import std.random;
 
 import app;
 import character.Character;
@@ -28,22 +29,20 @@ class Plant : Item{
         Range!double optimal;     ///The conditions at which the plant thrives
     }
 
-    AttributeSet attributes;                    ///All the attributes this plant has and can pass down
-    AttributeSet usableAttributes;              ///The attributes that the plant can actually use
-    Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant
+    TraitSet traits;                            ///All the traits this plant has and can pass down
+    TraitSet usableTraits;                      ///The traits that the plant can actually use
+    Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant; is just a few extra numbers and may not be used depending on the plant's traits
 
     /**
      * A constructor for a plant for all types of plant generation
-     * Ensures that attributes are set
+     * Ensures that traits are set
      * All other plant constructors call this one
      * Params:
-     *      source = the source inventory this plant will go to
-     *      allAttributes = the attributes this plant will have
+     *      allTraits = the traits this plant will have
      */
-    this(Inventory source, AttributeSet allAttributes){
-        this.attributes = allAttributes;
-        this.usableAttributes = this.attributes.getVisibleAttributes();
-        this.getMovedTo(source);
+    private this(TraitSet allTraits){
+        this.traits = allTraits;
+        this.usableTraits = this.traits.getVisibleTraits();
         HexTile tileOfCreation = game.mainWorld.getTileAt(this.coords);
         foreach(tileStat; __traits(allMembers, TileStat)){
             TileStat stat = tileStat.to!TileStat;
@@ -63,7 +62,8 @@ class Plant : Item{
      *      base = the DefaultPlant from which to model this plant
      */
     this(Coordinate location, DefaultPlant base){
-        this(game.mainWorld.getTileAt(location).contained, base.defaultAttributes);
+        this(base.defaultTraits);
+        this.getMovedTo(game.mainWorld.getTileAt(location).contained);
     }
 
     /**
@@ -74,7 +74,8 @@ class Plant : Item{
      *      parent = the plant's parent
      */
     this(Plant parent){
-        //TODO
+        this(parent.traits);
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
     }
 
     /**
@@ -85,7 +86,21 @@ class Plant : Item{
      *      secondParent = one of this plant's other parents
      */
     this(Plant firstParent, Plant secondParent){
-        //TODO
+        Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
+            return [first[uniform(0, $)], second[uniform(0, $)]];
+        }
+        this(TraitSet(
+            getRandTraits(firstParent.traits.locationAsSeedActions, secondParent.traits.locationAsSeedActions),
+            getRandTraits(firstParent.traits.getOwnerActions, secondParent.traits.getOwnerActions),
+            getRandTraits(firstParent.traits.canBePlacedActions, secondParent.traits.canBePlacedActions),
+            getRandTraits(firstParent.traits.getMovementCostActions, secondParent.traits.getMovementCostActions),
+            getRandTraits(firstParent.traits.steppedOnActions, secondParent.traits.steppedOnActions),
+            getRandTraits(firstParent.traits.incrementalActions, secondParent.traits.incrementalActions),
+            getRandTraits(firstParent.traits.mainActions, secondParent.traits.mainActions),
+            getRandTraits(firstParent.traits.destroyedActions, secondParent.traits.destroyedActions),
+            getRandTraits(firstParent.traits.getSizeActions, secondParent.traits.getSizeActions)
+        ));
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
     }
 
     /**
@@ -93,18 +108,18 @@ class Plant : Item{
      * Is slottable
      */
     override Character getOwner(){
-        return usableAttributes.getOwnerActions[0](this);   //Doesn't iterate through the actions in the category because there can only be one owner
+        return this.usableTraits.getOwnerActions[0].action(this);   //Doesn't iterate through the actions in the category because there can only be one owner
     }
 
     /**
      * Whether the plant can be placed at the given coordinates
-     * Is slottable; all of the attributes for determining plant placement must have their conditions met for the plant to be placed at a certain coordinate
+     * Is slottable; all of the traits for determining plant placement must have their conditions met for the plant to be placed at a certain coordinate
      * Params:
      *      placementCandidateCoords = the location to check of whether the plant can be placed there
      */
     override bool canBePlaced(Coordinate placementCandidateCoords){
-        foreach(action; usableAttributes.canBePlacedActions){
-            if(!action(placementCandidateCoords, this)){
+        foreach(trait; this.usableTraits.canBePlacedActions){
+            if(!trait.action(placementCandidateCoords, this)){
                 return false;
             }
         }
@@ -125,12 +140,12 @@ class Plant : Item{
 
     /**
      * Gets how much this plant affects movement cost
-     * Is slottable; all attributes that return a movement cost are summed and then returned
+     * Is slottable; all traits that return a movement cost are summed and then returned
      * Params:
      *      stepper = the character that stepped on the plant
      */
     override double getMovementCost(Character stepper){
-        return usableAttributes.getMovementCostActions.map!(a => a(stepper, this)).reduce!((a, b) => a + b);
+        return this.usableTraits.getMovementCostActions.map!(a => a.action(stepper, this)).reduce!((a, b) => a + b);
     }
 
     /**
@@ -140,8 +155,8 @@ class Plant : Item{
      *      stepper = the character that has stepped on the plant
      */
     override void getSteppedOn(Character stepper){
-        foreach(action; usableAttributes.steppedOnActions){
-            action(stepper, this);
+        foreach(trait; this.usableTraits.steppedOnActions){
+            trait.action(stepper, this);
         }
     }
 
@@ -150,8 +165,8 @@ class Plant : Item{
      * Is slottable
      */
     override void doIncrementalAction(){
-        foreach(action; usableAttributes.incrementalActions){
-            action(this);
+        foreach(trait; this.usableTraits.incrementalActions){
+            trait.action(this);
         }
     }
 
@@ -162,8 +177,8 @@ class Plant : Item{
      *      player = the character interacting with the plant
      */
     override void doMainAction(Character player){
-        foreach(action; usableAttributes.mainActions){
-            action(player, this);
+        foreach(trait; this.usableTraits.mainActions){
+            trait.action(player, this);
         }
     }
 
@@ -174,8 +189,8 @@ class Plant : Item{
      *      destroyer = the player who is destroying the plant
      */
     override void getDestroyedBy(Character destroyer){
-        foreach(action; usableAttributes.destroyedActions){
-            action(destroyer, this);
+        foreach(trait; this.usableTraits.destroyedActions){
+            trait.action(destroyer, this);
         }
     }
 
@@ -184,15 +199,15 @@ class Plant : Item{
      * Is slottable
      */
     override int getSize(){
-        return usableAttributes.getSizeActions.map!(a => a(this)).reduce!((a, b) => a + b);
+        return this.usableTraits.getSizeActions.map!(a => a.action(this)).reduce!((a, b) => a + b);
     }
 
     /**
      * Makes a copy of this plant
      */
     override Plant clone(){
-        Plant clone = new Plant(null, this.attributes);
-        clone.usableAttributes = this.usableAttributes; //is called again because sometimes getVisibleAttributes() determines the visible attributes randomly as a tie breaker
+        Plant clone = new Plant(this.traits);
+        clone.usableTraits = this.usableTraits; //is called again because sometimes getVisibleTraits() determines the visible traits randomly as a tie breaker
         clone.source = this.source.clone; //clone isn't .getMovedTo the inventory clone because the clone already contains a copy of this plant
         clone.plantRequirements = this.plantRequirements;
         return clone;
