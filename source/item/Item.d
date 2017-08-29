@@ -64,5 +64,6 @@ abstract class Item{
     void getDestroyedBy(Character destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
     int getSize();                                           ///Gets the amount of space this item takes up in an inventory
     Item clone();                                            ///Returns a copy of the Item
+    override string toString();
 
 }

@@ -143,7 +143,7 @@ struct TraitSet{
  * A collection of things that would define a pre-defined plant
  * Any plant would be compared to all default plants to figure out what species the plant is by whatever default plant it is closest to
  */
-struct DefaultPlant{
+class DefaultPlant{
     string name;                    ///The name of this defualt plant so the player can find out what species their plant is
     TraitSet defaultTraits;         ///The set of traits the plant has by default
     bool isNatural;                 ///Whether the plant occurs naturally

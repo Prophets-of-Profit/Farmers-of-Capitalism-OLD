@@ -32,6 +32,7 @@ class Plant : Item{
     TraitSet traits;                            ///All the traits this plant has and can pass down
     TraitSet usableTraits;                      ///The traits that the plant can actually use
     Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant; is just a few extra numbers and may not be used depending on the plant's traits
+    DefaultPlant closestPreDefined;             ///The pre-defined plant that is closest to this plant; same as plant species
 
     /**
      * A constructor for a plant for all types of plant generation
@@ -42,7 +43,14 @@ class Plant : Item{
      */
     private this(TraitSet allTraits){
         this.traits = allTraits;
+        //TODO make chance for this.traits to get mutated
         this.usableTraits = this.traits.getVisibleTraits();
+        double min = double.max;
+        foreach(preDefined; allDefaultPlants){
+            if(preDefined.closenessTo(this) < min){
+                this.closestPreDefined = preDefined;
+            }
+        }
         HexTile tileOfCreation = game.mainWorld.getTileAt(this.coords);
         foreach(tileStat; __traits(allMembers, TileStat)){
             TileStat stat = tileStat.to!TileStat;
@@ -211,6 +219,13 @@ class Plant : Item{
         clone.source = this.source.clone; //clone isn't .getMovedTo the inventory clone because the clone already contains a copy of this plant
         clone.plantRequirements = this.plantRequirements;
         return clone;
+    }
+
+    /**
+     * Returns the name of the species of the plant
+     */
+    override string toString(){
+        return this.closestPreDefined.name;
     }
 
 }
