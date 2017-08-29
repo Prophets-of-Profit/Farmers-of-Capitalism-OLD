@@ -1,5 +1,6 @@
 module item.plant.PlantTraits;
 
+import std.algorithm;
 import std.conv;
 import std.math;
 import std.random;
@@ -146,6 +147,35 @@ struct DefaultPlant{
     string name;                    ///The name of this defualt plant so the player can find out what species their plant is
     TraitSet defaultTraits;         ///The set of traits the plant has by default
     bool isNatural;                 ///Whether the plant occurs naturally
+
+    /**
+     * Compares a plant to this pre-defined plant to see how close they are
+     * The closest pre-defined plant is its species
+     */
+    double closenessTo(Plant toCompare){
+        double sumOfCategory(T)(Trait!T[] firstCategory, Trait!T[] secondCategory){
+            double sum;
+            foreach(firstTrait; firstCategory){
+                foreach(secondTrait; secondCategory){
+                    sum += distance(firstTrait.difficulty, secondTrait.difficulty);
+                }
+            }
+            return sum;
+        }
+        TraitSet attr = toCompare.traits;
+        TraitSet self = this.defaultTraits;
+        return [
+            sumOfCategory(self.locationAsSeedActions, attr.locationAsSeedActions),
+            sumOfCategory(self.getOwnerActions, attr.getOwnerActions),
+            sumOfCategory(self.canBePlacedActions, attr.canBePlacedActions),
+            sumOfCategory(self.getMovementCostActions, attr.getMovementCostActions),
+            sumOfCategory(self.steppedOnActions, attr.steppedOnActions),
+            sumOfCategory(self.incrementalActions, attr.incrementalActions),
+            sumOfCategory(self.mainActions, attr.mainActions),
+            sumOfCategory(self.destroyedActions, attr.destroyedActions),
+            sumOfCategory(self.getSizeActions, attr.getSizeActions),
+        ].sum;
+    }
 }
 
 TraitSet allActions = TraitSet();           ///Stores a set of all actions
