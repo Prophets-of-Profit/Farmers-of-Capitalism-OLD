@@ -1,6 +1,13 @@
+/**
+ * Everything in this module is coded like cancer
+ * Lots of large lists of fields that seem like they can be abstracted in some way
+ * I have not found a way to abstract them
+ * I was able to abstract traits, but because those required templates, that was as far as I could abstract
+ */
 module item.plant.PlantTraits;
 
 import std.algorithm;
+import std.array;
 import std.conv;
 import std.math;
 import std.random;
@@ -31,6 +38,14 @@ class Trait(T){
     T action;                       ///What this trait would do when slotted; is ideally a function
     //alias action this;            Ideally makes it so the trait is accessible as what it does, but it doesn't work
 
+    /**
+     * A constructor for a trait
+     * Takes in all the fields for a trait
+     * Params:
+     *      type = how visible the trait is
+     *      difficulty = its location as a coordinate; the further from 0 it is, the more difficult it is to obtain; attributes closer to each other are more likely to mutate into each other
+     *      action = the action that should happen or be associated with this trait
+     */
     this(VisibilityType type, Point difficulty, T action){
         this.type = type;
         this.difficulty = difficulty;
@@ -79,6 +94,7 @@ bool canWorkTogether(T)(Trait!T first, Trait!T second){
  * Stores them by the type of functions an item would require
  */
 struct TraitSet{
+    Trait!(int function(Plant))[] chanceToMutateActions;
     Trait!(Coordinate function(Plant))[] locationAsSeedActions;
     Trait!(Character function(Plant))[] getOwnerActions;
     Trait!(bool function(Coordinate, Plant))[] canBePlacedActions;
@@ -126,6 +142,7 @@ struct TraitSet{
         }
         //Just returns the above method called on each category
         return TraitSet(
+            filterVisible(this.chanceToMutateActions),
             filterVisible(this.locationAsSeedActions),
             filterVisible(this.getOwnerActions),
             filterVisible(this.canBePlacedActions),
@@ -137,6 +154,67 @@ struct TraitSet{
             filterVisible(this.getSizeActions)
         );
     }
+}
+
+/**
+ * Combines two trait sets by randomly taking a trait from one set for a category and mixing it with another random trait from the other set of the same category
+ * Does the above for all categories
+ * Params:
+ *      first = the first traitset to be a part of the combined set
+ *      second = the second traitset to be a part of the combined set
+ */
+TraitSet combineTraitSets(TraitSet first, TraitSet second){
+    Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
+        return [first[uniform(0, $)], second[uniform(0, $)]];
+    }
+    return TraitSet(
+        getRandTraits(first.chanceToMutateActions, second.chanceToMutateActions),
+        getRandTraits(first.locationAsSeedActions, second.locationAsSeedActions),
+        getRandTraits(first.getOwnerActions, second.getOwnerActions),
+        getRandTraits(first.canBePlacedActions, second.canBePlacedActions),
+        getRandTraits(first.getMovementCostActions, second.getMovementCostActions),
+        getRandTraits(first.steppedOnActions, second.steppedOnActions),
+        getRandTraits(first.incrementalActions, second.incrementalActions),
+        getRandTraits(first.mainActions, second.mainActions),
+        getRandTraits(first.destroyedActions, second.destroyedActions),
+        getRandTraits(first.getSizeActions, second.getSizeActions)
+    );
+}
+
+/**
+ * Gets a mutated version of the given set
+ * Most likely scenario is that nothing changes
+ * Params:
+ *      initial = the traitset to start off with; any mutation happen off of this initial set
+ *      forWhom = the plant for whom this traitset is being made for
+ */
+TraitSet getPossiblyMutatedSetOf(TraitSet initial, Plant forWhom){
+    Trait!T[] getMutatedCategory(T)(Trait!T[] initialCategory, Trait!T[] candidates, int inverseChance){
+        debug{
+            foreach(trait; initialCategory){
+                assert(candidates.canFind(trait));
+            }
+        }
+        if(uniform(0, inverseChance) != 0){
+            return initialCategory;
+        }
+        int indexToChange = uniform(0, initialCategory.length).to!int;
+        initialCategory[indexToChange] = candidates.filter!(a => Range!double(-0.000001, 0.000001).isInRange(uniform(0.0, distance(a.difficulty, initialCategory[indexToChange].difficulty)))).array[uniform(0, $)];
+        return initialCategory;
+    }
+    int inverseChance = forWhom.usableTraits.chanceToMutateActions.map!(a => a.action(forWhom)).sum;
+    return TraitSet(
+        getMutatedCategory(initial.chanceToMutateActions, allActions.chanceToMutateActions, inverseChance),
+        getMutatedCategory(initial.locationAsSeedActions, allActions.locationAsSeedActions, inverseChance),
+        getMutatedCategory(initial.getOwnerActions, allActions.getOwnerActions, inverseChance),
+        getMutatedCategory(initial.canBePlacedActions, allActions.canBePlacedActions, inverseChance),
+        getMutatedCategory(initial.getMovementCostActions, allActions.getMovementCostActions, inverseChance),
+        getMutatedCategory(initial.steppedOnActions, allActions.steppedOnActions, inverseChance),
+        getMutatedCategory(initial.incrementalActions, allActions.incrementalActions, inverseChance),
+        getMutatedCategory(initial.mainActions, allActions.mainActions, inverseChance),
+        getMutatedCategory(initial.destroyedActions, allActions.destroyedActions, inverseChance),
+        getMutatedCategory(initial.getSizeActions, allActions.getSizeActions, inverseChance),
+    );
 }
 
 /**
@@ -162,18 +240,19 @@ class DefaultPlant{
             }
             return sum;
         }
-        TraitSet attr = toCompare.traits;
-        TraitSet self = this.defaultTraits;
+        TraitSet otherAttr = toCompare.traits;
+        TraitSet selfsAttr = this.defaultTraits;
         return [
-            sumOfCategory(self.locationAsSeedActions, attr.locationAsSeedActions),
-            sumOfCategory(self.getOwnerActions, attr.getOwnerActions),
-            sumOfCategory(self.canBePlacedActions, attr.canBePlacedActions),
-            sumOfCategory(self.getMovementCostActions, attr.getMovementCostActions),
-            sumOfCategory(self.steppedOnActions, attr.steppedOnActions),
-            sumOfCategory(self.incrementalActions, attr.incrementalActions),
-            sumOfCategory(self.mainActions, attr.mainActions),
-            sumOfCategory(self.destroyedActions, attr.destroyedActions),
-            sumOfCategory(self.getSizeActions, attr.getSizeActions),
+            sumOfCategory(selfsAttr.chanceToMutateActions, otherAttr.chanceToMutateActions),
+            sumOfCategory(selfsAttr.locationAsSeedActions, otherAttr.locationAsSeedActions),
+            sumOfCategory(selfsAttr.getOwnerActions, otherAttr.getOwnerActions),
+            sumOfCategory(selfsAttr.canBePlacedActions, otherAttr.canBePlacedActions),
+            sumOfCategory(selfsAttr.getMovementCostActions, otherAttr.getMovementCostActions),
+            sumOfCategory(selfsAttr.steppedOnActions, otherAttr.steppedOnActions),
+            sumOfCategory(selfsAttr.incrementalActions, otherAttr.incrementalActions),
+            sumOfCategory(selfsAttr.mainActions, otherAttr.mainActions),
+            sumOfCategory(selfsAttr.destroyedActions, otherAttr.destroyedActions),
+            sumOfCategory(selfsAttr.getSizeActions, otherAttr.getSizeActions),
         ].sum;
     }
 }

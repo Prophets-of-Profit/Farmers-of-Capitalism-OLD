@@ -43,8 +43,8 @@ class Plant : Item{
      */
     private this(TraitSet allTraits){
         this.traits = allTraits;
-        //TODO make chance for this.traits to get mutated
         this.usableTraits = this.traits.getVisibleTraits();
+        this.traits = getPossiblyMutatedSetOf(allTraits, this);
         double min = double.max;
         foreach(preDefined; allDefaultPlants){
             if(preDefined.closenessTo(this) < min){
@@ -97,17 +97,7 @@ class Plant : Item{
         Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
             return [first[uniform(0, $)], second[uniform(0, $)]];
         }
-        this(TraitSet(
-            getRandTraits(firstParent.traits.locationAsSeedActions, secondParent.traits.locationAsSeedActions),
-            getRandTraits(firstParent.traits.getOwnerActions, secondParent.traits.getOwnerActions),
-            getRandTraits(firstParent.traits.canBePlacedActions, secondParent.traits.canBePlacedActions),
-            getRandTraits(firstParent.traits.getMovementCostActions, secondParent.traits.getMovementCostActions),
-            getRandTraits(firstParent.traits.steppedOnActions, secondParent.traits.steppedOnActions),
-            getRandTraits(firstParent.traits.incrementalActions, secondParent.traits.incrementalActions),
-            getRandTraits(firstParent.traits.mainActions, secondParent.traits.mainActions),
-            getRandTraits(firstParent.traits.destroyedActions, secondParent.traits.destroyedActions),
-            getRandTraits(firstParent.traits.getSizeActions, secondParent.traits.getSizeActions)
-        ));
+        this(combineTraitSets(firstParent.traits, secondParent.traits));
         this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
     }
 
