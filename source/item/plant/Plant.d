@@ -33,6 +33,7 @@ class Plant : Item{
     TraitSet usableTraits;                      ///The traits that the plant can actually use
     Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant; is just a few extra numbers and may not be used depending on the plant's traits
     DefaultPlant closestPreDefined;             ///The pre-defined plant that is closest to this plant; same as plant species
+    Character placer;                           ///The character that placed the plant; will usually be null
 
     /**
      * A constructor for a plant for all types of plant generation
@@ -133,6 +134,7 @@ class Plant : Item{
      *      newLocation = the location for the plant to be placed
      */
     override bool getPlaced(Character placer, Coordinate newLocation){
+        this.placer = placer;
         return canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained);
     }
 
