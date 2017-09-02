@@ -1,8 +1,15 @@
 module item.plant.PlantFunctions;
 
+import app;
 import character.Character;
 import item.plant.Plant;
 import world.World;
+
+/**
+ * Where all the functions that a plant can have are stored
+ * In a plant, they are kept in the plant's attributeset which stores a trait which stores a function
+ * TODO split into multiple files?
+ */
 
 /**
  *
@@ -99,5 +106,85 @@ Character getOwnerBasedOnPlacer(Plant forWhom){
  *      |
  *
  * FOR: getOwnerActions
+ *
+ */
+
+/**
+ *
+ * FOR: canBePlacedActions
+ *
+ *      |
+ *      ∨
+ *
+ */
+
+bool canBePlacedOnAnyLand(Coordinate where, Plant forWhom){
+    return !canBePlacedOnAnyWater(where, forWhom);
+}
+
+bool canBePlacedOnAnyWater(Coordinate where, Plant forWhom){
+    return game.mainWorld.getTileAt(where).isWater;
+}
+
+/**
+ *
+ *      ∧
+ *      |
+ *
+ * FOR: canBePlacedActions
+ *
+ */
+
+/**
+ *
+ * FOR: getMovementCostActions
+ *
+ *      |
+ *      ∨
+ *
+ */
+
+double noCost(Character stepper, Plant forWhom){
+    return 0;
+}
+
+double impassable(Character stepper, Plant forWhom){
+    return 15;
+}
+
+/**
+ *
+ *      ∧
+ *      |
+ *
+ * FOR: getMovementCostActions
+ *
+ */
+
+/**
+ *
+ * FOR: steppedOnActions
+ *
+ *      |
+ *      ∨
+ *
+ */
+
+void nothing(Character stepper, Plant forWhom){}
+
+void healing(Character stepper, Plant forWhom){
+    stepper.health += stepper.health.maximum / 20;
+}
+
+void damaging(Character stepper, Plant forWhom){
+    stepper.health -= stepper.health.maximum / 20;
+}
+
+/**
+ *
+ *      ∧
+ *      |
+ *
+ * FOR: steppedOnActions
  *
  */
