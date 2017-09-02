@@ -122,7 +122,7 @@ class Inventory(T){
         Inventory copy = new Inventory(this.maxSize);
         static if(__traits(hasMember, T, "clone")){
             foreach(i; 0..this.items.length){
-                copy.items[i] = this.items[i].clone();
+                copy.items[i] = this.items[i].clone().to!T;
             }
         }else{
             copy.items = this.items;

@@ -6,9 +6,10 @@ import std.conv;
 import std.math;
 
 import app;
+import character.Race;
+import item.settlement.Settlement;
 import world.Range;
 import world.World;
-import character.Race;
 
 /**
  * A set of methods and instancedata for a character
@@ -110,6 +111,17 @@ class Character{
      */
     int getMovementCostAt(Coordinate locationToFindCost){
         return 1 + game.mainWorld.getTileAt(locationToFindCost).contained.items.map!(a => a.getMovementCost(this)).sum.floor.to!int;
+    }
+
+    /**
+     * Returns the nearest settlement to the origin
+     * Params:
+     *      origin = the origin from which to find the nearest settlement
+     *      blacklist = a list of settlements that should not be returned by this function
+     */
+    Settlement findNearestSettlement(Coordinate origin, Settlement[] blacklist = []){
+        //TODO: implement this function
+        return null;
     }
 
 }
