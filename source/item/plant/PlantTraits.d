@@ -1,88 +1,261 @@
+/**
+ * Everything in this module is coded like cancer
+ * Lots of large lists of fields that seem like they can be abstracted in some way
+ * I have not found a way to abstract them
+ * I was able to abstract traits, but because those required templates, that was as far as I could abstract
+ */
 module item.plant.PlantTraits;
 
 import std.algorithm;
 import std.array;
 import std.conv;
+import std.math;
+import std.random;
 
 import character.Character;
 import item.plant.Plant;
+import world.Range;
+import world.World;
 
 /**
- * A struct that contains a function or an action that takes in a character and returns void
- * Is in such a format because most of the slottable functions a plant (or even an item) has will conform to that format
- * Is in a struct because whether the action is natural or not should be stored with the actual action itself
- * Stores ActionType which signifies where the action can slot
+ * Specifies how a trait should show up
+ * A higher inheritance type dominates over a lower inheritance type and so the lower ones would not show up
+ * Co-dominant and co-recessive traits can show up together, but can be dominated as well
+ * Does not support incomplete dominance where traits are mixed because of the slotting nature of traits
  */
-struct PlantAction{
-
-    void delegate(Character actor) action;  ///The actual function or action this will do; returns nothing and takes in a character like most of the functions an item or plant requires
-    alias action this;                      ///Makes it so that the plant action can be accessed as the actual function or action
-    bool isNatural;                         ///Whether the action is natural; default is false
-    ActionType type;                        ///The type of action or where this action can slot
-
+enum VisibilityType{
+    WEAK_RECESSIVE, CO_RECESSIVE, STRONG_RECESSIVE, WEAK_DOMINANT, CO_DOMINANT, STRONG_DOMINANT
 }
 
 /**
-* Enums for the types of stats that a plant can have
-* Growth: Rate of growth.
-* Resilience: Resistance to invasive species and being stepped on.
-* Yield: Amount of products produced when destroyed.
-* Seed Quantity: Amount of seeds produced when naturally reproducing.
-* Seed Strength: Distance seeds can go before settling.
-*/
-enum PlantReq{
-    GROWTH, RESILIENCE, YIELD, SEED_QUANTITY, SEED_STRENGTH
-}
-
-/**
- * Types of actions a plant has
- * Almost directly correlates to the types of actions any item would have
+ * Stores an trait name, how the trait is visible, and what the trait does when slotted
+ * Action is ideally a function
+ * Is as it is so that each trait is slottable and has an effect in some way for when it is slotted
  */
-enum ActionType{
-    STEPPED, MAIN, DESTROYED, PLACED, INCREMENTAL
+class Trait(T){
+    VisibilityType type;            ///How the trait would surface
+    Point difficulty;               ///The difficulty of this trait; traits close together are closely related and more likely to mutate into each other, but farther away traits are more likely to be mutually exclusive and are harder to obtain together
+    T action;                       ///What this trait would do when slotted; is ideally a function
+    //alias action this;            Ideally makes it so the trait is accessible as what it does, but it doesn't work
+
+    /**
+     * A constructor for a trait
+     * Takes in all the fields for a trait
+     * Params:
+     *      type = how visible the trait is
+     *      difficulty = its location as a coordinate; the further from 0 it is, the more difficult it is to obtain; attributes closer to each other are more likely to mutate into each other
+     *      action = the action that should happen or be associated with this trait
+     */
+    this(VisibilityType type, Point difficulty, T action){
+        this.type = type;
+        this.difficulty = difficulty;
+        this.action = action;
+    }
 }
 
 /**
- * Attributes a plant can have
- *     *Patent: Ownership based on creator rather than tile owner.
- *         Level 1: Ownership determined based on immediate creator or creator of parents.
- *     *Moveable: Can be replanted after being planted, passing growth cycles, and being harvested.
- *         Level 1: Can be moved if maturity <= 20%.
- *         Level 2: Can be moved if maturity <= 40%.
- *         Level 3: Can be moved if maturity <= 60%.
- *         Level 4: Can be moved if maturity <= 80%.
- *         Level 5: Can be moved.
- *     *Invasive: Inhibits other plants on the same tile. Slowed by Resilience of other plants. TODO: Implement Resilience
- *         Level 1: Slows growth for all other plants on tile by 25%.
- *         Level 2: Slows growth for all other plants on tile by 50%.
- *         Level 3: Slows growth for all other plants on tile by 75%.
- *         Level 4: Stops growth for all other plants on tile.
- *         Level 5: All other plants on tile wither by 25% of growth rate instead of growing.
- *     *Aquatic: Can be planted on water tiles.
- *     *Slowing: Increases movement cost for a tile.
- *         Movement cost increase is equal to level.
+ * A point in 2 dimensional space
+ * Is only used to organize traits into a plane to see how related traits may be
+ * Traits that are far away from each other are difficult to obtain in a single category
+ * Traits that are on opposite axes (eg quadrants 1 and 3 or quadrants 2 and 4) are mutually exclusive
+ * Traits close to the origin are naturally occuring
+ * The closer traits are, the more related they are and the more likely one will mutate into the other were they to mutate
  */
-enum PlantAttribute{
-    PATENT, MOVABLE, INVASIVE, AQUATIC, SLOWING, SPEEDING, SYMBIOTIC, MUTABLE
+struct Point{
+    int x;              ///The x value of the point
+    int y;              ///The y value of the point
+    alias coords this;  ///Allows the point to be accessed as an array of its points
+
+    /**
+     * Gets the point as an array of its points
+     */
+    @property int[] coords(){
+        return [x, y];
+    }
 }
 
-PlantAttribute[] naturalAttributes;                             ///A list of all natural attributes in the game
-PlantAttribute[][] mutuallyExclusiveAttributes;                 ///A list of mutually exclusive attributes (eg. a plant cannot have 2 mutually exclusive attributes)
-PlantAction[] allActions;                                       ///A list of all possible natural actions in the game sorted by ActionType
-
 /**
- * Returns an array of actions similar to allActions, but only containing natural actions from allActions
+ * Gets the distance between two points
  */
-PlantAction[] getNaturalActions(){
-    return  allActions.filter!(a => a.isNatural).array;
+double distance(Point first, Point second = Point(0, 0)){
+    return sqrt(((first.x - second.x).pow(2) + (first.y - second.y).pow(2)).to!double);
 }
 
 /**
- * Gets all actions of a given ActionType from a source list
+ * Returns whether two traits are mutually exclusive
+ * Mutually exclusive traits are traits that are respectively in cartesian quadrants 1 and 3 or 2 and 4
+ */
+bool canWorkTogether(T)(Trait!T first, Trait!T second){
+    return (first.difficulty.x < 0) == (second.difficulty.x < 0) || (first.difficulty.y < 0) == (second.difficulty.y < 0);
+}
+
+/**
+ * A struct that stores a set of traits
+ * Stores them by the type of functions an item would require
+ */
+struct TraitSet{
+    Trait!(int function(Plant))[] chanceToMutateActions;
+    Trait!(Coordinate function(Plant))[] locationAsSeedActions;
+    Trait!(Character function(Plant))[] getOwnerActions;
+    Trait!(bool function(Coordinate, Plant))[] canBePlacedActions;
+    Trait!(double function(Character, Plant))[] getMovementCostActions;
+    Trait!(void function(Character, Plant))[] steppedOnActions;
+    Trait!(void function(Plant))[] incrementalActions;
+    Trait!(void function(Character, Plant))[] mainActions;
+    Trait!(void function(Character, Plant))[] destroyedActions;
+    Trait!(int function(Plant))[] getSizeActions;
+
+    /**
+     * Gets all the traits from the set that would actually be visible
+     * So if a category were to, for example, have a dominant and a recessive trait in a category, it would return the category with only the dominant trait
+     */
+    TraitSet getVisibleTraits(){
+        //This is the method that actually filters each category into its visible traits
+        Trait!(T)[] filterVisible(T)(Trait!(T)[] category){
+            Trait!(T)[] visible = [category[0]];
+            foreach(trait; category){
+                if(trait.type > visible[0].type){
+                    visible = [trait];
+                }else if(visible[0].type == trait.type){
+                    void randVisible(){
+                        visible = [(uniform(0, 2) == 0)? visible[0] : trait];
+                    }
+                    if(trait.type == VisibilityType.CO_RECESSIVE || trait.type == VisibilityType.CO_DOMINANT){
+                        if(canWorkTogether!T(visible[0], trait)){
+                            visible ~= trait;
+                        }else{
+                            randVisible();
+                        }
+                    }else{
+                        //Will choose the trait with the lesser distance, or if the distances are the same, a random trait
+                        double alreadyExistingDistance = visible[0].difficulty.distance;
+                        double challengerDistance = trait.difficulty.distance;
+                        if(Range!double(alreadyExistingDistance - 0.000001, alreadyExistingDistance + 0.000001).isInRange(challengerDistance)){
+                            randVisible();
+                        }else{
+                            visible = [(alreadyExistingDistance < challengerDistance)? visible[0] : trait];
+                        }
+                    }
+                }
+            }
+            return visible;
+        }
+        //Just returns the above method called on each category
+        return TraitSet(
+            filterVisible(this.chanceToMutateActions),
+            filterVisible(this.locationAsSeedActions),
+            filterVisible(this.getOwnerActions),
+            filterVisible(this.canBePlacedActions),
+            filterVisible(this.getMovementCostActions),
+            filterVisible(this.steppedOnActions),
+            filterVisible(this.incrementalActions),
+            filterVisible(this.mainActions),
+            filterVisible(this.destroyedActions),
+            filterVisible(this.getSizeActions)
+        );
+    }
+}
+
+/**
+ * Combines two trait sets by randomly taking a trait from one set for a category and mixing it with another random trait from the other set of the same category
+ * Does the above for all categories
  * Params:
- *      type = the types of actions to return
- *      filterFrom = the source list of actions to filter from
+ *      first = the first traitset to be a part of the combined set
+ *      second = the second traitset to be a part of the combined set
  */
-PlantAction[] getActionsOfType(ActionType type, PlantAction[] filterFrom = allActions){
-    return filterFrom.filter!(a => a.type == type).array;
+TraitSet combineTraitSets(TraitSet first, TraitSet second){
+    Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
+        return [first[uniform(0, $)], second[uniform(0, $)]];
+    }
+    return TraitSet(
+        getRandTraits(first.chanceToMutateActions, second.chanceToMutateActions),
+        getRandTraits(first.locationAsSeedActions, second.locationAsSeedActions),
+        getRandTraits(first.getOwnerActions, second.getOwnerActions),
+        getRandTraits(first.canBePlacedActions, second.canBePlacedActions),
+        getRandTraits(first.getMovementCostActions, second.getMovementCostActions),
+        getRandTraits(first.steppedOnActions, second.steppedOnActions),
+        getRandTraits(first.incrementalActions, second.incrementalActions),
+        getRandTraits(first.mainActions, second.mainActions),
+        getRandTraits(first.destroyedActions, second.destroyedActions),
+        getRandTraits(first.getSizeActions, second.getSizeActions)
+    );
 }
+
+/**
+ * Gets a mutated version of the given set
+ * Most likely scenario is that nothing changes
+ * Params:
+ *      initial = the traitset to start off with; any mutation happen off of this initial set
+ *      forWhom = the plant for whom this traitset is being made for
+ */
+TraitSet getPossiblyMutatedSetOf(TraitSet initial, Plant forWhom){
+    Trait!T[] getMutatedCategory(T)(Trait!T[] initialCategory, Trait!T[] candidates, int inverseChance){
+        debug{
+            foreach(trait; initialCategory){
+                assert(candidates.canFind(trait));
+            }
+        }
+        if(uniform(0, inverseChance) != 0){
+            return initialCategory;
+        }
+        int indexToChange = uniform(0, initialCategory.length).to!int;
+        initialCategory[indexToChange] = candidates.filter!(a => Range!double(-0.000001, 0.000001).isInRange(uniform(0.0, distance(a.difficulty, initialCategory[indexToChange].difficulty)))).array[uniform(0, $)];
+        return initialCategory;
+    }
+    int inverseChance = forWhom.usableTraits.chanceToMutateActions.map!(a => a.action(forWhom)).sum;
+    return TraitSet(
+        getMutatedCategory(initial.chanceToMutateActions, allActions.chanceToMutateActions, inverseChance),
+        getMutatedCategory(initial.locationAsSeedActions, allActions.locationAsSeedActions, inverseChance),
+        getMutatedCategory(initial.getOwnerActions, allActions.getOwnerActions, inverseChance),
+        getMutatedCategory(initial.canBePlacedActions, allActions.canBePlacedActions, inverseChance),
+        getMutatedCategory(initial.getMovementCostActions, allActions.getMovementCostActions, inverseChance),
+        getMutatedCategory(initial.steppedOnActions, allActions.steppedOnActions, inverseChance),
+        getMutatedCategory(initial.incrementalActions, allActions.incrementalActions, inverseChance),
+        getMutatedCategory(initial.mainActions, allActions.mainActions, inverseChance),
+        getMutatedCategory(initial.destroyedActions, allActions.destroyedActions, inverseChance),
+        getMutatedCategory(initial.getSizeActions, allActions.getSizeActions, inverseChance),
+    );
+}
+
+/**
+ * A collection of things that would define a pre-defined plant
+ * Any plant would be compared to all default plants to figure out what species the plant is by whatever default plant it is closest to
+ */
+class DefaultPlant{
+    string name;                    ///The name of this defualt plant so the player can find out what species their plant is
+    TraitSet defaultTraits;         ///The set of traits the plant has by default
+    bool isNatural;                 ///Whether the plant occurs naturally
+
+    /**
+     * Compares a plant to this pre-defined plant to see how close they are
+     * The closest pre-defined plant is its species
+     */
+    double closenessTo(Plant toCompare){
+        double sumOfCategory(T)(Trait!T[] firstCategory, Trait!T[] secondCategory){
+            double sum;
+            foreach(firstTrait; firstCategory){
+                foreach(secondTrait; secondCategory){
+                    sum += distance(firstTrait.difficulty, secondTrait.difficulty);
+                }
+            }
+            return sum;
+        }
+        TraitSet otherAttr = toCompare.traits;
+        TraitSet selfsAttr = this.defaultTraits;
+        return [
+            sumOfCategory(selfsAttr.chanceToMutateActions, otherAttr.chanceToMutateActions),
+            sumOfCategory(selfsAttr.locationAsSeedActions, otherAttr.locationAsSeedActions),
+            sumOfCategory(selfsAttr.getOwnerActions, otherAttr.getOwnerActions),
+            sumOfCategory(selfsAttr.canBePlacedActions, otherAttr.canBePlacedActions),
+            sumOfCategory(selfsAttr.getMovementCostActions, otherAttr.getMovementCostActions),
+            sumOfCategory(selfsAttr.steppedOnActions, otherAttr.steppedOnActions),
+            sumOfCategory(selfsAttr.incrementalActions, otherAttr.incrementalActions),
+            sumOfCategory(selfsAttr.mainActions, otherAttr.mainActions),
+            sumOfCategory(selfsAttr.destroyedActions, otherAttr.destroyedActions),
+            sumOfCategory(selfsAttr.getSizeActions, otherAttr.getSizeActions),
+        ].sum;
+    }
+}
+
+TraitSet allActions = TraitSet();           ///Stores a set of all actions
+DefaultPlant[] allDefaultPlants;            ///Stores all default plants so that any plant can be compared to this list, and whichever plant it is closest to is its species

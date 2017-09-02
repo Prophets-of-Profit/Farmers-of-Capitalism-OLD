@@ -2,7 +2,6 @@ module item.plant.Plant;
 
 import std.algorithm;
 import std.conv;
-import std.math;
 import std.random;
 
 import app;
@@ -10,7 +9,6 @@ import character.Character;
 import item.Inventory;
 import item.Item;
 import item.plant.PlantTraits;
-import item.plant.Seedling;
 import world.HexTile;
 import world.Range;
 import world.World;
@@ -21,279 +19,208 @@ import world.World;
  */
 class Plant : Item{
 
-    public PlantAction[] actions;                                   ///All the actions the plant does
-    public int[PlantAttribute] plantAttributes;                     ///Passive (constantly applied) plantAttributes with levels from (usually) 1 to 5 in the form of ints.
-    public Range!double[TileStat] survivableClimate;                ///Bounds of survivable temperature, water, soil, elevation.
-    protected Character placer;                                     ///The person who planted the plant.
-    public Range!int[PlantReq] stats;                               ///Contains base stats of plant.
+    /**
+     * A collection of ranges
+     * The first range is the survival range for the plant
+     * The second range is the optimal range for the plant
+     */
+    struct Conditions{
+        Range!double survival;    ///The conditions which need to be met for the plant to live
+        Range!double optimal;     ///The conditions at which the plant thrives
+        alias survival this;      ///Makes the conditions accessible as the survival range
+    }
+
+    TraitSet traits;                            ///All the traits this plant has and can pass down
+    TraitSet usableTraits;                      ///The traits that the plant can actually use
+    Conditions[TileStat] plantRequirements;     ///The survivable and optimal conditions for a plant; is just a few extra numbers and may not be used depending on the plant's traits
+    DefaultPlant closestPreDefined;             ///The pre-defined plant that is closest to this plant; same as plant species
+    Character placer;                           ///The character that placed the plant; will usually be null
 
     /**
-     * The constructor for a plant if the plant were to be generated naturally.
-     * Adds actions, plantAttributes, and stats to object.
-     * TODO add more plant constructors (eg. have a plant constructor that does what seedling does so seedling isn't necessary, constructor for cross-bred plants)
+     * A constructor for a plant for all types of plant generation
+     * Ensures that traits are set
+     * All other plant constructors call this one
+     * Params:
+     *      allTraits = the traits this plant will have
      */
-    this(Coordinate coords){
-        //Gets the tile it will be placed at
-        HexTile tile = game.mainWorld.getTileAt(coords);
-        //Puts itself in the tile
-        this.getMovedTo(tile.contained);
-        //Initializes all of the plant stats with a range between 0 and 5 with a value of 1
-        foreach(req; __traits(allMembers, PlantReq)){
-            this.stats[req.to!PlantReq] = Range!int(0, 5, 1);
-        }
-        //Sets its survivable climate to a range with a +-0.1 difference from its tile's climate
-        foreach(statType; __traits(allMembers, TileStat)){
-            TileStat stat = statType.to!TileStat;
-            this.survivableClimate[stat] = Range!double(tile.climate[stat] - uniform(0.0, 0.1), tile.climate[stat] + uniform(0.0, 0.1));
-        }
-        //Makes the plant aquatic if the tile it is on is water
-        if(tile.isWater){
-            this.plantAttributes[PlantAttribute.AQUATIC] = 1;
-        }
-        //TODO have elia document this
-        double chanceBound = 1.0;
-        void possiblyDoActionBasedOnChanceBound(void delegate() action){
-            if(uniform(0.0, chanceBound) > 0.8){
-                action();
-                chanceBound -= 0.4;
+    private this(TraitSet allTraits){
+        this.traits = allTraits;
+        this.usableTraits = this.traits.getVisibleTraits();
+        this.traits = getPossiblyMutatedSetOf(allTraits, this);
+        double min = double.max;
+        foreach(preDefined; allDefaultPlants){
+            if(preDefined.closenessTo(this) < min){
+                this.closestPreDefined = preDefined;
             }
         }
-        foreach(possibleAttribute; naturalAttributes){
-            possiblyDoActionBasedOnChanceBound({
-                if(this.canGetTrait(possibleAttribute)){
-                    this.plantAttributes[possibleAttribute] = uniform(1,3);
-                }
-            });
-        }
-        foreach(possibleAttribute; getNaturalActions){
-            possiblyDoActionBasedOnChanceBound({this.actions ~= possibleAttribute;});
-        }
-        //Plants in the wild start with a spread of 5 points to have in their stats
-        int statsToGive = 5;
-        foreach(i; 0..statsToGive){
-            this.stats[uniform(0, PlantReq.max).to!PlantReq] += 1;
+        HexTile tileOfCreation = game.mainWorld.getTileAt(this.coords);
+        foreach(tileStat; __traits(allMembers, TileStat)){
+            TileStat stat = tileStat.to!TileStat;
+            double survivableDeviation = 0.25;
+            double optimalDeviation = 0.075;
+            Range!double survivable = Range!double(Range!double(0, 1, tileOfCreation.climate[stat] - survivableDeviation), Range!double(0, 1, tileOfCreation.climate[stat] + survivableDeviation));
+            Range!double optimal = Range!double(Range!double(0, 1, tileOfCreation.climate[stat] - optimalDeviation), Range!double(0, 1, tileOfCreation.climate[stat] + optimalDeviation));
+            plantRequirements[stat] = Conditions(survivable, optimal);
         }
     }
 
     /**
-    * Returns owner of HexTile if not patented. Returns placer of plant if patented.
-    */
+     * A constructor for a plant if generated naturally
+     * Natural plants are placed in the world and must be modeled after an existing DefaultPlant as natural plants shouldn't be anything new or unique
+     * Params:
+     *      location = where this natural plant will be generated
+     *      base = the DefaultPlant from which to model this plant
+     */
+    this(Coordinate location, DefaultPlant base){
+        this(base.defaultTraits);
+        this.getMovedTo(game.mainWorld.getTileAt(location).contained);
+    }
+
+    /**
+     * The constructor for a plant if generated from another plant
+     * Only works if the plant can have a single parent
+     * The plant will place itself
+     * Params:
+     *      parent = the plant's parent
+     */
+    this(Plant parent){
+        this(parent.traits);
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
+    }
+
+    /**
+     * The constructor for a plant if generated from two other parents
+     * Works when the plant can be bred from two other plants
+     * Params:
+     *      firstParent = one of this plant's parents
+     *      secondParent = one of this plant's other parents
+     */
+    this(Plant firstParent, Plant secondParent){
+        Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
+            return [first[uniform(0, $)], second[uniform(0, $)]];
+        }
+        this(combineTraitSets(firstParent.traits, secondParent.traits));
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
+    }
+
+    /**
+     * Gets the plant's owner
+     * Is slottable
+     */
     override Character getOwner(){
-        return (PlantAttribute.PATENT in this.plantAttributes)? this.placer : game.mainWorld.getTileAt(this.source.coords).owner;
+        return this.usableTraits.getOwnerActions[0].action(this);   //Doesn't iterate through the actions in the category because there can only be one owner
     }
 
     /**
-    * Checks whether the plant can be placed at a certain tile.
-    * Params:
-    *     placementCandidateCoords = the location of where to check if this plant can be placed
-    */
+     * Whether the plant can be placed at the given coordinates
+     * Is slottable; all of the traits for determining plant placement must have their conditions met for the plant to be placed at a certain coordinate
+     * Params:
+     *      placementCandidateCoords = the location to check of whether the plant can be placed there
+     */
     override bool canBePlaced(Coordinate placementCandidateCoords){
-        HexTile tile = game.mainWorld.getTileAt(placementCandidateCoords);
-        foreach(statType; tile.climate.byKey()){
-            if(!this.survivableClimate[statType].isInRange(tile.climate[statType])){
+        foreach(trait; this.usableTraits.canBePlacedActions){
+            if(!trait.action(placementCandidateCoords, this)){
                 return false;
-            }
-        }
-        if(tile.isWater != ((PlantAttribute.AQUATIC in this.plantAttributes) !is null)){
-            return false;
-        }else if(PlantAttribute.MOVABLE in this.plantAttributes){
-            return this.completion <= this.plantAttributes[PlantAttribute.MOVABLE]/5.0;
-        }
-        return this.completion == 0;
-    }
-
-    /**
-    * Returns the influence the plant has on the tile's movement cost; inherited from Item.
-    */
-    override double getMovementCost(Character stepper){
-        if(PlantAttribute.SLOWING in this.plantAttributes){
-            return this.plantAttributes[PlantAttribute.SLOWING];
-        }else if(PlantAttribute.SPEEDING in this.plantAttributes){
-            return this.plantAttributes[PlantAttribute.SPEEDING];
-        }
-        return 0;
-    }
-
-    /**
-    * Dictates what the plant does when placed.
-    * Iterates through the plant's placedActions, executing each one.
-    * Params:
-    *   placer = the person who is attempting to place this plant
-    *   newLocation = the location of where this plant should be placed
-    */
-    override bool getPlaced(Character placer, Coordinate newLocation){
-        if(!this.isPlaced && this.canBePlaced(newLocation)){
-            foreach(action; getActionsOfType(ActionType.PLACED)){
-                action(placer);
-            }
-            this.isPlaced = true;
-            return true;
-        }
-        this.placer = placer;
-        return false;
-    }
-
-    /**
-    * Dictates what the plant does when stepped on.
-    * Iterates through the plant's steppedOnActions, executing each one.
-    * Params:
-    *   stepper = the person who stepped on the plant
-    */
-    override void getSteppedOn(Character stepper){
-        if(this.isPlaced){
-            foreach(action; getActionsOfType(ActionType.STEPPED)){
-                action(stepper);
-            }
-            if(uniform(0, this.stats[PlantReq.RESILIENCE]) == 0){
-                this.die();
-            }
-        }
-    }
-
-    /**
-    * Dictates what the plant does each turn.
-    * Iterates through the plant's incrementalActions, executing each one. Also grows.
-    */
-    override void doIncrementalAction(){
-        if(this.isPlaced){
-            foreach(action; getActionsOfType(ActionType.INCREMENTAL)){
-                action(null);
-            }
-            if(uniform(0, getClimateFavorability()) == 0){
-                grow();
-            }
-        }
-    }
-
-    /**
-    * Dictates what the plant does when interacted with.
-    * Iterates through the plant's mainActions, executing each one.
-    * Params:
-    *   player = the player who triggered the main action of the plant
-    */
-    override void doMainAction(Character player){
-       if(this.isPlaced){
-           foreach(action; getActionsOfType(ActionType.MAIN)){
-               action(player);
-           }
-       }else{
-           this.getPlaced(player, player.coords);
-       }
-    }
-
-    /**
-    * Dictates what the plant does when destroyed.
-    * Iterates through the plant's destroyedActions, executing each one, and then removing the plant from the inventory
-    * Params:
-    *   destroyer = the player who destroyed the plant
-    */
-    override void getDestroyed(Character destroyer){
-        if(this.isPlaced){
-            foreach(action; getActionsOfType(ActionType.DESTROYED)){
-                action(destroyer);
-            }
-            this.isPlaced = false;
-        }
-        this.die();
-    }
-
-    /**
-     * Creates a clone of the plant
-     * Is almost a deep copy where the clone is unaffected by the original
-     * Only changes in player will be reflected in this clone
-     */
-    override Plant clone(){
-        Plant copy = new Plant(this.source.coords);
-        copy.actions = this.actions;
-        copy.stats = this.stats;
-        copy.survivableClimate = this.survivableClimate;
-        copy.placer = this.placer;
-        return copy;
-    }
-
-    /**
-     * Creates a seedling
-     */
-    Seedling createSeedling(){
-        Seedling child = new Seedling(this);
-        child.actions = this.actions;
-        child.plantAttributes = this.plantAttributes;
-        child.stats = this.stats;
-        child.survivableClimate = this.survivableClimate;
-        child.placer = this.placer;
-        child.parent = this;
-        return child;
-    }
-
-    /**
-     * Returns a double that represents the overall climate quality for the plant. This value is used in various functions by plant. The closer the result is to 0, the better the climate.
-     */
-    double getClimateFavorability(){
-        //TODO remake this method so it works
-        return 0;
-    }
-
-    /**
-     * Increases the plant's growth based on climate favorability and other factors.
-     */
-    void grow(){
-        int[] invasiveLevels = checkOtherPlants(PlantAttribute.INVASIVE);
-        int[] symbioticLevels = (PlantAttribute.INVASIVE in this.plantAttributes)? null : checkOtherPlants(PlantAttribute.SYMBIOTIC);
-        double growthModifier = 0;
-        foreach(level; invasiveLevels){
-            growthModifier -= level * 0.05 - this.stats[PlantReq.RESILIENCE] / 2;
-        }
-        foreach(level; symbioticLevels){
-            growthModifier += level * 0.05;
-        }
-        double growth = this.stats[PlantReq.GROWTH] * growthModifier / 10;
-        this.completion += growth;
-
-    }
-
-    /**
-     * Checks all other plants in the tile for an PlantAttribute.
-     * Params:
-     *      PlantAttribute = the PlantAttribute to check the other plants for
-     */
-    int[] checkOtherPlants(PlantAttribute PlantAttribute){
-        int[] levels;
-        Item[] sourceItems = this.source.items;
-        foreach(item; sourceItems){
-            if(cast(Plant) item){
-                Plant plant = cast(Plant) item;
-                if(PlantAttribute in plant.plantAttributes){
-                    levels ~= plant.plantAttributes[PlantAttribute];
-                }
-            }
-        }
-        return levels;
-    }
-
-    /**
-     * Plants are size 1 by default.
-     */
-    override int getSize(){
-        return 1;
-    }
-
-    /**
-     * Makes sure that a given trait will be able to be added to the seedling without conflicting with another trait
-     * Params:
-     *      trait = the trait to check for whether the plant can receive it
-     */
-    bool canGetTrait(PlantAttribute trait){
-        foreach(exclusivity; mutuallyExclusiveAttributes){
-            if(exclusivity.canFind(trait)){
-                foreach(PlantAttribute; exclusivity){
-                    if(PlantAttribute in this.plantAttributes){
-                        return false;
-                    }
-                }
             }
         }
         return true;
     }
+
+    /**
+     * Places the plant at a certain location
+     * Is not slottable and this is generic and true for all plants
+     * Returns whether the placement was successful or not
+     * Params:
+     *      placer = the character that placed the plant; is unused for plant, but may be used for other items
+     *      newLocation = the location for the plant to be placed
+     */
+    override bool getPlaced(Character placer, Coordinate newLocation){
+        this.placer = placer;
+        return canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained);
+    }
+
+    /**
+     * Gets how much this plant affects movement cost
+     * Is slottable; all traits that return a movement cost are summed and then returned
+     * Params:
+     *      stepper = the character that stepped on the plant
+     */
+    override double getMovementCost(Character stepper){
+        return this.usableTraits.getMovementCostActions.map!(a => a.action(stepper, this)).reduce!((a, b) => a + b);
+    }
+
+    /**
+     * The action for what the plant should do when stepped on
+     * Is slottable
+     * Params:
+     *      stepper = the character that has stepped on the plant
+     */
+    override void getSteppedOn(Character stepper){
+        foreach(trait; this.usableTraits.steppedOnActions){
+            trait.action(stepper, this);
+        }
+    }
+
+    /**
+     * What the plant does every turn
+     * Is slottable
+     */
+    override void doIncrementalAction(){
+        foreach(trait; this.usableTraits.incrementalActions){
+            trait.action(this);
+        }
+    }
+
+    /**
+     * What the plant should do when the player interacts with it
+     * Is slottable
+     * Params:
+     *      player = the character interacting with the plant
+     */
+    override void doMainAction(Character player){
+        foreach(trait; this.usableTraits.mainActions){
+            trait.action(player, this);
+        }
+    }
+
+    /**
+     * What the plant should do when destroyed by a player
+     * Is slottable
+     * Params:
+     *      destroyer = the player who is destroying the plant
+     */
+    override void getDestroyedBy(Character destroyer){
+        foreach(trait; this.usableTraits.destroyedActions){
+            trait.action(destroyer, this);
+        }
+    }
+
+    /**
+     * The amount of inventory space this plant takes up
+     * Is slottable
+     */
+    override int getSize(){
+        return this.usableTraits.getSizeActions.map!(a => a.action(this)).reduce!((a, b) => a + b);
+    }
+
+    /**
+     * Makes a copy of this plant
+     */
+    override Plant clone(){
+        Plant clone = new Plant(this.traits);
+        clone.usableTraits = this.usableTraits; //is called again because sometimes getVisibleTraits() determines the visible traits randomly as a tie breaker
+        clone.source = this.source.clone; //clone isn't .getMovedTo the inventory clone because the clone already contains a copy of this plant
+        clone.plantRequirements = this.plantRequirements;
+        return clone;
+    }
+
+    /**
+     * Returns the name of the species of the plant
+     */
+    override string toString(){
+        return this.closestPreDefined.name;
+    }
+
 }
 
 unittest{
@@ -305,11 +232,6 @@ unittest{
     game.mainWorld = new World(worldSize);
     int numRuns = 5;
     foreach(i; 0..numRuns){
-        Coordinate coords = game.mainWorld.getRandomCoords;
-        Plant testPlant = new Plant(coords);
-        writeln("Conditions at ", coords, " are ", game.mainWorld.getTileAt(coords).climate);
-        writeln("TestPlant stats: ", testPlant.stats);
-        writeln("TestPlant survivable climate: ", testPlant.survivableClimate);
-        writeln("------------------------------------------------");
+        //TODO
     }
 }

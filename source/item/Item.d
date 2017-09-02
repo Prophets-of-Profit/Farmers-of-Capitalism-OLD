@@ -17,11 +17,18 @@ abstract class Item{
     public bool isPlaced = false;                                   ///Whether the Item is in a hextile or not
 
     /**
+     * A convenient property methods for items to access their coordinates based on their inventory
+     */
+    @property Coordinate coords(){
+        return this.source.coords;
+    }
+
+    /**
      * Kills the current item
      * Just removes the item from the source inventory if it exists
      */
     void die(){
-        this.getDestroyed(null);
+        this.getDestroyedBy(null);
         if(this.source !is null){
             this.source.remove(this);
         }
@@ -54,8 +61,9 @@ abstract class Item{
     void getSteppedOn(Character stepper);                    ///What the Item should do when stepped on
     void doIncrementalAction();                              ///What the Item should do every turn
     void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
-    void getDestroyed(Character destroyer);                  ///What/how the Item gets destroyed and what it will do when destroyed
+    void getDestroyedBy(Character destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
     int getSize();                                           ///Gets the amount of space this item takes up in an inventory
     Item clone();                                            ///Returns a copy of the Item
+    override string toString();
 
 }
