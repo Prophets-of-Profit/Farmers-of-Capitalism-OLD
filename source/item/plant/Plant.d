@@ -27,6 +27,7 @@ class Plant : Item{
     struct Conditions{
         Range!double survival;    ///The conditions which need to be met for the plant to live
         Range!double optimal;     ///The conditions at which the plant thrives
+        alias survival this;      ///Makes the conditions accessible as the survival range
     }
 
     TraitSet traits;                            ///All the traits this plant has and can pass down
