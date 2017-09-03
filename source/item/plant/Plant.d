@@ -16,6 +16,7 @@ import world.World;
 /**
  * A parent class for all plant objects.
  * Contains basic (non-functional) traits and methods shared between all plants.
+ * TODO make constructor for when created directly to character inventory instead of just when created in world
  */
 class Plant : Item{
 
