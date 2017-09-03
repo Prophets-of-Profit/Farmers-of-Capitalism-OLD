@@ -6,6 +6,8 @@ import std.conv;
 import std.math;
 
 import app;
+import character.Race;
+import item.settlement.Settlement;
 import world.Range;
 import world.World;
 
@@ -19,6 +21,7 @@ class Character{
     public int maxTravellableDistance = 5;                 ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?
     public double numMovesLeft;                            ///The amount of moves the character can still do this turn
     public Range!int health = Range!int(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
+    public Race race;                                      ///Stores appearance of the character as well as behavior
 
     /**
      * A property method that just returns the player's location
@@ -41,9 +44,11 @@ class Character{
      * Takes in a starting location and starts the character there
      * Params:
      *      startingLocation = the coordinates of where the character starts
+     *      race = the race of the character
      */
-    this(Coordinate startingLocation){
+    this(Coordinate startingLocation, Race race = new Race()){
         this.coords = startingLocation;
+        this.race = race;
     }
 
     /**
@@ -106,6 +111,17 @@ class Character{
      */
     int getMovementCostAt(Coordinate locationToFindCost){
         return 1 + game.mainWorld.getTileAt(locationToFindCost).contained.items.map!(a => a.getMovementCost(this)).sum.floor.to!int;
+    }
+
+    /**
+     * Returns the nearest settlement to the origin
+     * Params:
+     *      origin = the origin from which to find the nearest settlement
+     *      blacklist = a list of settlements that should not be returned by this function
+     */
+    Settlement findNearestSettlement(Coordinate origin, Settlement[] blacklist = []){
+        //TODO: implement this function
+        return null;
     }
 
 }
