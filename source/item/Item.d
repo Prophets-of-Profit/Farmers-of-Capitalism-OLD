@@ -79,7 +79,10 @@ abstract class Item{
     void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
     void getDestroyedBy(Character destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
     int getSize();                                           ///Gets the amount of space this item takes up in an inventory
+    int[] getColor();                                        ///Returns the color of the item
+    double getUsefulness();                                  ///Returns the usefulness of the item
     Item clone();                                            ///Returns a copy of the Item
     override string toString();                              ///The item's name as a string
+    bool isSimilarTo(Item item);                             ///Checks if an item is similar to another
 
 }
