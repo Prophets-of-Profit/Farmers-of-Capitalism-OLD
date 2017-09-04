@@ -38,14 +38,6 @@ class House : Item{
     }
 
     /**
-     * Returns whether or not the tile at the coordinate is a settlement
-     */
-    override bool canBePlaced(Coordinate placementCandidateCoords){
-            //TODO: if settlement is on tile, return true
-            return true;
-    }
-
-    /**
      * Adds zero to the movement cost (houses do not affect movement cost)
      */
     override double getMovementCost(Character stepper){
@@ -56,8 +48,11 @@ class House : Item{
      * Adds a new house to the settlement, adding extra population space
      */
     override bool getPlaced(Character placer, Coordinate newLocation){
-        this.settlement.characters.maxSize += this.livingSpace;
-        return true;
+        if(super.getPlaced(placer, newLocation)){
+            this.settlement.characters.maxSize += this.livingSpace;
+            return true;
+        }
+        return false;
     }
 
     /**

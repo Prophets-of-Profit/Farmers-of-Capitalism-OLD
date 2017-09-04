@@ -124,7 +124,7 @@ class Plant : Item{
                 return false;
             }
         }
-        return true;
+        return super.canBePlaced(placementCandidateCoords);
     }
 
     /**
@@ -136,8 +136,11 @@ class Plant : Item{
      *      newLocation = the location for the plant to be placed
      */
     override bool getPlaced(Character placer, Coordinate newLocation){
-        this.placer = placer;
-        return canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained);
+        if(super.getPlaced(placer, newLocation)){
+            this.placer = placer;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -194,6 +197,7 @@ class Plant : Item{
         foreach(trait; this.usableTraits.destroyedActions){
             trait.action(destroyer, this);
         }
+        this.die(true);
     }
 
     /**
@@ -210,8 +214,8 @@ class Plant : Item{
     override Plant clone(){
         Plant clone = new Plant(this.traits);
         clone.usableTraits = this.usableTraits; //is called again because sometimes getVisibleTraits() determines the visible traits randomly as a tie breaker
-        clone.source = this.source.clone; //clone isn't .getMovedTo the inventory clone because the clone already contains a copy of this plant
         clone.plantRequirements = this.plantRequirements;
+        clone.completion = this.completion;
         return clone;
     }
 

@@ -14,7 +14,6 @@ abstract class Item{
 
     public Range!double completion = Range!double(0, 1, 0);         ///How close the Item is towards being complete: once it won't function until it has reached completion
     public Inventory!Item source;                                   ///The source inventory for where the item is/came from
-    public bool isPlaced = false;                                   ///Whether the Item is in a hextile or not
 
     /**
      * A convenient property methods for items to access their coordinates based on their inventory
@@ -27,8 +26,10 @@ abstract class Item{
      * Kills the current item
      * Just removes the item from the source inventory if it exists
      */
-    void die(){
-        this.getDestroyedBy(null);
+    void die(bool isBeingCalledFromGetDestroyed = false){
+        if(!isBeingCalledFromGetDestroyed){
+            this.getDestroyedBy(null);
+        }
         if(this.source !is null){
             this.source.remove(this);
         }
@@ -54,9 +55,24 @@ abstract class Item{
         return newSource.add(this);
     }
 
+    /**
+     * Can be overriden
+     * Returns whether the location to be placed has enough space
+     */
+    bool canBePlaced(Coordinate placementCandidateCoords){
+        return game.mainWorld.getTileAt(placementCandidateCoords).contained.countSpaceRemaining >= this.getSize();
+    }
+
+    /**
+     * Can be overriden
+     * What the item does when placed
+     * This is a default implementation
+     */
+    bool getPlaced(Character placer, Coordinate newLocation){
+        return this.canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained);
+    }
+
     Character getOwner();                                    ///Gets the owner of the Item
-    bool canBePlaced(Coordinate placementCandidateCoords);   ///Returns whether the Item can be placed
-    bool getPlaced(Character placer, Coordinate newLocation);///What the Item should do when created
     double getMovementCost(Character stepper);               ///Returns the movement cost of the Item (how much the Item would affect movement were it placed)
     void getSteppedOn(Character stepper);                    ///What the Item should do when stepped on
     void doIncrementalAction();                              ///What the Item should do every turn
@@ -64,6 +80,6 @@ abstract class Item{
     void getDestroyedBy(Character destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
     int getSize();                                           ///Gets the amount of space this item takes up in an inventory
     Item clone();                                            ///Returns a copy of the Item
-    override string toString();
+    override string toString();                              ///The item's name as a string
 
 }

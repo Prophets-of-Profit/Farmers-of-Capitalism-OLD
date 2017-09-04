@@ -23,20 +23,6 @@ class District : Item{
     }
 
     /**
-     * Settlements can be placed on any tile that does not already have a settlement
-     */
-    override bool canBePlaced(Coordinate placementCandidateCoords){
-        return true;
-    }
-
-    /**
-     * Returns false
-     */
-    override bool getPlaced(Character placer, Coordinate newLocation){
-        return false;
-    }
-
-    /**
      * Returns 0; settlements do not impede movement
      */
     override double getMovementCost(Character stepper){

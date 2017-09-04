@@ -14,11 +14,19 @@ import world.World;
  */
 class Inventory(T){
 
+    T[] contained;                  ///All the items inside of the inventory
     public Character[] accessibleTo;///A list of characters who can access the inventory
-    public T[] items;               ///All the items inside of the inventory
     alias items this;               ///Sets the access of this object as the array of items it contains
     public int maxSize;             ///The maximum number of elements in the inventory; if is negative, the array can have infinite elements
     public Coordinate coords;       ///The location of the tile or the player or inventorycontainer with this inventory
+
+    /**
+     * Because arrays are passed by value, it returns a copy of the array of what this inventory contains
+     * Allows for easy item viewing but makes it impossible to edit the underlying inventory without inventory methods
+     */
+    @property T[] items(){
+        return this.contained;
+    }
 
     /**
      * The character who owns this inventory
@@ -60,7 +68,7 @@ class Inventory(T){
         if(itemToAdd is null || this.countSpaceRemaining - getSize(itemToAdd) < 0){
             return false;
         }
-        this.items ~= itemToAdd;
+        this.contained ~= itemToAdd;
         return true;
     }
 
@@ -72,7 +80,7 @@ class Inventory(T){
      */
     bool remove(T itemToRemove){
         if(this.items.canFind(itemToRemove)){
-            this.items = this.items.remove(this.items.countUntil(itemToRemove));
+            this.contained = this.items.remove(this.items.countUntil(itemToRemove));
             return true;
         }
         return false;
@@ -125,7 +133,7 @@ class Inventory(T){
                 copy.items[i] = this.items[i].clone().to!T;
             }
         }else{
-            copy.items = this.items;
+            copy.contained = this.items;
         }
         copy.accessibleTo = this.accessibleTo;
         copy.coords = this.coords;
