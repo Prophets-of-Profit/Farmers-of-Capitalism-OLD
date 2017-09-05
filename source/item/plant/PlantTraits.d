@@ -13,6 +13,7 @@ import std.math;
 import std.random;
 
 import character.Character;
+import item.Item;
 import item.plant.Plant;
 import world.Range;
 import world.World;
@@ -104,6 +105,8 @@ struct TraitSet{
     Trait!(void function(Character, Plant))[] mainActions;
     Trait!(void function(Character, Plant))[] destroyedActions;
     Trait!(int function(Plant))[] getSizeActions;
+    Trait!(Color function(Plant))[] getColorActions;
+    Trait!(double function(Plant))[] getUsefulnessActions;
 
     /**
      * Gets all the traits from the set that would actually be visible
@@ -151,7 +154,9 @@ struct TraitSet{
             filterVisible(this.incrementalActions),
             filterVisible(this.mainActions),
             filterVisible(this.destroyedActions),
-            filterVisible(this.getSizeActions)
+            filterVisible(this.getSizeActions),
+            filterVisible(this.getColorActions),
+            filterVisible(this.getUsefulnessActions)
         );
     }
 }
@@ -177,7 +182,9 @@ TraitSet combineTraitSets(TraitSet first, TraitSet second){
         getRandTraits(first.incrementalActions, second.incrementalActions),
         getRandTraits(first.mainActions, second.mainActions),
         getRandTraits(first.destroyedActions, second.destroyedActions),
-        getRandTraits(first.getSizeActions, second.getSizeActions)
+        getRandTraits(first.getSizeActions, second.getSizeActions),
+        getRandTraits(first.getColorActions, second.getColorActions),
+        getRandTraits(first.getUsefulnessActions, second.getUsefulnessActions)
     );
 }
 
@@ -189,7 +196,8 @@ TraitSet combineTraitSets(TraitSet first, TraitSet second){
  *      forWhom = the plant for whom this traitset is being made for
  */
 TraitSet getPossiblyMutatedSetOf(TraitSet initial, Plant forWhom){
-    Trait!T[] getMutatedCategory(T)(Trait!T[] initialCategory, Trait!T[] candidates, int inverseChance){
+    int inverseChance = forWhom.usableTraits.chanceToMutateActions.map!(a => a.action(forWhom)).sum;
+    Trait!T[] getMutatedCategory(T)(Trait!T[] initialCategory, Trait!T[] candidates){
         debug{
             foreach(trait; initialCategory){
                 assert(candidates.canFind(trait));
@@ -202,18 +210,19 @@ TraitSet getPossiblyMutatedSetOf(TraitSet initial, Plant forWhom){
         initialCategory[indexToChange] = candidates.filter!(a => Range!double(-0.000001, 0.000001).isInRange(uniform(0.0, distance(a.difficulty, initialCategory[indexToChange].difficulty)))).array[uniform(0, $)];
         return initialCategory;
     }
-    int inverseChance = forWhom.usableTraits.chanceToMutateActions.map!(a => a.action(forWhom)).sum;
     return TraitSet(
-        getMutatedCategory(initial.chanceToMutateActions, allActions.chanceToMutateActions, inverseChance),
-        getMutatedCategory(initial.locationAsSeedActions, allActions.locationAsSeedActions, inverseChance),
-        getMutatedCategory(initial.getOwnerActions, allActions.getOwnerActions, inverseChance),
-        getMutatedCategory(initial.canBePlacedActions, allActions.canBePlacedActions, inverseChance),
-        getMutatedCategory(initial.getMovementCostActions, allActions.getMovementCostActions, inverseChance),
-        getMutatedCategory(initial.steppedOnActions, allActions.steppedOnActions, inverseChance),
-        getMutatedCategory(initial.incrementalActions, allActions.incrementalActions, inverseChance),
-        getMutatedCategory(initial.mainActions, allActions.mainActions, inverseChance),
-        getMutatedCategory(initial.destroyedActions, allActions.destroyedActions, inverseChance),
-        getMutatedCategory(initial.getSizeActions, allActions.getSizeActions, inverseChance),
+        getMutatedCategory(initial.chanceToMutateActions, allActions.chanceToMutateActions),
+        getMutatedCategory(initial.locationAsSeedActions, allActions.locationAsSeedActions),
+        getMutatedCategory(initial.getOwnerActions, allActions.getOwnerActions),
+        getMutatedCategory(initial.canBePlacedActions, allActions.canBePlacedActions),
+        getMutatedCategory(initial.getMovementCostActions, allActions.getMovementCostActions),
+        getMutatedCategory(initial.steppedOnActions, allActions.steppedOnActions),
+        getMutatedCategory(initial.incrementalActions, allActions.incrementalActions),
+        getMutatedCategory(initial.mainActions, allActions.mainActions),
+        getMutatedCategory(initial.destroyedActions, allActions.destroyedActions),
+        getMutatedCategory(initial.getSizeActions, allActions.getSizeActions),
+        getMutatedCategory(initial.getColorActions, allActions.getColorActions),
+        getMutatedCategory(initial.getUsefulnessActions, allActions.getUsefulnessActions)
     );
 }
 
@@ -253,6 +262,8 @@ class DefaultPlant{
             sumOfCategory(selfsAttr.mainActions, otherAttr.mainActions),
             sumOfCategory(selfsAttr.destroyedActions, otherAttr.destroyedActions),
             sumOfCategory(selfsAttr.getSizeActions, otherAttr.getSizeActions),
+            sumOfCategory(selfsAttr.getColorActions, otherAttr.getColorActions),
+            sumOfCategory(selfsAttr.getUsefulnessActions, otherAttr.getUsefulnessActions)
         ].sum;
     }
 }

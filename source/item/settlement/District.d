@@ -52,6 +52,21 @@ class District : Item{
     }
 
     /**
+     * Districts are white
+     * TODO?
+     */
+    override Color getColor(){
+        return Color(0, 0, 0);
+    }
+
+    /**
+     * Districts have 0 usefulness because you can't sell districts anyways
+     */
+    override double getUsefulness(){
+        return 0;
+    }
+
+    /**
      * Returns a copy of settlement settlement
      */
     override Item clone(){
@@ -65,6 +80,13 @@ class District : Item{
      */
     override string toString(){
         return ""; //TODO: Implement toString
+    }
+
+    /**
+     * Districts are always unique, but comparison isn't really implemented becase it can't/won't be used because districts cannot be sold
+     */
+    override bool isSimilarTo(Item otherItem){
+        return false;
     }
 
 }

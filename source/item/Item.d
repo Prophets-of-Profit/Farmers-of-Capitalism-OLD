@@ -17,6 +17,12 @@ struct Color{
 
     alias rgb this;
 
+    this(int r, int g, int b){
+        this.red = r;
+        this.green = g;
+        this.blue = b;
+    }
+
     @property int red(int newRed){
         this.r.current = newRed;
         return newRed;
@@ -126,6 +132,6 @@ abstract class Item{
     double getUsefulness();                                  ///Returns the usefulness of the item
     Item clone();                                            ///Returns a copy of the Item
     override string toString();                              ///The item's name as a string
-    bool isSimilarTo(Item item);                             ///Checks if an item is similar to another
+    bool isSimilarTo(Item otherItem);                        ///Checks if an item is similar to another
 
 }

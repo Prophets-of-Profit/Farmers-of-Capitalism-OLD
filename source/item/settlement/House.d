@@ -90,6 +90,21 @@ class House : Item{
     }
 
     /**
+     * Houses are white
+     * Color doesn't matter because you can't sell houses
+     */
+    override Color getColor(){
+        return Color(0, 0, 0);
+    }
+
+    /**
+     * Houses have 0 usefulness because you won't be selling them
+     */
+    override double getUsefulness(){
+        return 0;
+    }
+
+    /**
      * Returns a copy of this house
      */
     override Item clone(){
@@ -101,6 +116,13 @@ class House : Item{
      */
     override string toString(){
         return "House with "~livingSpace.to!string~" living space and "~landUsed.to!string~" land used.";
+    }
+
+    /**
+     * Because houses cannot be sold, this method isn't really implemented and just returns false: all houses are unique
+     */
+    override bool isSimilarTo(Item otherItem){
+        return false;
     }
 
 }

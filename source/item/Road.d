@@ -82,6 +82,21 @@ class Road : Item{
     }
 
     /**
+     * Gets the color of the road
+     * Roads are black
+     */
+    override Color getColor(){
+        return Color(255, 255, 255);
+    }
+
+    /**
+     * Returns how much this road reduces movement cost as its usefulness
+     */
+    override double getUsefulness(){
+        return this.speedReduction;
+    }
+
+    /**
      * Makes a copy of the road
      */
     override Item clone(){
@@ -90,8 +105,19 @@ class Road : Item{
         return clone;
     }
 
+    /**
+     * Roads will be represented with the string "Road"
+     */
     override string toString(){
         return "Road";
+    }
+
+    /**
+     * Roads are considered similar as long as they are roads, and not other items
+     * Roads are only similar to roads
+     */
+    override bool isSimilarTo(Item otherItem){
+        return (cast(Road) otherItem)? true : false;
     }
 
 }

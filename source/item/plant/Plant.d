@@ -205,7 +205,23 @@ class Plant : Item{
      * Is slottable
      */
     override int getSize(){
-        return this.usableTraits.getSizeActions.map!(a => a.action(this)).reduce!((a, b) => a + b);
+        return this.usableTraits.getSizeActions.map!(a => a.action(this)).sum;
+    }
+
+    /**
+     * Gets the plant's color from its defined traits
+     * Is thusly slottable
+     */
+    override Color getColor(){
+        return Color();
+    }
+
+    /**
+     * Returns difficulty of the plant
+     * Is slottable and just sums all of the usefulnesses
+     */
+    override double getUsefulness(){
+        return this.usableTraits.getUsefulnessActions.map!(a => a.action(this)).sum;
     }
 
     /**
@@ -224,6 +240,17 @@ class Plant : Item{
      */
     override string toString(){
         return this.closestPreDefined.name;
+    }
+
+    /**
+     * Returns whether two plants are similar
+     * Similarity is defined based on if the plants are the same species
+     */
+    override bool isSimilarTo(Item otherItem){
+        if(cast(Plant) otherItem){
+            return this.closestPreDefined == otherItem.to!Plant.closestPreDefined;
+        }
+        return false;
     }
 
 }
