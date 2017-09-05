@@ -1,4 +1,4 @@
-module item.settlement.Market;
+module government.Market;
 
 import std.array;
 import std.algorithm;
@@ -10,6 +10,11 @@ import item.Inventory;
 import item.Item;
 import world.Range;
 
+/**
+ * A market is a class that handles buying and selling items
+ * Are the core part of the game's economy
+ * Slowly change weights and demands and supplies over time
+ */
 class Market{
 
     Inventory!Item inventory = new Inventory!Item();       ///The items circulating through the Market
@@ -23,10 +28,10 @@ class Market{
     /**
      * The constructor for Market
      * Params:
-     *      controller = the government to associate the Market with
+     *      controlledBy = the government to associate the Market with
      */
-    this(Government government){
-        controller = government;
+    this(Government controlledBy){
+        this.controller = controlledBy;
     }
 
     /**
