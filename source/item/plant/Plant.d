@@ -213,7 +213,7 @@ class Plant : Item{
      * Is thusly slottable
      */
     override Color getColor(){
-        return Color();
+        return Color(); //TODO average all of the colors from this.usableTraits
     }
 
     /**
