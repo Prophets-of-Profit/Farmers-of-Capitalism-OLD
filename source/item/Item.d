@@ -7,6 +7,49 @@ import world.Range;
 import world.World;
 
 /**
+ * Represents a color in an easily used struct
+ * Color is in RGB
+ */
+struct Color{
+    private Range!int r = Range!int(0, 255);
+    private Range!int g = Range!int(0, 255);
+    private Range!int b = Range!int(0, 255);
+
+    alias rgb this;
+
+    @property int red(int newRed){
+        this.r.current = newRed;
+        return newRed;
+    }
+
+    @property int red(){
+        return this.r.current;
+    }
+
+    @property int green(int newGreen){
+        this.g.current = newGreen;
+        return newGreen;
+    }
+
+    @property int green(){
+        return this.g.current;
+    }
+
+    @property int blue(int newBlue){
+        this.b.current = newBlue;
+        return newBlue;
+    }
+
+    @property int blue(){
+        return this.b.current;
+    }
+
+    @property int[] rgb(){
+        return [this.red, this.blue, this.green];
+    }
+}
+
+/**
  * An abstract class defining what objects that belong to a tile must do
  * This is a contract ensuring that all objects tiles have certain functionalities
  */
@@ -79,7 +122,7 @@ abstract class Item{
     void doMainAction(Character player);                     ///What the Item should do when the player interacts with it; should do different actions based on whether it isPlaced
     void getDestroyedBy(Character destroyer);                ///What/how the Item gets destroyed and what it will do when destroyed
     int getSize();                                           ///Gets the amount of space this item takes up in an inventory
-    int[] getColor();                                        ///Returns the color of the item
+    Color getColor();                                        ///Returns the color of the item
     double getUsefulness();                                  ///Returns the usefulness of the item
     Item clone();                                            ///Returns a copy of the Item
     override string toString();                              ///The item's name as a string

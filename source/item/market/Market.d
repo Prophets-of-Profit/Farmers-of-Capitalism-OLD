@@ -16,7 +16,7 @@ class Market{
     Range!double usefulnessDemand = Range!double(0, 1);    ///The weight for usefulness when calculating demand
     Range!double sizeDemand = Range!double(0, 1);          ///The weight for size when calculating demand
     Range!double colorDemand = Range!double(0, 1);         ///The weight for size when calculating demand
-    int[] demandedColor;                                   ///The color the proletariat desires
+    Color demandedColor;                                   ///The color the proletariat desires
     int largestSeenSize;                                   ///The biggest thing the market has ever seen :O
     Government controller;                                 ///The government associated with the Market
 
@@ -35,7 +35,7 @@ class Market{
      *      item = item to get value of
      */
     long getValue(Item item){
-        int[] itemColor = item.getColor();
+        Color itemColor = item.getColor();
         int itemSize = item.getSize();
         double colorValue = 1 - sqrt(((demandedColor[0] - itemColor[0]).to!float.pow(2) + (demandedColor[1] - itemColor[1]).to!float.pow(2) + (demandedColor[2] - itemColor[2]).to!float.pow(2))/195075/* 3x255^2 */);
         double sizeValue = itemSize.to!double / largestSeenSize;
