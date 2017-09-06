@@ -16,7 +16,7 @@ auto makeGrowWithLoveAction(double growthAmount){
 void doNothing(Character actor, Plant forWhom){}
 
 /**
- * Gives the player all of the fruits or other items this plant has bore
+ * Gives the player all of the fruits or other items this plant has born
  */
 void givePlayerCreatedItems(Character actor, Plant forWhom){
     //TODO
