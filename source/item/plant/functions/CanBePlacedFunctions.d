@@ -36,3 +36,10 @@ bool isLand(Coordinate location, Plant forWhom){
 bool isWater(Coordinate location, Plant forWhom){
     return game.mainWorld.getTileAt(location).isWater;
 }
+
+/**
+ * Returns whether the plant can be placed on the tile if the plant is aquatic
+ */
+bool isAquaticCompatible(Coordinate location, Plant forWhom){
+    return isWater(location, forWhom) && isSurvivableClimate(location, forWhom);
+}

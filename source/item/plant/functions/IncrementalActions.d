@@ -1,4 +1,4 @@
-module item.plant.IncrementalFunctions;
+module item.plant.IncrementalActions;
 
 import app;
 import item.plant.Plant;

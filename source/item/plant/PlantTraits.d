@@ -30,13 +30,13 @@ enum VisibilityType{
 
 /**
  * Stores an trait name, how the trait is visible, and what the trait does when slotted
- * Action is ideally a function
+ * Action is ideally a delegate
  * Is as it is so that each trait is slottable and has an effect in some way for when it is slotted
  */
 class Trait(T){
     VisibilityType type;            ///How the trait would surface
     Point difficulty;               ///The difficulty of this trait; traits close together are closely related and more likely to mutate into each other, but farther away traits are more likely to be mutually exclusive and are harder to obtain together
-    T action;                       ///What this trait would do when slotted; is ideally a function
+    T action;                       ///What this trait would do when slotted; is ideally a delegate
     //alias action this;            Ideally makes it so the trait is accessible as what it does, but it doesn't work
 
     /**
@@ -92,21 +92,21 @@ bool canWorkTogether(T)(Trait!T first, Trait!T second){
 
 /**
  * A struct that stores a set of traits
- * Stores them by the type of functions an item would require
+ * Stores them by the type of delegates an item would require
  */
 struct TraitSet{
-    Trait!(int function(Plant))[] chanceToMutateActions;
-    Trait!(Coordinate function(Plant))[] locationAsSeedActions;
-    Trait!(Character function(Plant))[] getOwnerActions;
-    Trait!(bool function(Coordinate, Plant))[] canBePlacedActions;
-    Trait!(double function(Character, Plant))[] getMovementCostActions;
-    Trait!(void function(Character, Plant))[] steppedOnActions;
-    Trait!(void function(Plant))[] incrementalActions;
-    Trait!(void function(Character, Plant))[] mainActions;
-    Trait!(void function(Character, Plant))[] destroyedActions;
-    Trait!(int function(Plant))[] getSizeActions;
-    Trait!(Color function(Plant))[] getColorActions;
-    Trait!(double function(Plant))[] getUsefulnessActions;
+    Trait!(int delegate(Plant))[] chanceToMutateActions;
+    Trait!(Coordinate delegate(Plant))[] locationAsSeedActions;
+    Trait!(Character delegate(Plant))[] getOwnerActions;
+    Trait!(bool delegate(Coordinate, Plant))[] canBePlacedActions;
+    Trait!(double delegate(Character, Plant))[] getMovementCostActions;
+    Trait!(void delegate(Character, Plant))[] steppedOnActions;
+    Trait!(void delegate(Plant))[] incrementalActions;
+    Trait!(void delegate(Character, Plant))[] mainActions;
+    Trait!(void delegate(Character, Plant))[] destroyedActions;
+    Trait!(int delegate(Plant))[] getSizeActions;
+    Trait!(Color delegate(Plant))[] getColorActions;
+    Trait!(double delegate(Plant))[] getUsefulnessActions;
 
     /**
      * Gets all the traits from the set that would actually be visible
