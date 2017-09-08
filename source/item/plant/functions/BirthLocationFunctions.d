@@ -1,4 +1,4 @@
-module item.plant.functions.BirthLocationFunctions.d;
+module item.plant.functions.BirthLocationFunctions;
 
 import item.plant.Plant;
 import world.World;

@@ -1,5 +1,7 @@
 module item.plant.TraitsList;
 
+import std.conv;
+
 import item.plant.functions.BirthLocationFunctions;
 import item.plant.functions.CanBePlacedFunctions;
 import item.plant.functions.DestroyedActions;
@@ -13,6 +15,8 @@ import item.plant.functions.MoveCostFunctions;
 import item.plant.functions.MutabilityFunctions;
 import item.plant.functions.SteppedOnFunctions;
 import item.plant.PlantTraits;
+import item.plant.Plant;
+import world.World;
 
 //BirthLocationFunctions
 //CanBePlacedFunctions
@@ -28,5 +32,5 @@ Trait!(bool delegate(Coordinate, Plant)) aquatic = new Trait!(bool delegate(Coor
 //SteppedOnFunctions
 
 enum Traits{
-    AQUATIC = aquatic;
+    AQUATIC
 }

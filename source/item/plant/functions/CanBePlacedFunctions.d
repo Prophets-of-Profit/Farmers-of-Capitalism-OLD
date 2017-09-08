@@ -1,4 +1,4 @@
-module item.plant.CanBePlacedFunctions;
+module item.plant.functions.CanBePlacedFunctions;
 
 import std.conv;
 
