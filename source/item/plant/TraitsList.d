@@ -20,7 +20,7 @@ import world.World;
 
 //BirthLocationFunctions
 //CanBePlacedFunctions
-Trait!(bool delegate(Coordinate, Plant)) aquatic = new Trait!(bool delegate(Coordinate, Plant))(VisibilityType.WEAK_RECESSIVE, Point(-5, -5), isAquaticCompatible);
+//Trait!(bool delegate(Coordinate, Plant)) aquatic = new Trait!(bool delegate(Coordinate, Plant))(VisibilityType.WEAK_RECESSIVE, Point(-5, -5), isAquaticCompatible);
 //DestroyedActions
 //GetColorFunctions
 //GetOwnerFunctions
