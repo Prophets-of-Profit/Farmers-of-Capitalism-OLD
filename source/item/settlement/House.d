@@ -7,35 +7,34 @@ import std.random;
 
 import character.Character;
 import item.settlement.District;
+import item.settlement.DistrictComponent;
 import item.Inventory;
 import item.Item;
 import item.settlement.Settlement;
 import world.World;
 
-class House : Item{
 
-    Settlement settlement;          ///The settlement this house is in
+class House : DistrictComponent {
+
     int livingSpace;                ///The amount of characters that can live in this house
-    int landUsed;                   ///The amount of land this house takes up
 
     /**
      * Constructs a new House object
      *  Params:
-     *      settlement = the settlement this house is being built in
+     *      district = the district this house is being built in
      *      space = the number of characters that can live in this house
      *      land = the amount of land that this house takes up
      */
-    this(Settlement settlement, int space, int land){
-        this.settlement = settlement;
+    this(District district, int land, int space){
+        super(district, land);
         this.livingSpace = space;
-        this.landUsed = land;
     }
 
     /**
      * Returns the leader of the settlement this house is in
      */
     override Character getOwner(){
-        return this.settlement.leader;
+        return this.district.settlement.leader;
     }
 
     /**
@@ -50,7 +49,7 @@ class House : Item{
      */
     override bool getPlaced(Character placer, Coordinate newLocation){
         if(super.getPlaced(placer, newLocation)){
-            this.settlement.characters.maxSize += this.livingSpace;
+            this.district.characters.maxSize += this.livingSpace;
             return true;
         }
         return false;
@@ -70,8 +69,8 @@ class House : Item{
      * A player can choose to stay in the house.
      */
     override void doMainAction(Character player){
-        if(this.settlement.characters.countSpaceRemaining > 0){
-            this.settlement.characters.add(player);
+        if(this.district.characters.countSpaceRemaining > 0){
+            this.district.characters.add(player);
         }
     }
 
@@ -80,7 +79,7 @@ class House : Item{
      */
     override void getDestroyedBy(Character destroyer){
         this.getMovedTo(null);
-        this.settlement.characters.maxSize -= this.livingSpace;
+        this.district.characters.maxSize -= this.livingSpace;
     }
 
     /**
@@ -109,7 +108,7 @@ class House : Item{
      * Returns a copy of this house
      */
     override Item clone(){
-        return new House(this.settlement, this.livingSpace, this.landUsed);
+        return new House(this.district, this.livingSpace, this.landUsed);
     }
 
     /**

@@ -9,6 +9,7 @@ import core.exception;
 
 import app;
 import character.Character;
+import world.event.Event;
 import world.HexTile;
 import world.Range;
 
@@ -250,6 +251,15 @@ class World{
         foreach(tile; this.tiles){
             foreach(item; tile.contained){
                 item.doIncrementalAction();
+            }
+        }
+        foreach(event; allEvents){
+            if(event.inProgress){
+                event.turnAction();
+            }else{
+                if(uniform(0, event.getInverseChangeToHappen()) == 0){
+                    event.startAction();
+                }
             }
         }
     }

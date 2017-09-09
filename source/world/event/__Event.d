@@ -1,6 +1,7 @@
 module world.event.Event;
 
-import app;
+import std.conv;
+
 import world.World;
 
 
@@ -18,8 +19,8 @@ enum EventNames {
 static this(){
     foreach(name; __traits(allMembers, EventNames)){
         mixin("import world.event." ~ name ~ ";");
-        foreach(i; 0..name.to!EventNames){
-            mixin("allEvents ~= " ~ name ~ ";");
+        for(int i = 0; i < name.to!EventNames; i++){
+            mixin("allEvents ~= new " ~ name ~ "();");
         }
     }
 }
@@ -50,6 +51,5 @@ abstract class Event{
     int getInverseChanceToHappen();  ///Returns 1 / the chance of this event happening
     void turnAction();               ///The action taken when the event is occuring.
     Coordinate[] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
-    bool canHappen();                ///Returns whether the event can happen.
 
 }

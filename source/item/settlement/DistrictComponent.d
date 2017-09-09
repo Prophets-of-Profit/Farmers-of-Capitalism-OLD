@@ -14,53 +14,29 @@ import world.World;
 
 abstract class DistrictComponent : Item{
 
-    Settlement settlement;          ///The settlement this component is in
-    District district;              ///The settlement this component is in
+    District district;              ///The district this component is in
     int landUsed;                   ///The amount of land this component takes up
 
     /**
      * Constructs a new House object
      *  Params:
-     *      settlement = the settlement this house is being built in
-     *      space = the number of characters that can live in this house
-     *      land = the amount of land that this house takes up
+     *      district = the district this component is in
+     *      land = the amount of land that this component takes up
      */
-    this(Settlement settlement, int space, int land){
-        this.settlement = settlement;
-        this.livingSpace = space;
+    this(District district, int land){
+        this.district = district;
         this.landUsed = land;
     }
 
     /**
-     * Returns the leader of the settlement this house is in
+     * Returns the leader of the settlement this component is in.
      */
     override Character getOwner(){
-        return this.settlement.leader;
+        return this.district.settlement.leader;
     }
 
     /**
-     * Adds zero to the movement cost (houses do not affect movement cost)
-     */
-    override double getMovementCost(Character stepper){
-        return 0;
-    }
-
-    override bool getPlaced(Character placer, Coordinate newLocation);
-
-    /**
-     * Does nothing when stepped on
-     */
-    override void getSteppedOn(Character stepper){}
-
-    override void doIncrementalAction();
-
-    /**
-     * A player can choose to stay in the house.
-     */
-    override void doMainAction(Character player);
-
-    /**
-     * When the house is destroyed, reduce the amount of space available to characters.
+     * When the component is destroyed, move it to null inventory.
      */
     override void getDestroyedBy(Character destroyer){
         this.getMovedTo(null);
@@ -73,40 +49,17 @@ abstract class DistrictComponent : Item{
         return this.landUsed;
     }
 
-    /**
-     * Houses are white
-     * Color doesn't matter because you can't sell houses
-     */
-    override Color getColor(){
-        return Color(0, 0, 0);
-    }
 
     /**
-     * Houses have 0 usefulness because you won't be selling them
+     * See item documentation for abstract methods
      */
-    override double getUsefulness(){
-        return 0;
-    }
-
-    /**
-     * Returns a copy of this house
-     */
-    override Item clone(){
-        return new House(this.settlement, this.livingSpace, this.landUsed);
-    }
-
-    /**
-     * Returns a string representing the house
-     */
-    override string toString(){
-        return "House with "~livingSpace.to!string~" living space and "~landUsed.to!string~" land used.";
-    }
-
-    /**
-     * Because houses cannot be sold, this method isn't really implemented and just returns false: all houses are unique
-     */
-    override bool isSimilarTo(Item otherItem){
-        return false;
-    }
+    override bool isSimilarTo(Item otherItem);
+    override Color getColor();
+    override double getUsefulness();
+    override void doIncrementalAction();
+    override void doMainAction(Character player);
+    override double getMovementCost(Character stepper);
+    override void getSteppedOn(Character stepper);
+    override Item clone();
 
 }

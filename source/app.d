@@ -26,6 +26,8 @@
  */
 module app;
 
+import std.random;
+
 import character.Player;
 import world.event.Event;
 import world.World;
@@ -88,10 +90,10 @@ void main(){
         game.pastWorlds ~= game.mainWorld.clone();
         game.mainWorld.update();
         foreach(event; allEvents){
-            if(event.inProgress){
+            if(event.isInProgress){
                 event.turnAction();
             }else{
-                if(uniform(0, event.getInverseChangeToHappen()) == 0){
+                if(uniform(0, event.getInverseChanceToHappen()) == 0){
                     event.startAction();
                 }
             }
