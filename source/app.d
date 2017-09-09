@@ -6,7 +6,7 @@
  * "Don't fool yourself; you were never even a Player(Coordinate coords);"
  *      -Elia Gorokhovsky
  *
- * "Some crappy quote about being a tool"
+ * "I have PantheonTSD."
  *      -Kadin Tucker
  *
  * A proprietary software written by Saurabh Totey, Elia Gorokhovsky, and Kadin Tucker.
@@ -27,6 +27,7 @@
 module app;
 
 import character.Player;
+import world.event.Event;
 import world.World;
 
 /**
@@ -86,6 +87,15 @@ void main(){
         }
         game.pastWorlds ~= game.mainWorld.clone();
         game.mainWorld.update();
+        foreach(event; allEvents){
+            if(event.inProgress){
+                event.turnAction();
+            }else{
+                if(uniform(0, event.getInverseChangeToHappen()) == 0){
+                    event.startAction();
+                }
+            }
+        }
     }
 
 
