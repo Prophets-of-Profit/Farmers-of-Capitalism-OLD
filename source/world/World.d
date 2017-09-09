@@ -254,12 +254,10 @@ class World{
             }
         }
         foreach(event; allEvents){
-            if(event.inProgress){
+            if(event.isInProgress){
                 event.turnAction();
-            }else{
-                if(uniform(0, event.getInverseChangeToHappen()) == 0){
-                    event.startAction();
-                }
+            }else if(uniform(0, event.getInverseChanceToHappen()) == 0){
+                event.startAction();
             }
         }
     }

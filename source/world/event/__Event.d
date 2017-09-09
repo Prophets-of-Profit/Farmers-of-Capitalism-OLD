@@ -19,7 +19,7 @@ enum EventNames {
 static this(){
     foreach(name; __traits(allMembers, EventNames)){
         mixin("import world.event." ~ name ~ ";");
-        for(int i = 0; i < name.to!EventNames; i++){
+        foreach(i; 0..name.to!EventNames.to!int){
             mixin("allEvents ~= new " ~ name ~ "();");
         }
     }
