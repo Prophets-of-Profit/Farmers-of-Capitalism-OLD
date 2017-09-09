@@ -4,8 +4,11 @@ import app;
 import character.Character;
 import item.Inventory;
 import item.Item;
+import item.settlement.DistrictComponent;
 import item.settlement.Settlement;
 import world.World;
+
+immutable maxSpaceForTile = 100;
 
 /**
  * An item that represents a settlement for the purpose of being stored on a HexTile
@@ -13,7 +16,13 @@ import world.World;
 class District : Item{
 
     Settlement settlement;
-    Inventory!Item buildings;
+    Coordinate location;                                                                        ///The location of this district
+    Inventory!Character characters = new Inventory!Character(baseHousingPerSettlement);         ///An inventory of the characters
+    Inventory!DistrictComponent buildings = new Inventory!DistrictComponent(maxSpaceForTile);
+
+    void addComponent(DistrictComponent toAdd){
+
+    }
 
     /**
      * Returns the settlement's leader

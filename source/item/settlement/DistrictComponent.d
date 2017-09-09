@@ -1,4 +1,4 @@
-module item.settlement.House;
+module item.settlement.DistrictComponent;
 
 import std.algorithm;
 import std.array;
@@ -12,11 +12,11 @@ import item.Item;
 import item.settlement.Settlement;
 import world.World;
 
-class House : Item{
+abstract class DistrictComponent : Item{
 
-    Settlement settlement;          ///The settlement this house is in
-    int livingSpace;                ///The amount of characters that can live in this house
-    int landUsed;                   ///The amount of land this house takes up
+    Settlement settlement;          ///The settlement this component is in
+    District district;              ///The settlement this component is in
+    int landUsed;                   ///The amount of land this component takes up
 
     /**
      * Constructs a new House object
@@ -45,42 +45,25 @@ class House : Item{
         return 0;
     }
 
-    /**
-     * Adds a new house to the settlement, adding extra population space
-     */
-    override bool getPlaced(Character placer, Coordinate newLocation){
-        if(super.getPlaced(placer, newLocation)){
-            this.settlement.characters.maxSize += this.livingSpace;
-            return true;
-        }
-        return false;
-    }
+    override bool getPlaced(Character placer, Coordinate newLocation);
 
     /**
      * Does nothing when stepped on
      */
     override void getSteppedOn(Character stepper){}
 
-    /**
-     * Has no incremental action
-     */
-    override void doIncrementalAction(){}
+    override void doIncrementalAction();
 
     /**
      * A player can choose to stay in the house.
      */
-    override void doMainAction(Character player){
-        if(this.settlement.characters.countSpaceRemaining > 0){
-            this.settlement.characters.add(player);
-        }
-    }
+    override void doMainAction(Character player);
 
     /**
      * When the house is destroyed, reduce the amount of space available to characters.
      */
     override void getDestroyedBy(Character destroyer){
         this.getMovedTo(null);
-        this.settlement.characters.maxSize -= this.livingSpace;
     }
 
     /**

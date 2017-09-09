@@ -25,6 +25,6 @@ abstract class Event{
 
     void turnAction();               ///The action taken when the event is occuring.
     Coordinate[] coordsAffected();   ///Returns any coords corresponding to tiles affected by the event.
-    bool canHappen();                ///Returns whether the even can happen.
+    bool canHappen();                ///Returns whether the event can happen.
 
 }
