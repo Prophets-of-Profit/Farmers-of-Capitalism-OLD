@@ -17,16 +17,6 @@ enum TechnologyName{
 Technology[TechnologyName] allTechnologies;
 
 /**
- * Initializes all of the technologies by importing them and adding them to allTechnologies
- */
-shared static this(){
-    foreach(name; __traits(allMembers, TechnologyName)){
-        mixin("import character.technology." ~ name ~ ";");
-        mixin("allTechnologies[TechnologyName." ~ name ~ "] = new " ~ name ~ "();");
-    }
-}
-
-/**
  * A class that defines a technology
  * A technology is a gate for some feature of the game
  * Not all technologies can be immediately available
