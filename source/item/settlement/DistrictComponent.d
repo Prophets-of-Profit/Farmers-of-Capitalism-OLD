@@ -12,6 +12,9 @@ import item.Item;
 import item.settlement.Settlement;
 import world.World;
 
+/**
+ * TODO
+ */
 abstract class DistrictComponent : Item{
 
     District district;              ///The district this component is in

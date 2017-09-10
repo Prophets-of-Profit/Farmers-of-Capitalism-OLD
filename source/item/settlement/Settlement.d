@@ -5,11 +5,14 @@ import item.Inventory;
 import item.settlement.District;
 import world.World;
 
-immutable baseHousingPerSettlement = 5;
+immutable baseHousingPerSettlement = 5; //How much housing each settlement starts with
 
+/**
+ * A settlement is a thing that has a physical location on the map and may span multiple tiles
+ */
 class Settlement{
 
-    Inventory!District tiles = new Inventory!District(-1);                                ///An inventory of the districts
-    Character leader;                                                                     ///The leader of the settlement
+    Inventory!District tiles = new Inventory!District(-1); ///An inventory of the districts
+    Character leader;                                      ///The leader of the settlement
 
 }

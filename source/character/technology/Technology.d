@@ -19,7 +19,7 @@ Technology[TechnologyName] allTechnologies;
 /**
  * Initializes all of the technologies by importing them and adding them to allTechnologies
  */
-static this(){
+shared static this(){
     foreach(name; __traits(allMembers, TechnologyName)){
         mixin("import character.technology." ~ name ~ ";");
         mixin("allTechnologies[TechnologyName." ~ name ~ "] = new " ~ name ~ "();");

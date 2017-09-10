@@ -13,7 +13,9 @@ import item.Item;
 import item.settlement.Settlement;
 import world.World;
 
-
+/**
+ * A house is where characters exist in a settlement
+ */
 class House : DistrictComponent {
 
     int livingSpace;                ///The amount of characters that can live in this house

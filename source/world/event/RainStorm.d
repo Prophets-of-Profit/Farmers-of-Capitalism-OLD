@@ -1,12 +1,15 @@
 module world.event.RainStorm;
 
+import std.conv;
+
 import app;
 import world.event.Event;
 import world.HexTile;
 import world.World;
 
-immutable int inverseStormMoveChance = 2;
-
+/**
+ * Rainstorms are events that //TODO
+ */
 class RainStorm : Event {
 
     Coordinate currentEffected;
@@ -15,7 +18,7 @@ class RainStorm : Event {
      * Rainstorms have 1/20 chance of happening.
      */
     override int getInverseChanceToHappen(){
-        return cast(int)(50 / game.mainWorld.getTileAt(currentEffected).climate[TileStat.WATER]);
+        return (50 / game.mainWorld.getTileAt(currentEffected).climate[TileStat.WATER]).to!int;
     }
 
     /**

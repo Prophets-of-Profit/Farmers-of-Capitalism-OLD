@@ -8,6 +8,8 @@ import world.World;
 /**
  * An enum with event names and the number that exist in the world at any time.
  * These will automatically be imported to AllEvents when added here.
+ * Each event corresponds to a number which is how many times that event is added to all events
+ * In other words, the number that is attached to each event name is how many of those events can exist at max
  */
 enum EventNames {
     RainStorm = 5,
@@ -25,7 +27,7 @@ static this(){
     }
 }
 
-Event[] allEvents;      ///A list of all the events to be used in the world
+Event[] allEvents;  ///A list of all the events to be used in the world
 
 /**
  * Handles all (possibly RNG) events during the game.
