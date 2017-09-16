@@ -18,8 +18,15 @@ import item.plant.PlantTraits;
 import item.plant.Plant;
 import world.World;
 
-//TODO @elia
-
-enum Traits{
-    AQUATIC
+TraitSet makeAllTraits(){
+    return TraitSet([
+        new class Trait{
+            this(){
+                super(ActionType.PLACEABLE, VisibilityType.CO_RECESSIVE, Point(-5, -5));
+            }
+            override bool getBool(Coordinate location, Plant forWhom){
+                return isAquaticCompatible(location, forWhom);
+            }
+        }
+    ]);
 }

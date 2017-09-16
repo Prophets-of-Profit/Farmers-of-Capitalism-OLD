@@ -14,6 +14,7 @@ import std.math;
 import character.Character;
 import item.Item;
 import item.plant.Plant;
+import item.plant.TraitsList;
 import world.World;
 
 /**
@@ -56,7 +57,6 @@ abstract class Trait{
         this.type = type;
         this.visibility = visibility;
         this.difficulty = difficulty;
-        allActions ~= this;
     }
 
     /**
@@ -246,5 +246,5 @@ class DefaultPlant{
     }
 }
 
-TraitSet allActions;                        ///Stores a set of all actions
+TraitSet allActions = makeAllTraits();      ///Stores a set of all actions
 DefaultPlant[] allDefaultPlants;            ///Stores all default plants so that any plant can be compared to this list, and whichever plant it is closest to is its species
