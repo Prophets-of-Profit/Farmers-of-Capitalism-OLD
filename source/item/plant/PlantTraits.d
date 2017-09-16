@@ -11,7 +11,10 @@ import std.array;
 import std.conv;
 import std.math;
 
+import character.Character;
+import item.Item;
 import item.plant.Plant;
+import world.World;
 
 /**
  * Specifies how a trait should show up
@@ -34,7 +37,7 @@ enum ActionType{
  * Stores an trait name, how the trait is visible, and what the trait does when slotted
  * Is as it is so that each trait is slottable and has an effect in some way for when it is slotted
  */
-class Trait{
+abstract class Trait{
 
     ActionType type;                ///The type of action this trait acts as
     VisibilityType visibility;      ///How the trait would surface
@@ -53,6 +56,86 @@ class Trait{
         this.type = type;
         this.visibility = visibility;
         this.difficulty = difficulty;
+        allActions ~= this;
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one of trait's methods, not all of them
+     */
+    int getInt(Plant forWhom){
+        assert([ActionType.MUTATION_CHANCE, ActionType.SIZE].canFind(this.type));
+        return 0;
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    Coordinate getCoordinate(Plant forWhom){
+        assert([ActionType.SEED_LOCATION].canFind(this.type));
+        return Coordinate();
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    Character getCharacter(Plant forWhom){
+        assert([ActionType.OWNER].canFind(this.type));
+        return null;
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    bool getBool(Coordinate location, Plant forWhom){
+        assert([ActionType.PLACEABLE].canFind(this.type));
+        return false;
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    double getDouble(Character actor, Plant forWhom){
+        assert([ActionType.MOVEMENT_COST].canFind(this.type));
+        return 0;
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    void doSomething(Character actor, Plant forWhom){
+        assert([ActionType.STEPPED_ON, ActionType.MAIN, ActionType.DESTROYED].canFind(this.type));
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    void doSomething(Plant forWhom){
+        assert([ActionType.INCREMENTAL].canFind(this.type));
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    Color getColor(Plant forWhom){
+        assert([ActionType.COLOR].canFind(this.type));
+        return Color();
+    }
+
+    /**
+     * One type of action a trait may have
+     * Isn't abstract because traits only need to override one one of trait's methods, not all of them
+     */
+    double getDouble(Plant forWhom){
+        assert([ActionType.USEFULNESS].canFind(this.type));
+        return 0;
     }
 
 }
