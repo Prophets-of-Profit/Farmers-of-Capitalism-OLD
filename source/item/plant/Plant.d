@@ -86,7 +86,7 @@ class Plant : Item{
      */
     this(Plant parent){
         this(parent.traits);
-        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits[ActionType.SEED_LOCATION][0](this)).contained);
     }
 
     /**
@@ -97,11 +97,8 @@ class Plant : Item{
      *      secondParent = one of this plant's other parents
      */
     this(Plant firstParent, Plant secondParent){
-        Trait!T[] getRandTraits(T)(Trait!T[] first, Trait!T[] second){
-            return [first[uniform(0, $)], second[uniform(0, $)]];
-        }
         this(combineTraitSets(firstParent.traits, secondParent.traits));
-        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits.locationAsSeedActions[0].action(this)).contained);
+        this.getMovedTo(game.mainWorld.getTileAt(this.usableTraits[ActionType.SEED_LOCATION][0](this)).contained);
     }
 
     /**
@@ -109,7 +106,7 @@ class Plant : Item{
      * Is slottable
      */
     override Character getOwner(){
-        return this.usableTraits.getOwnerActions[0].action(this);   //Doesn't iterate through the actions in the category because there can only be one owner
+        return this.usableTraits[ActionType.OWNER][0](this);   //Doesn't iterate through the actions in the category because there can only be one owner
     }
 
     /**
@@ -119,8 +116,8 @@ class Plant : Item{
      *      placementCandidateCoords = the location to check of whether the plant can be placed there
      */
     override bool canBePlaced(Coordinate placementCandidateCoords){
-        foreach(trait; this.usableTraits.canBePlacedActions){
-            if(!trait.action(placementCandidateCoords, this)){
+        foreach(trait; this.usableTraits[ActionType.PLACEABLE]){
+            if(!trait(placementCandidateCoords, this)){
                 return false;
             }
         }
@@ -150,7 +147,7 @@ class Plant : Item{
      *      stepper = the character that stepped on the plant
      */
     override double getMovementCost(Character stepper){
-        return this.usableTraits.getMovementCostActions.map!(a => a.action(stepper, this)).reduce!((a, b) => a + b);
+        return this.usableTraits[ActionType.MOVEMENT_COST].map!(a => a(stepper, this)).reduce!((a, b) => a + b);
     }
 
     /**
@@ -160,8 +157,8 @@ class Plant : Item{
      *      stepper = the character that has stepped on the plant
      */
     override void getSteppedOn(Character stepper){
-        foreach(trait; this.usableTraits.steppedOnActions){
-            trait.action(stepper, this);
+        foreach(trait; this.usableTraits[ActionType.STEPPED_ON]){
+            trait(stepper, this);
         }
     }
 
@@ -170,8 +167,8 @@ class Plant : Item{
      * Is slottable
      */
     override void doIncrementalAction(){
-        foreach(trait; this.usableTraits.incrementalActions){
-            trait.action(this);
+        foreach(trait; this.usableTraits[ActionType.INCREMENTAL]){
+            trait(this);
         }
     }
 
@@ -182,8 +179,8 @@ class Plant : Item{
      *      player = the character interacting with the plant
      */
     override void doMainAction(Character player){
-        foreach(trait; this.usableTraits.mainActions){
-            trait.action(player, this);
+        foreach(trait; this.usableTraits[ActionType.MAIN]){
+            trait(player, this);
         }
     }
 
@@ -194,8 +191,8 @@ class Plant : Item{
      *      destroyer = the player who is destroying the plant
      */
     override void getDestroyedBy(Character destroyer){
-        foreach(trait; this.usableTraits.destroyedActions){
-            trait.action(destroyer, this);
+        foreach(trait; this.usableTraits[ActionType.DESTROYED]){
+            trait(destroyer, this);
         }
         this.die(true);
     }
@@ -205,7 +202,7 @@ class Plant : Item{
      * Is slottable
      */
     override int getSize(){
-        return this.usableTraits.getSizeActions.map!(a => a.action(this)).sum;
+        return this.usableTraits[ActionType.SIZE].map!(a => a(this)).sum;
     }
 
     /**
@@ -221,7 +218,7 @@ class Plant : Item{
      * Is slottable and just sums all of the usefulnesses
      */
     override double getUsefulness(){
-        return this.usableTraits.getUsefulnessActions.map!(a => a.action(this)).sum;
+        return this.usableTraits[ActionType.USEFULNESS].map!(a => a(this)).sum;
     }
 
     /**

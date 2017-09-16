@@ -18,18 +18,7 @@ import item.plant.PlantTraits;
 import item.plant.Plant;
 import world.World;
 
-//BirthLocationFunctions
-//CanBePlacedFunctions
-//Trait!(bool delegate(Coordinate, Plant)) aquatic = new Trait!(bool delegate(Coordinate, Plant))(VisibilityType.WEAK_RECESSIVE, Point(-5, -5), isAquaticCompatible);
-//DestroyedActions
-//GetColorFunctions
-//GetOwnerFunctions
-//GetUsefulnessFunctions
-//GetIncrementalFunctions
-//MainActions
-//MoveCostFunctions
-//MutabilityFunctions
-//SteppedOnFunctions
+//TODO @elia
 
 enum Traits{
     AQUATIC
