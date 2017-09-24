@@ -3,7 +3,7 @@
  *      -Saurabh Totey
  *
  * "You've beat me at my own game!"
- * "Don't fool yourself; you were never even a Player(Coordinate coords);"
+ * "Don't fool yourself; you were never even a Player;"
  *      -Elia Gorokhovsky
  *
  * "I have PantheonTSD."
@@ -26,6 +26,7 @@
  */
 module app;
 
+import std.concurrency;
 import std.random;
 
 import character.Player;
@@ -67,6 +68,8 @@ class Main{
 
 Main game; ///The main object stored in a static variable "game"
 
+__gshared Display display;
+
 /**
  * The entry point for this game
  * First sets the game object as either an already existing game object (deserializes existing game) or makes a new game object
@@ -78,13 +81,19 @@ void main(){
 
     //TODO Write game
     //TODO Check type of game in Main Menu
-    Display display = new Display();
+    display = new Display();
+    spawn((){
+        while(true){
+            display.update();
+        }
+    });
     //if(gameType == NEW_GAME){
         //TODO Get number of players and world size in world creation
         int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.
         int worldSize = 25;     //TODO fix world generation time; anything too big takes hyperbolically forever to create
         game = new Main(numPlayers, worldSize);
     //}
+
     while(false){/*while(true){*/
         foreach(player; game.players){
             //TODO Player action
@@ -101,6 +110,5 @@ void main(){
             }
         }
     }
-
 
 }

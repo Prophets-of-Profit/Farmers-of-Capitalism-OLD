@@ -53,8 +53,16 @@ class Display{
      * TODO: make the display take in a main object
      */
     this(int width = 1024, int height = 768){
-        this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_FULLSCREEN);
+        this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
         this.mainSurface = SDL_GetWindowSurface(this.window);
+    }
+
+    /**
+     * Refreshes the window
+     */
+    void update(){
+        SDL_FillRect(this.mainSurface, null, SDL_MapRGB(this.mainSurface.format, 0, 255, 0));
+        SDL_UpdateWindowSurface(this.window);
     }
 
 }
