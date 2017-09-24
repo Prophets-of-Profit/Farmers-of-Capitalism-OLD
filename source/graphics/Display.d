@@ -50,10 +50,11 @@ class Display{
     }
 
     /**
-     * TODO
+     * TODO: make the display take in a main object
      */
-    this(){
-
+    this(int width = 1024, int height = 768){
+        this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_FULLSCREEN);
+        this.mainSurface = SDL_GetWindowSurface(this.window);
     }
 
 }

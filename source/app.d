@@ -29,6 +29,7 @@ module app;
 import std.random;
 
 import character.Player;
+import graphics.Display;
 import world.event.Event;
 import world.World;
 
@@ -74,9 +75,10 @@ Main game; ///The main object stored in a static variable "game"
  * Graphics hooks into the game object and draws it based off of what the game is and is completely separate from this method's handling of the game logic
  */
 void main(){
+
     //TODO Write game
     //TODO Check type of game in Main Menu
-
+    Display display = new Display();
     //if(gameType == NEW_GAME){
         //TODO Get number of players and world size in world creation
         int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.
