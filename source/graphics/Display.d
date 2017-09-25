@@ -16,6 +16,7 @@ class Display{
 
     SDL_Window* window;             ///The window object
     SDL_Surface* mainSurface;       ///The surface object
+    bool isClosed = false;          ///Whether the window is still open or not
 
     /**
      * Gets the width of the window
@@ -52,7 +53,7 @@ class Display{
     /**
      * TODO: make the display take in a main object
      */
-    this(int width = 1024, int height = 768){
+    this(int width = 1024, int height = 512){
         this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
         this.mainSurface = SDL_GetWindowSurface(this.window);
     }
@@ -61,7 +62,13 @@ class Display{
      * Refreshes the window
      */
     void update(){
-        SDL_FillRect(this.mainSurface, null, SDL_MapRGB(this.mainSurface.format, 0, 255, 0));
+        SDL_Event event;
+        while(SDL_PollEvent(&event) != 0){
+            switch(event.type){
+                case SDL_QUIT: this.isClosed = true; import std.stdio; writeln("Quitting"); return;
+                default: break;
+            }
+        }
         SDL_UpdateWindowSurface(this.window);
     }
 

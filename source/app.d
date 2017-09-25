@@ -83,7 +83,7 @@ void main(){
     //TODO Check type of game in Main Menu
     display = new Display();
     spawn((){
-        while(true){
+        while(!display.isClosed){
             display.update();
         }
     });
