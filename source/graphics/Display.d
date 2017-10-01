@@ -3,10 +3,20 @@ module graphics.Display;
 import derelict.sdl2.sdl;
 
 /**
- * Loads SDL
+ * Loads SDL and starts displayThread
  */
 shared static this(){
     DerelictSDL2.load(SharedLibVersion(2, 0, 6));
+}
+
+/**
+ * The function to be run in the display thread.
+ */
+void displayThread(Display display){
+    while(!display.isClosed){
+        display.update();
+    }
+    return;
 }
 
 /**
@@ -56,6 +66,7 @@ class Display{
     this(int width = 1024, int height = 512){
         this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
         this.mainSurface = SDL_GetWindowSurface(this.window);
+
     }
 
     /**

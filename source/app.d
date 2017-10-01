@@ -26,6 +26,8 @@
  */
 module app;
 
+import derelict.sdl2.thread;
+
 import std.concurrency;
 import std.random;
 
@@ -82,11 +84,7 @@ void main(){
     //TODO Write game
     //TODO Check type of game in Main Menu
     display = new Display();
-    spawn((){
-        while(!display.isClosed){
-            display.update();
-        }
-    });
+    SDL_Thread* mainThread = SDL_CreateThread(displayThread, "Display Thread", null);
     //if(gameType == NEW_GAME){
         //TODO Get number of players and world size in world creation
         int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.
