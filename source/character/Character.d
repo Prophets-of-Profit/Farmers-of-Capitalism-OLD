@@ -113,17 +113,6 @@ class Character{
         return 1 + game.mainWorld.getTileAt(locationToFindCost).contained.items.map!(a => a.getMovementCost(this)).sum.floor.to!int;
     }
 
-    /**
-     * Returns the nearest settlement to the origin
-     * Params:
-     *      origin = the origin from which to find the nearest settlement
-     *      blacklist = a list of settlements that should not be returned by this function
-     */
-    Settlement findNearestSettlement(Coordinate origin, Settlement[] blacklist = []){
-        //TODO: implement this function
-        return null;
-    }
-
 }
 
 unittest{

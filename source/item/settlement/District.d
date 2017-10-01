@@ -98,4 +98,18 @@ class District : Item{
         return false;
     }
 
+    /**
+     * Places a central district. Creates a settlement centered around a district.
+     */
+    override bool getPlaced(Character placer, Coordinate newLocation){
+        if(this.canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained)){
+            this.settlement = new Settlement();
+            this.settlement.tiles.add(this);
+            this.settlement.leader = placer;
+            game.mainWorld.allSettlements ~= this.settlement;
+            return true;
+        }
+        return false;
+    }
+
 }

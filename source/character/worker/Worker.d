@@ -11,9 +11,6 @@ import world.World;
  */
 class Worker: Character{
 
-    Item selfAsItem;        ///The implementation of the worker in an item form
-    alias selfAsItem this;  ///Makes it so the worker can be accessed and used as an item
-
     /**
      * A constructor for a player that just calls the Character constructor
      * Params:
