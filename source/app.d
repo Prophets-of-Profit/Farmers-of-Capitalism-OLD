@@ -26,6 +26,8 @@
  */
 module app;
 
+import core.thread;
+
 import std.concurrency;
 import std.random;
 
@@ -45,7 +47,6 @@ class Main{
     public World mainWorld;         ///The world on which the game is played.
     public Player[] players;        ///The players of the game. Length of array is how many players.
     public World[] pastWorlds;      ///The world at some previous state of the game
-
     /**
      * Makes the main object of a game
      * Only makes the object and the world and then evenly spaces and places players
@@ -81,8 +82,10 @@ void main(){
 
     //TODO Write game
     //TODO Check type of game in Main Menu
-    display = new Display();
-    displayThread(display);
+    new Thread({
+        Display mainWindow = new Display();
+        displayThread(mainWindow);
+    }).start();
     //if(gameType == NEW_GAME){
         //TODO Get number of players and world size in world creation
         int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.

@@ -9,7 +9,6 @@ import item.Inventory;
 import item.Item;
 import world.Range;
 import world.World;
-import world.Weather;
 
 /**
  * An enum for directions
@@ -43,7 +42,6 @@ class HexTile {
     public Range!double[TileStat] climate;                      ///The tile's climate information
     public Direction direction;                                 ///Direction of wind; -1 if no wind flow
     public Direction[] waterFlow;                               ///Directions of water flow; if the list is empty, the tile isn't water
-    public Weather weather;                                     ///The weather object of this tile
     public Inventory!Item contained = new Inventory!Item(1);    ///Improvement(s) or building(s) or plant(s) that are on this tile
 
     /**
