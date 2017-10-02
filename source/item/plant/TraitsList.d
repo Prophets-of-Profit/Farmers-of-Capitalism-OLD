@@ -20,7 +20,7 @@ import world.World;
 
 TraitSet makeAllTraits(){
     return TraitSet([
-        new class Trait{
+        new class Trait {
             this(){
                 super(ActionType.PLACEABLE, VisibilityType.CO_RECESSIVE, Point(-5, -5));
             }

@@ -22,7 +22,7 @@ void displayThread(Display display){
 /**
  * Stores window in object format
  */
-class Display{
+class Display {
 
     SDL_Window* window;             ///The window object
     SDL_Surface* mainSurface;       ///The surface object

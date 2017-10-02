@@ -6,7 +6,7 @@ import derelict.sdl2.image;
 /**
  * A screen object with a location and dimensions
  */
-class Panel{
+class Panel {
 
     int[2] location;        ///The location of this panel on the screen
     int[2] dimensions;      ///The size of this panel

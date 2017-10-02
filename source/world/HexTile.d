@@ -15,7 +15,7 @@ import world.Weather;
  * An enum for directions
  * Each direction is assigned an integer for which element in getAdjacentCoords of a tile will be in the given direction
  */
-enum Direction{
+enum Direction {
     NONE = -1, NORTH = 0, NORTH_EAST = 1, SOUTH_EAST = 2, SOUTH = 3, SOUTH_WEST = 4, NORTH_WEST = 5
 }
 
@@ -26,7 +26,7 @@ enum Direction{
  * Soil is the soil quality of the tile
  * Elevation is the height of the tile
  */
-enum TileStat{
+enum TileStat {
     TEMPERATURE, WATER, SOIL, ELEVATION
 }
 
@@ -37,7 +37,7 @@ enum TileStat{
  * Most hex tiles differ from each other at least slightly and the player will have the ability to alter increasingly more parts of a hextile as the game progresses
  * Is a regular hexagon where the angles face east and west
  */
-class HexTile{
+class HexTile {
 
     public Coordinate coords;                                   ///Location of the tile stored as [ringNumber, positionInRing]
     public Range!double[TileStat] climate;                      ///The tile's climate information

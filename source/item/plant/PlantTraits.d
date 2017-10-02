@@ -23,14 +23,14 @@ import world.World;
  * Co-dominant and co-recessive traits can show up together, but can be dominated as well
  * Does not support incomplete dominance where traits are mixed because of the slotting nature of traits
  */
-enum VisibilityType{
+enum VisibilityType {
     WEAK_RECESSIVE, CO_RECESSIVE, STRONG_RECESSIVE, WEAK_DOMINANT, CO_DOMINANT, STRONG_DOMINANT
 }
 
 /**
  * The type of actions a trait fulfills
  */
-enum ActionType{
+enum ActionType {
     MUTATION_CHANCE, SEED_LOCATION, OWNER, PLACEABLE, MOVEMENT_COST, STEPPED_ON, INCREMENTAL, MAIN, DESTROYED, SIZE, COLOR, USEFULNESS
 }
 
@@ -38,7 +38,7 @@ enum ActionType{
  * Stores an trait name, how the trait is visible, and what the trait does when slotted
  * Is as it is so that each trait is slottable and has an effect in some way for when it is slotted
  */
-abstract class Trait{
+abstract class Trait {
 
     ActionType type;                ///The type of action this trait acts as
     VisibilityType visibility;      ///How the trait would surface

@@ -11,7 +11,7 @@ import world.World;
 /**
  * A road is an item which speeds up those who walk upon it
  */
-class Road : Item{
+class Road : Item {
 
     double speedReduction;  ///How much the road speeds the player up
 

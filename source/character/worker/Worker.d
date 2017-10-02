@@ -9,7 +9,7 @@ import world.World;
  * Extends the character class, but would also extend the item class if multiple inheritance was allowed
  * Indirectly extends item through its instancedata below
  */
-class Worker: Character{
+class Worker : Character {
 
     /**
      * A constructor for a player that just calls the Character constructor

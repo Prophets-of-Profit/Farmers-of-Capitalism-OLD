@@ -13,7 +13,7 @@ immutable maxSpaceForTile = 100;
 /**
  * An item that represents a settlement for the purpose of being stored on a HexTile
  */
-class District : Item{
+class District : Item {
 
     Settlement settlement;
     Coordinate location;                                                                        ///The location of this district

@@ -12,7 +12,7 @@ import world.World;
 /**
  * A class for an object that holds other objects
  */
-class Inventory(T){
+class Inventory(T) {
 
     T[] contained;                  ///All the items inside of the inventory
     public Character[] accessibleTo;///A list of characters who can access the inventory

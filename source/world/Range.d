@@ -9,7 +9,7 @@ import std.conv;
  * Can also check if any other numbers are within the minimum and maximum
  * Is a range from [minimum, maximum] or minimum to maximum inclusive on both ends
  */
-struct Range(T){
+struct Range(T) {
 
     private T min;      ///The minimum value of the range, is private so property methods would be used instead
     private T max;      ///The maximum value of the range, is private so property methods would be used instead

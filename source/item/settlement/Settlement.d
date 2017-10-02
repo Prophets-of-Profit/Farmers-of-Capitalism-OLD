@@ -10,7 +10,7 @@ immutable baseHousingPerSettlement = 5; //How much housing each settlement start
 /**
  * A settlement is a thing that has a physical location on the map and may span multiple tiles
  */
-class Settlement{
+class Settlement {
 
     Inventory!District tiles = new Inventory!District(-1); ///An inventory of the districts. tiles[0] will be the central district
     Character leader;                                      ///The leader of the settlement

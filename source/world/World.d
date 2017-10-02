@@ -21,7 +21,7 @@ import world.Range;
  *  pos is how far clockwise along the ring the coordinate is
  * Coordinates are immutable
  */
-struct Coordinate{
+struct Coordinate {
 
     int ringNum;        ///The ring number of the coordinate or how many rings from the center this coordinate is if the center ring is ring 0
     int pos;            ///The position of the coordinate within the ring or how far clockwise along the ring the coordinate is
@@ -43,7 +43,7 @@ immutable Coordinate nullCoord = Coordinate(-1, -1);  ///A coordinate that signi
  * A general class that should only ever be instantiated once
  * Contains an array of tiles sorted by their ringNum (distance from the center) and pos (how far clockwise along the ring the tile is)
  */
-class World{
+class World {
 
     Settlement[] allSettlements;            ///The list of all the settlements in the world.
     HexTile[] tiles;                        ///The storage array of all tiles; stored in order of ringNum and then pos

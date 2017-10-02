@@ -13,9 +13,9 @@ import item.settlement.Settlement;
 import world.World;
 
 /**
- * TODO
+ * TODO make it work
  */
-abstract class DistrictComponent : Item{
+abstract class DistrictComponent : Item {
 
     District district;              ///The district this component is in
     int landUsed;                   ///The amount of land this component takes up

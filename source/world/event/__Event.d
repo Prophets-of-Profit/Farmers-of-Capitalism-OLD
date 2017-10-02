@@ -17,7 +17,7 @@ Event[] allEvents;  ///A list of all the events to be used in the world
 /**
  * Handles all (possibly RNG) events during the game.
  */
-abstract class Event{
+abstract class Event {
 
     public bool isInProgress;   ///Whether the event is happening right now
 

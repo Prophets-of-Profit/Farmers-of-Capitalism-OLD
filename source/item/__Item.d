@@ -10,7 +10,7 @@ import world.World;
  * Represents a color in an easily used struct
  * Color is in RGB
  */
-struct Color{
+struct Color {
     private Range!int r = Range!int(0, 255);
     private Range!int g = Range!int(0, 255);
     private Range!int b = Range!int(0, 255);
@@ -59,7 +59,7 @@ struct Color{
  * An abstract class defining what objects that belong to a tile must do
  * This is a contract ensuring that all objects tiles have certain functionalities
  */
-abstract class Item{
+abstract class Item {
 
     public Range!double completion = Range!double(0, 1, 0);         ///How close the Item is towards being complete: once it won't function until it has reached completion
     public Inventory!Item source;                                   ///The source inventory for where the item is/came from

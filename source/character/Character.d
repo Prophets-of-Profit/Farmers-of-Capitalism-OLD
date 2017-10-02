@@ -15,7 +15,7 @@ import world.World;
  * A set of methods and instancedata for a character
  * Is made to be extended
  */
-class Character{
+class Character {
 
     Coordinate location;                                   ///The location of the character stored as [ringNum, pos]
     public int maxTravellableDistance = 5;                 ///The most distance the character can move in one turn TODO turn maxTravellableDistance and numMovesLeft to a range?

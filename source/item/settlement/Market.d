@@ -1,4 +1,4 @@
-module government.Market;
+module item.settlement.Market;
 
 import std.array;
 import std.algorithm;
@@ -10,28 +10,23 @@ import item.Inventory;
 import item.Item;
 import world.Range;
 
-/**
- * A market is a class that handles buying and selling items
- * Are the core part of the game's economy
- * Slowly change weights and demands and supplies over time
- */
-class Market{
+class Market {
 
     Inventory!Item inventory = new Inventory!Item();       ///The items circulating through the Market
     Range!double usefulnessDemand = Range!double(0, 1);    ///The weight for usefulness when calculating demand
     Range!double sizeDemand = Range!double(0, 1);          ///The weight for size when calculating demand
     Range!double colorDemand = Range!double(0, 1);         ///The weight for size when calculating demand
-    Color demandedColor;                                   ///The color the proletariat desires
+    int[] demandedColor;                                   ///The color the proletariat desires
     int largestSeenSize;                                   ///The biggest thing the market has ever seen :O
     Government controller;                                 ///The government associated with the Market
 
     /**
      * The constructor for Market
      * Params:
-     *      controlledBy = the government to associate the Market with
+     *      controller = the government to associate the Market with
      */
-    this(Government controlledBy){
-        this.controller = controlledBy;
+    this(Government government){
+        controller = government;
     }
 
     /**
@@ -40,7 +35,7 @@ class Market{
      *      item = item to get value of
      */
     long getValue(Item item){
-        Color itemColor = item.getColor();
+        int[] itemColor = item.getColor();
         int itemSize = item.getSize();
         double colorValue = 1 - sqrt(((demandedColor[0] - itemColor[0]).to!float.pow(2) + (demandedColor[1] - itemColor[1]).to!float.pow(2) + (demandedColor[2] - itemColor[2]).to!float.pow(2))/195075/* 3x255^2 */);
         double sizeValue = itemSize.to!double / largestSeenSize;

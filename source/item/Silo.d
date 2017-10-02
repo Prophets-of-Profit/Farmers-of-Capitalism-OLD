@@ -7,7 +7,7 @@ import item.Item;
 /**
  * A silo is a storage item that has an inventory that can store items
  */
-class Silo : Item{
+class Silo : Item {
 
     Inventory!Item contents;    ///What the silo contains
 

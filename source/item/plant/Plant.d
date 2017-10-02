@@ -18,7 +18,7 @@ import world.World;
  * Contains basic (non-functional) traits and methods shared between all plants.
  * TODO make constructor for when created directly to character inventory instead of just when created in world
  */
-class Plant : Item{
+class Plant : Item {
 
     /**
      * A collection of ranges

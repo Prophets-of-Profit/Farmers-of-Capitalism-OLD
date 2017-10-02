@@ -10,7 +10,7 @@ import world.World;
  * A class for each player
  * Stores basic data for each player and contains methods for performing actions as/with the player
  */
-public class Player: Character{
+public class Player : Character {
 
     public Inventory!Item inventory = new Inventory!Item();     ///The player's inventory
     public TechnologyName[] researched;                         ///The technologies the player has researched

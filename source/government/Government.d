@@ -1,6 +1,6 @@
 module government.Government;
 
-class Government{
+class Government {
 
     long baseItemCost;
 
