@@ -35,7 +35,7 @@ abstract class DistrictComponent : Item {
      * Returns the leader of the settlement this component is in.
      */
     override Character getOwner(){
-        return this.district.settlement.leader;
+        return this.district.getOwner;
     }
 
     /**

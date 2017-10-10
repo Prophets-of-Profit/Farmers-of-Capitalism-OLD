@@ -2,6 +2,7 @@ module item.settlement.District;
 
 import app;
 import character.Character;
+import government.Government;
 import item.Inventory;
 import item.Item;
 import item.settlement.DistrictComponent;
@@ -28,7 +29,7 @@ class District : Item {
      * Returns the settlement's leader
      */
     override Character getOwner(){
-        return settlement.leader;
+        return settlement.government.owner;
     }
 
     /**
@@ -105,7 +106,7 @@ class District : Item {
         if(this.canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained)){
             this.settlement = new Settlement();
             this.settlement.tiles.add(this);
-            this.settlement.leader = placer;
+            placer.government.settlements.add(this.settlement);
             game.mainWorld.allSettlements ~= this.settlement;
             return true;
         }

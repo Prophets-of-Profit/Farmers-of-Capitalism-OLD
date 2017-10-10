@@ -1,6 +1,10 @@
 module item.settlement.Settlement;
 
+import std.algorithm;
+
+import app;
 import character.Character;
+import government.Government;
 import item.Inventory;
 import item.settlement.District;
 import world.World;
@@ -13,6 +17,28 @@ immutable baseHousingPerSettlement = 5; //How much housing each settlement start
 class Settlement {
 
     Inventory!District tiles = new Inventory!District(-1); ///An inventory of the districts. tiles[0] will be the central district
-    Character leader;                                      ///The leader of the settlement
+
+    /**
+     * Gets the governing body of the settlement
+     */
+    @property Government government(){
+        foreach(government; game.mainWorld.allGovernments){
+            if(canFind(government.settlements.items,this)){
+                return government;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Builds a new district at desired location
+     * TODO
+     * Params:
+     *      newLocation = the location at which the district should be createDistrict
+     */
+    bool createDistrict(Coordinate newLocation){
+        return false;
+    }
 
 }

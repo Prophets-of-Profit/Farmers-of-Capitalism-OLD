@@ -7,6 +7,7 @@ import std.math;
 
 import app;
 import character.Race;
+import government.Government;
 import item.settlement.Settlement;
 import world.Range;
 import world.World;
@@ -22,6 +23,7 @@ class Character {
     public double numMovesLeft;                            ///The amount of moves the character can still do this turn
     public Range!int health = Range!int(0, 1000, 1000);    ///Sets the character's health to a value that will always be within the Range's bounds
     public Race race;                                      ///Stores appearance of the character as well as behavior
+    public Government government;
 
     /**
      * A property method that just returns the player's location

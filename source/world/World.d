@@ -8,8 +8,9 @@ import std.random;
 import core.exception;
 
 import app;
-import item.settlement.Settlement;
 import character.Character;
+import government.Government;
+import item.settlement.Settlement;
 import world.event.Event;
 import world.HexTile;
 import world.Range;
@@ -45,7 +46,8 @@ immutable Coordinate nullCoord = Coordinate(-1, -1);  ///A coordinate that signi
  */
 class World {
 
-    Settlement[] allSettlements;            ///The list of all the settlements in the world.
+    Settlement[] allSettlements;            ///The list of all the settlements in the world
+    Government[] allGovernments;            ///The list of all the governments in the worls
     HexTile[] tiles;                        ///The storage array of all tiles; stored in order of ringNum and then pos
     public immutable int numRings;          ///The number of rings the hexmap (World) has
 

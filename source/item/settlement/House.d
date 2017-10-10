@@ -33,13 +33,6 @@ class House : DistrictComponent {
     }
 
     /**
-     * Returns the leader of the settlement this house is in
-     */
-    override Character getOwner(){
-        return this.district.settlement.leader;
-    }
-
-    /**
      * Adds zero to the movement cost (houses do not affect movement cost)
      */
     override double getMovementCost(Character stepper){
