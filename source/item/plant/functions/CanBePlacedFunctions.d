@@ -43,3 +43,7 @@ bool isWater(Coordinate location, Plant forWhom){
 bool isAquaticCompatible(Coordinate location, Plant forWhom){
     return isWater(location, forWhom) && isSurvivableClimate(location, forWhom);
 }
+
+bool isLandCompatible(Coordinate location, Plant forWhom){
+    return isLand(location, forWhom) && isSurvivableClimate(location, forWhom);
+}

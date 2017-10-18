@@ -17,16 +17,37 @@ import item.plant.functions.SteppedOnFunctions;
 import item.plant.PlantTraits;
 import item.plant.Plant;
 import world.World;
-
+//TODO: Balance
 TraitSet makeAllTraits(){
     return TraitSet([
-        new class Trait {
+        new class Trait {               //Aquatic
             this(){
                 super(ActionType.PLACEABLE, VisibilityType.CO_RECESSIVE, Point(-5, -5));
             }
             override bool getBool(Coordinate location, Plant forWhom){
                 return isAquaticCompatible(location, forWhom);
             }
+            override string toString(){return "Aquatic"}
+        }
+
+        new class Trait {               //Living on land
+            this(){
+                super(ActionType.PLACEABLE, VisibilityType.WEAK_RECESSIVE, Point(0, 0));
+            }
+            override bool getBool(Coordinate location, Plant forWhom){
+                return isLandCompatible(location, forWhom);
+            }
+            override string toString(){return "Land-Loving"}
+        }
+
+        new class Trait {               //Amphibious
+            this(){
+                super(ActionType.PLACEABLE, VisibilityType.WEAK_RECESSIVE, Point(-10, -10));
+            }
+            override bool getBool(Coordinate location, Plant forWhom){
+                return isSurvivableClimate(location, forWhom);
+            }
+            override string toString(){return "Amphibious"}
         }
     ]);
 }

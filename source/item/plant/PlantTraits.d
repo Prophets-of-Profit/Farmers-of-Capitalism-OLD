@@ -138,6 +138,12 @@ abstract class Trait {
         return 0;
     }
 
+    /**
+     * Determines the display name of the trait
+     * Abstract so that all traits must implement this functionality
+     */
+    string toString();
+
 }
 
 /**
