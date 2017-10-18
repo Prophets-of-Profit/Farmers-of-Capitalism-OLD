@@ -70,7 +70,7 @@ class District : Item {
     }
 
     /**
-     * Districts have 0 usefulness because you can't sell districts anyways
+     * Districts have 0 usefulness because you can't sell districts anyways; TODO: Make this not that
      */
     override double getUsefulness(){
         return 0;
@@ -108,6 +108,7 @@ class District : Item {
             this.settlement.tiles.add(this);
             placer.government.settlements.add(this.settlement);
             game.mainWorld.allSettlements ~= this.settlement;
+            this.location = newLocation;
             return true;
         }
         return false;

@@ -38,6 +38,11 @@ class Settlement {
      *      newLocation = the location at which the district should be createDistrict
      */
     bool createDistrict(Coordinate newLocation){
+        district = new District();
+        if(district.canBePlaced(newLocation) && this.getMovedTo(game.mainWorld.getTileAt(newLocation).contained)){
+            district.settlement = this;
+            district.location = newLocation;
+        }
         return false;
     }
 
