@@ -16,8 +16,8 @@ class Worker : Character {
      * Params:
      *      coords = the coordinates of the worker
      */
-    this(Coordinate coords){
-        super(coords);
+    this(Coordinate coords, Race race){
+        super(coords, race);
     }
 
 }

@@ -2,6 +2,7 @@ module item.settlement.District;
 
 import app;
 import character.Character;
+import character.worker.Population;
 import government.Government;
 import item.Inventory;
 import item.Item;
@@ -18,7 +19,7 @@ class District : Item {
 
     Settlement settlement;
     Coordinate location;                                                                        ///The location of this district
-    Inventory!Character characters = new Inventory!Character(baseHousingPerSettlement);         ///An inventory of the characters
+    Population characters = new Population();                                                   ///The population of the district
     Inventory!DistrictComponent buildings = new Inventory!DistrictComponent(maxSpaceForTile);
 
     void addComponent(DistrictComponent toAdd){

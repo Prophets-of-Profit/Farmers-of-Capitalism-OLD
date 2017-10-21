@@ -1,8 +1,16 @@
 module character.Race;
 
+import std.random;
+
 /**
- * Guides behavior, appearance, and more
+ * Guides skills, appearance, and more
  */
 immutable class Race {
+
+    int size;
+    int strength;
+    int stamina;
+    int
+
 
 }
