@@ -10,7 +10,5 @@ immutable class Race {
     int size;
     int strength;
     int stamina;
-    int
-
 
 }
