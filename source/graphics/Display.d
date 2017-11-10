@@ -1,86 +1,69 @@
 module graphics.Display;
 
-import derelict.sdl2.sdl;
+import std.conv;
+import std.datetime;
+import std.experimental.logger;
 
-/**
- * Loads SDL and starts displayThread
- */
-shared static this(){
-    DerelictSDL2.load(SharedLibVersion(2, 0, 6));
-}
+import gfm.logger;
+import gfm.sdl2;
 
-/**
- * The function to be run in the display thread.
- */
-void displayThread(Display display){
-    while(!display.isClosed){
-        display.update();
-    }
-    return;
-}
+class Display{
 
-/**
- * Stores window in object format
- */
-class Display {
+    Logger logger;
+    SDL2 sdl;
+    SDL2Window window;
+    SDL2Renderer renderer;
+    SDLTTF ttf;
+    SDLImage image;
+    __gshared bool isRunning;
+    int framerate = 60;         //TODO config for framerate
 
-    SDL_Window* window;             ///The window object
-    SDL_Surface* mainSurface;       ///The surface object
-    bool isClosed = false;          ///Whether the window is still open or not
-
-    /**
-     * Gets the width of the window
-     */
-    @property int width(){
-        int w;
-        SDL_GetWindowSize(this.window, &w, null);
-        return w;
+    this(){
+        debug{
+            this.logger = new ConsoleLogger();
+        }
+        this.sdl = new SDL2(this.logger);
+        //TODO config for window size
+        this.window = new SDL2Window(this.sdl, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS);
+        this.renderer = new SDL2Renderer(this.window);
+        this.ttf = new SDLTTF(this.sdl);
+        this.image = new SDLImage(this.sdl);
+        this.window.setTitle("Farmers of Capitalism");
     }
 
-    /**
-     * Gets the height of the window
-     */
-    @property int height(){
-        int h;
-        SDL_GetWindowSize(this.window, null, &h);
-        return h;
+    ~this(){
+        this.sdl.destroy();
+        this.window.destroy();
+        this.renderer.destroy();
     }
 
-    /**
-     * Sets the width of the window
-     */
-    @property void width(int w){
-        SDL_SetWindowSize(this.window, w, this.height);
-    }
-
-    /**
-     * Sets the height of the window
-     */
-    @property void height(int h){
-        SDL_SetWindowSize(this.window, this.width, h);
-    }
-
-    /**
-     * TODO: make the display take in a main object
-     */
-    this(int width = 1024, int height = 512){
-        this.window = SDL_CreateWindow("Farmers of Capitalism", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
-        this.mainSurface = SDL_GetWindowSurface(this.window);
-
-    }
-
-    /**
-     * Refreshes the window
-     */
-    void update(){
-        SDL_Event event;
-        while(SDL_PollEvent(&event) != 0){
-            switch(event.type){
-                case SDL_QUIT: this.isClosed = true; import std.stdio; writeln("Quitting"); return;
-                default: break;
+    void run(){
+        this.isRunning = true;
+        SysTime lastTickTime;
+        while(!this.sdl.wasQuitRequested() && this.isRunning){
+            SDL_Event event;
+            while(this.sdl.pollEvent(&event)){
+                this.renderer.setColor(0, 0, 0);
+                this.renderer.clear();
+                switch(event.type){
+                    case SDL_MOUSEMOTION:{
+                        break;
+                    }
+                    case SDL_MOUSEBUTTONDOWN:{
+                        break;
+                    }
+                    case SDL_MOUSEBUTTONUP:{
+                        break;
+                    }
+                    default:break;
+                }
+            }
+            if(this.renderer.info.isVsyncEnabled || Clock.currTime >= lastTickTime + dur!"msecs"((1000.0 / this.framerate).to!int)){
+                lastTickTime = Clock.currTime;
+                this.renderer.present();
             }
         }
-        SDL_UpdateWindowSurface(this.window);
+        this.isRunning = false;
     }
 
 }

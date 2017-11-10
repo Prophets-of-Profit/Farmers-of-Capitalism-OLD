@@ -67,9 +67,8 @@ class Main{
 
 }
 
-Main game; ///The main object stored in a static variable "game"
-
-__gshared Display display;
+__gshared Main game;        ///The main object stored in a static variable "game"
+__gshared Display display;  ///The window of this game that the user will interact with
 
 /**
  * The entry point for this game
@@ -79,21 +78,20 @@ __gshared Display display;
  * Graphics hooks into the game object and draws it based off of what the game is and is completely separate from this method's handling of the game logic
  */
 void main(){
-
-    //TODO Write game
-    //TODO Check type of game in Main Menu
+    //Starts a new window that is where the user will interface with the game
     new Thread({
-        Display mainWindow = new Display();
-        displayThread(mainWindow);
+        display = new Display();
+        scope(exit){
+            display.destroy();
+        }
+        display.run();
     }).start();
-    //if(gameType == NEW_GAME){
-        //TODO Get number of players and world size in world creation
-        int numPlayers = 3;     //Placeholder, get rid of this when selection is implemented.
-        int worldSize = 25;     //TODO fix world generation time; anything too big takes hyperbolically forever to create
-        game = new Main(numPlayers, worldSize);
-    //}
 
-    while(false){/*while(true){*/
+    //Waits for game to exist
+    while(game is null){}
+
+    //Ticks the game
+    while(true){
         foreach(player; game.players){
             //TODO Player action
         }
