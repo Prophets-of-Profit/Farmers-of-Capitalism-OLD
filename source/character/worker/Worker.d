@@ -1,6 +1,7 @@
-module character.Worker;
+module character.worker.Worker;
 
 import character.Character;
+import character.Race;
 import item.Item;
 import world.World;
 

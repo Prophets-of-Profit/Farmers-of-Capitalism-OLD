@@ -27,8 +27,8 @@ TraitSet makeAllTraits(){
             override bool getBool(Coordinate location, Plant forWhom){
                 return isAquaticCompatible(location, forWhom);
             }
-            override string toString(){return "Aquatic"}
-        }
+            override string toString(){return "Aquatic";}
+        },
 
         new class Trait {               //Living on land
             this(){
@@ -37,8 +37,8 @@ TraitSet makeAllTraits(){
             override bool getBool(Coordinate location, Plant forWhom){
                 return isLandCompatible(location, forWhom);
             }
-            override string toString(){return "Land-Loving"}
-        }
+            override string toString(){return "Land-Loving";}
+        },
 
         new class Trait {               //Amphibious
             this(){
@@ -47,7 +47,7 @@ TraitSet makeAllTraits(){
             override bool getBool(Coordinate location, Plant forWhom){
                 return isSurvivableClimate(location, forWhom);
             }
-            override string toString(){return "Amphibious"}
+            override string toString(){return "Amphibious";}
         }
     ]);
 }

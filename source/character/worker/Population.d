@@ -2,7 +2,9 @@ module character.worker.Population;
 
 import std.random;
 
+import character.Character;
 import item.Inventory;
+import item.settlement.District;
 
 immutable int baseRoomPerPopulation = 5;
 immutable double reproductionRatePerWorker = 0.1;
@@ -10,7 +12,7 @@ immutable double reproductionRatePerWorker = 0.1;
 /**
  * An inventory that holds characters
  */
-class Population : Inventory(Character) {
+class Population : Inventory!Character {
 
     double growthTick = 0;          ///The percentage of growth of the population.
     District district;              ///The district this population is a part of.
@@ -28,10 +30,10 @@ class Population : Inventory(Character) {
      * Populations grow if there is housing space. They grow faster the more people there are that live there.
      * Returns whether or not the population grew.
      */
-    bool grow(){
+    void grow(){
         growthTick += (1 - this.countSpaceUsed() / this.maxSize) * this.countSpaceUsed() * reproductionRatePerWorker;
-        while(growthTick >= 1){
-            this.contained ~= new Worker(this.district.location, this.contained[uniform(0, this.contained.length)].race)
+        while(growthTick >= 1 && this.countSpaceRemaining > 0){
+            this.contained ~= new Character(this.district.location, this.contained[uniform(0, this.contained.length)].race);
             growthTick -= 1;
         }
     }

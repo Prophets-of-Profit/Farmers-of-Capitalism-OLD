@@ -2,14 +2,15 @@ module item.plant.functions.GetUsefulnessFunctions;
 
 import character.Character;
 import item.plant.Plant;
+import item.plant.PlantTraits;
 
 /**
  * Determines plant usefulness based on how rare its expressed traits are
  */
 double phenotypeQuality(Plant forWhom){
-    totalDistance = 0
-    foreach(i; forWhom.usableTraits){
-        totalDistance += distance(forWhom.usableTraits[i].difficulty)
+    double totalDistance = 0;
+    foreach(Trait i; forWhom.usableTraits){
+        totalDistance += distance(i.difficulty);
     }
     return totalDistance;
 }
@@ -18,9 +19,9 @@ double phenotypeQuality(Plant forWhom){
  * Determines plant usefulness based on how rare its carried genes are
  */
 double genotypeQuality(Plant forWhom){
-    totalDistance = 0
-    foreach(i; forWhom.traits){
-        totalDistance += distance(forWhom.traits[i].difficulty)
+    double totalDistance = 0;
+    foreach(Trait i; forWhom.traits){
+        totalDistance += distance(i.difficulty);
     }
     return totalDistance;
 }
