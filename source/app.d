@@ -80,11 +80,7 @@ __gshared Display display;  ///The window of this game that the user will intera
 void main(){
     //Starts a new window that is where the user will interface with the game
     new Thread({
-        display = new Display();
-        scope(exit){
-            display.destroy();
-        }
-        display.run();
+        //TODO initialize graphics
     }).start();
 
     //Waits for game to exist
