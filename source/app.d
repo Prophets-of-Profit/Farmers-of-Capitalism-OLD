@@ -25,3 +25,12 @@
  * Above text was made with http://patorjk.com/
  */
 module app;
+
+import d2d;
+import graphics.screens.MainMenuScreen;
+
+void main() {
+    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN, "Farmers of Capitalism!");
+    mainDisplay.screen = new MainMenuScreen(mainDisplay);
+    mainDisplay.run();
+}
