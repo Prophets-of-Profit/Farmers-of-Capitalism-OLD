@@ -2,11 +2,10 @@
  * "I feel like I have accomplished very much spending ~3 hours on a single line of easy code"
  *      -Saurabh Totey
  *
- * "You've beat me at my own game!"
- * "Don't fool yourself; you were never even a Player;"
+ * "Be careful not to choke on your aspirations"
  *      -Elia Gorokhovsky
  *
- * "I have PantheonTSD."
+ * "I have PantheonTSD"
  *      -Kadin Tucker
  *
  * A proprietary software written by Saurabh Totey, Elia Gorokhovsky, and Kadin Tucker.
@@ -29,6 +28,9 @@ module app;
 import d2d;
 import graphics.screens.MainMenuScreen;
 
+/** 
+ * Entry point for the program
+ */
 void main() {
     Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN, "Farmers of Capitalism!");
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
