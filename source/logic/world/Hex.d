@@ -10,4 +10,12 @@ class Hex {
 
     immutable Coordinate location; ///Stores the location of the hex
 
+    /**
+     * The Hex constructor
+     * Creates a hex based on its location
+     */
+    this(Coordinate location) {
+        this.location = location;
+    }
+
 }
