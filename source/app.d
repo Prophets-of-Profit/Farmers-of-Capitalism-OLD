@@ -26,13 +26,15 @@
 module app;
 
 import d2d;
+import graphics.Constants;
 import graphics.screens.MainMenuScreen;
+
 
 /** 
  * Entry point for the program
  */
 void main() {
-    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN, "Farmers of Capitalism!");
+    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN, "Farmers of Capitalism!", Image.Temp_Icon);
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.run();
 }
