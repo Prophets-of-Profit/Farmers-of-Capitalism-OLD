@@ -18,14 +18,14 @@ class MainMenuScreen : Screen {
     this(Display container) {
         super(container);
         this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.Fresh_Air_2);
-        musicVolume = MIX_MAX_VOLUME / 4;       //Max volume is a bit loud
+        musicVolume = MIX_MAX_VOLUME / 4; //Max volume is a bit loud
     }
 
     /**
      * Handles keyboard and mouse events
      */
     void handleEvent(SDL_Event event) {
-    
+
     }
 
     /**
@@ -41,6 +41,5 @@ class MainMenuScreen : Screen {
     override void draw() {
 
     }
-
 
 }

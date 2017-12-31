@@ -29,12 +29,13 @@ import d2d;
 import graphics.Constants;
 import graphics.screens.MainMenuScreen;
 
-
 /** 
  * Entry point for the program
  */
 void main() {
-    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN, "Farmers of Capitalism!", Image.Temp_Icon);
+    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN,
+            "Farmers of Capitalism!", Image.TempIcon);
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
+    mainDisplay.window.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
     mainDisplay.run();
 }

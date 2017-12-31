@@ -16,7 +16,7 @@ struct Climate {
     /**
      * Gets the instantaneous temperature of a tile
      * Instantaneous temperature can vary from base temperature based on external factors
-     * TODO
+     * TODO:
      */
     @property Range!(0, 1) temperature() {
         return Range!(0, 1)(0);
@@ -25,7 +25,7 @@ struct Climate {
     /**
      * Gets the instantaneous humidity of a tile
      * Instantaneous humidity can vary from base temperature based on external factors
-     * TODO
+     * TODO:
      */
     @property Range!(0, 1) humidity() {
         return Range!(0, 1)(0);
@@ -34,7 +34,7 @@ struct Climate {
     /**
      * Gets the instantaneous radiant energy of a tile
      * Instantaneous radiant energy can vary from base temperature based on external factors
-     * TODO
+     * TODO:
      */
     @property Range!(0, 1) sunlight() {
         return Range!(0, 1)(0);
@@ -43,7 +43,7 @@ struct Climate {
     /**
      * Gets the instantaneous air density or atmospheric quality of a tile
      * Instantaneous atmospheric quality can vary from base temperature based on external factors
-     * TODO
+     * TODO:
      */
     @property Range!(0, 1) atmosphere() {
         return Range!(0, 1)(0);
@@ -52,7 +52,7 @@ struct Climate {
     /**
      * Gets the instantaneous soil quality of a tile
      * Instantaneous soil quality can vary from base temperature based on external factors
-     * TODO
+     * TODO:
      */
     @property Range!(0, 1) soil() {
         return Range!(0, 1)(0);

@@ -16,8 +16,8 @@ class World(uint size) {
      * TODO: add worldgen
      */
     this() {
-        foreach (i; 0..size) {
-            foreach (j; 0..size) {
+        foreach (i; 0 .. size) {
+            foreach (j; 0 .. size) {
                 this.tiles[i][j] = new Hex(Coordinate(i, j));
             }
         }

@@ -8,7 +8,7 @@ import logic.world.Coordinate;
  * A single hexagonal tile in the world
  * Hexes are the units for the world map
  */
-class Hex { 
+class Hex {
 
     Climate climate; ///Stores the tile's climate
     immutable Coordinate location; ///Stores the location of the hex

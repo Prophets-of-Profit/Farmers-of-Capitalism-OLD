@@ -4,7 +4,7 @@ module logic.Range;
  * A bounded value 
  * Stores a value and its bounds
  * Functionally a double
- * TODO: weakly enforced ranges
+ * TODO: weakly enforced ranges & operator overloads
  */
 struct Range(double min, double max) {
 
@@ -28,6 +28,7 @@ struct Range(double min, double max) {
      * Gets the range's value
      */
     @property double value() {
+        this.clampValue();
         return this._value;
     }
 
@@ -43,8 +44,12 @@ struct Range(double min, double max) {
      * Clamps the value to the minimum or maximum if it is outside the bounds
      */
     private void clampValue() {
-        if (this._value > max) { this._value = max; } 
-        else if (this._value < min) { this._value = min; }
+        if (this._value > max) {
+            this._value = max;
+        }
+        else if (this._value < min) {
+            this._value = min;
+        }
     }
 
     alias value this;
