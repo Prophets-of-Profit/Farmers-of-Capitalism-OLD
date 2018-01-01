@@ -33,9 +33,10 @@ import graphics.screens.MainMenuScreen;
  * Entry point for the program
  */
 void main() {
-    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN,
-            "Farmers of Capitalism!", Image.TempIcon);
+    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, "Farmers of Capitalism!", null,
+            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.window.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
+    mainDisplay.window.icon = images[Image.TempIcon];
     mainDisplay.run();
 }

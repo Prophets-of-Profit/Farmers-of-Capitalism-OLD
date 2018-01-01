@@ -1,6 +1,7 @@
 module graphics.screens.MainMenuScreen;
 
 import std.algorithm;
+import std.stdio;
 import d2d;
 import graphics.Constants;
 
@@ -17,8 +18,10 @@ class MainMenuScreen : Screen {
      */
     this(Display container) {
         super(container);
-        this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.Fresh_Air_2);
-        musicVolume = MIX_MAX_VOLUME / 4; //Max volume is a bit loud
+        this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.FreshAir2);
+        this.components ~= new Button(this.container, new iRectangle(700, 400, 200, 100), () {
+            writeln(":D");
+        }, fonts[Typeface.OpenSansRegular].renderTextSolid("Press", Color(0, 0, 0))); //TODO: temporary
     }
 
     /**
@@ -39,7 +42,9 @@ class MainMenuScreen : Screen {
      * Draw instructions for the window
      */
     override void draw() {
-
+        this.container.window.renderer.drawColor = Color(0, 255, 0);
+        this.container.window.renderer.fillRect(new iRectangle(0, 0, logicalSize.x, logicalSize.y));
+        this.container.window.renderer.drawColor = Color(0, 0, 0);
     }
 
 }

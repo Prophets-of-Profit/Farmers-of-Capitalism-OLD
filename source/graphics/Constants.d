@@ -1,44 +1,53 @@
 module graphics.Constants;
 
+import std.traits;
 import d2d;
 
 iVector aspectRatio; //A vector representing the aspect ratio of the screen; both components should not share a common factor
 iVector logicalSize; //The logical game size or resolution that this game draws and scales at
+Surface[string] images; ///Surfaces of all of the images the game will use
+Font[string] fonts; ///All the typefaces the game will use
 
 shared static this() {
     aspectRatio = new iVector(16, 9);
     logicalSize = aspectRatio * 100;
+    foreach (image; EnumMembers!Image) {
+        mixin("images[image] = loadImage(\"" ~ image ~ "\");");
+    }
+    foreach (font; EnumMembers!Typeface) {
+        mixin("fonts[font] = new Font(\"" ~ font ~ "\", cast(int) logicalSize.magnitude / 200);");
+    }
 }
 
 /** 
- * A container for all of the game's soundtracks that will be Sound!(SoundType.Music) in d2d
+ * A container for the paths of all of the game's soundtracks
  */
 enum Soundtrack : string {
-    Brave_New_World = "res/music/Brave New World.mp3",
-    Brave_New_World_2 = "res/music/Brave New World II.mp3",
+    BraveNewWorld = "res/music/BraveNewWorld.mp3",
+    BraveNewWorld2 = "res/music/BraveNewWorldII.mp3",
     Enterprise = "res/music/Enterprise.mp3",
-    Enterprise_2 = "res/music/Enterprise_II.mp3",
-    Fresh_Air = "res/music/Fresh Air.mp3",
-    Fresh_Air_2 = "res/music/Fresh Air II.mp3"
+    Enterprise2 = "res/music/EnterpriseII.mp3",
+    FreshAir = "res/music/FreshAir.mp3",
+    FreshAir2 = "res/music/FreshAirII.mp3"
 }
 
 /** 
- * A container for all of the game's sound effects that will be Sound!(SoundType.Chunk) in d2d
+ * A container for the paths of all of the game's sound effects
  */
 enum SoundEffect : string {
-    None = "" //Get rid of this when we actually have sound effects
+    None = "" //TODO: Get rid of this when we actually have sound effects
 }
 
 /**
- * A container for all of the game's images
+ * A container for the paths of all of the game's images
  */
 enum Image : string {
     TempIcon = "res/pictures/TempIcon.png"
 }
 
 /**
- * A container for all of the game's fonts
+ * A container for the paths of all of the game's fonts
  */
 enum Typeface : string {
-    None = "" //Get rid of this when we actually have sound effects
+    OpenSansRegular = "res/fonts/OpenSansRegular.ttf"
 }
