@@ -13,4 +13,6 @@ struct Coordinate {
     alias q = scalar1;
     alias r = scalar2;
 
+    //TODO: add method to convert a coordinate to a d2d hexagonal polygon
+
 }

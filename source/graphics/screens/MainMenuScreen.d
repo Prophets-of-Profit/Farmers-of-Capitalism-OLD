@@ -20,7 +20,7 @@ class MainMenuScreen : Screen {
         super(container);
         this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.FreshAir2);
         this.components ~= new Button(this.container, new iRectangle(700, 400, 200, 100), () {
-            writeln(":D");
+            writeln("This button does nothing and is a temporary placeholder!");
         }, fonts[Typeface.OpenSansRegular].renderTextSolid("Press", Color(0, 0, 0))); //TODO: temporary
     }
 
@@ -45,6 +45,8 @@ class MainMenuScreen : Screen {
         this.container.window.renderer.drawColor = Color(0, 255, 0);
         this.container.window.renderer.fillRect(new iRectangle(0, 0, logicalSize.x, logicalSize.y));
         this.container.window.renderer.drawColor = Color(0, 0, 0);
+        this.components.each!(
+                component => this.container.window.renderer.drawRect(component.location));
     }
 
 }

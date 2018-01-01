@@ -15,7 +15,7 @@ shared static this() {
         mixin("images[image] = loadImage(\"" ~ image ~ "\");");
     }
     foreach (font; EnumMembers!Typeface) {
-        mixin("fonts[font] = new Font(\"" ~ font ~ "\", cast(int) logicalSize.magnitude / 200);");
+        mixin("fonts[font] = new Font(\"" ~ font ~ "\", 5000);");
     }
 }
 
