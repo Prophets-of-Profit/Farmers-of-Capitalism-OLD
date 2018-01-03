@@ -44,4 +44,12 @@ class World(uint size) {
         ];
     }
 
+    /**
+     * Gets the Manhattan distance between two hexes by their coordinates
+     * This is equivalent to the shortest path between them if each tile is equally passable
+     */
+    int getDistance(Coordinate a, Coordinate b) {
+        return (abs(a.q - b.q) + abs(a.r - b.r) + abs(a.s - b.s)) / 2;
+    }
+
 }
