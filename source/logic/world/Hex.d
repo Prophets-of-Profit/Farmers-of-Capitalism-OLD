@@ -1,6 +1,11 @@
 module logic.world.Hex;
 
+import graphics.Constants;
 import logic.world.Coordinate;
+
+import std.math;
+
+import d2d;
 
 /**
  * The different factors which affect a climate
@@ -63,6 +68,28 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate) {
         this.location = location;
         this.baseClimate = climate;
+        iVector[] hexVertices = getCenterHexagonVertices();
+        foreach(vert; hexVertices) {
+            vert.x += hexWidth * (this.location.r + 2 * this.location.q);
+            vert.y += hexWidth * cast(int)(this.location.r * sqrt(3.0));
+        }
     }
 
+    //TODO: make polygon a property based on center location and hex width
+
+}
+
+/**
+ * Returns an array of 6 points which form a hexagon
+ * Based on the center of the center hexagon and the width of each hexagon; found in graphics.Constants
+ */
+iVector[] getCenterHexagonVertices() {
+    return [
+            new iVector(hexViewCenter.x, hexViewCenter.y + 2 * hexWidth),
+            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y + hexWidth),
+            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y - hexWidth),
+            new iVector(hexViewCenter.x, hexViewCenter.y - 2 * hexWidth),
+            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y - hexWidth),
+            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y + hexWidth)
+        ];
 }
