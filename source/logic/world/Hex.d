@@ -19,19 +19,6 @@ enum ClimateFactor {
 }
 
 /**
- * The different directions either a water or a wind flow can go
- */
-enum Direction {
-    NONE,
-    NORTHEAST,
-    EAST,
-    SOUTHEAST,
-    SOUTHWEST,
-    WEST,
-    NORTHWEST
-}
-
-/**
  * A single hexagonal tile in the world
  * Hexes are the units for the world map
  * TODO: use std.algorithm.comparison.clamp to keep climate, weather, and elevation values between 0 and 1
@@ -46,7 +33,7 @@ class Hex {
 
     /**
      * Gets the linear distance to the nearest water tile
-     * TODO
+     * TODO:
      */
     @property int proximityToWater() {
         return 0;
@@ -65,7 +52,7 @@ class Hex {
      * The Hex constructor
      * Creates a hex based on its location and climate
      */
-    this(Coordinate location, double[ClimateFactor] climate) {
+    this(Coordinate location, double[ClimateFactor] climate = null) {
         this.location = location;
         this.baseClimate = climate;
         iVector[] hexVertices = getCenterHexagonVertices();
