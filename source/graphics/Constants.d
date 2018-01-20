@@ -17,7 +17,7 @@ shared static this() {
         mixin("images[image] = loadImage(\"" ~ image ~ "\");");
     }
     foreach (font; EnumMembers!Typeface) {
-        mixin("fonts[font] = new Font(\"" ~ font ~ "\", 5000);");
+        mixin("fonts[font] = new Font(\"" ~ font ~ "\", 1500);");
     }
     hexViewCenter = new iVector(800, 450);
     hexWidth = 16;

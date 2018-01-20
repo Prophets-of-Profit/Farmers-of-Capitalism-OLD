@@ -27,14 +27,15 @@ module app;
 
 import d2d;
 import graphics.Constants;
-import graphics.screens.MainMenuScreen;
+import graphics.views.MainMenuScreen;
 
 /** 
  * Entry point for the program
  */
 void main() {
-    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, "Farmers of Capitalism!", null,
-            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
+            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE,
+            "Farmers of Capitalism!");
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.window.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
     mainDisplay.window.icon = images[Image.TempIcon];

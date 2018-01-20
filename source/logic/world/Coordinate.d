@@ -24,6 +24,7 @@ struct Coordinate {
 
     int scalar1; ///The distance along the horizontal
     int scalar2; ///The distance along the axis at a pi/3 angle below the positive horizontal
+
     /**
      * The distance along the axis at a 2pi/3 angle below the positive horizontal
      * Useful for functions that take cube coordinates
