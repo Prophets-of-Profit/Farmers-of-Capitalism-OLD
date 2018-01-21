@@ -1,0 +1,1 @@
+module graphics.components.Inventory;

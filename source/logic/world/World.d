@@ -1,5 +1,6 @@
 module logic.world.World;
 
+import std.math;
 import logic.world.Coordinate;
 import logic.world.Hex;
 
@@ -19,8 +20,8 @@ class World(uint size) {
     this() {
         foreach (i; 0 .. 2 * size + 1) {
             foreach (j; 0 .. 2 * size + 1) {
-                if(abs(i + j) <= 3) {
-                    this.tiles[Coordinate(i, j)] = new HexTile(Coordinate(i, j));
+                if (abs(i + j) <= 3) {
+                    this.tiles[Coordinate(i, j)] = new Hex(Coordinate(i, j));
                 }
             }
         }
@@ -33,15 +34,10 @@ class World(uint size) {
      * Followed by the passed coordinates in the last spot
      */
     Coordinate[] getAdjacencies(Coordinate location) {
-        return [
-            Coordinate(location.q + 1, location.r), 
-            Coordinate(location.q, location.r + 1),
-            Coordinate(location.q - 1, location.r + 1),
-            Coordinate(location.q - 1, location.r),
-            Coordinate(location.q, location.r - 1),
-            Coordinate(location.q + 1, location.r - 1),
-            location
-        ];
+        return [Coordinate(location.q + 1, location.r), Coordinate(location.q,
+                location.r + 1), Coordinate(location.q - 1, location.r + 1),
+            Coordinate(location.q - 1, location.r), Coordinate(location.q,
+                    location.r - 1), Coordinate(location.q + 1, location.r - 1), location];
     }
 
     /**

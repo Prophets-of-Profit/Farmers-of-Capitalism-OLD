@@ -1,1 +1,1 @@
-module graphics.components;
+module graphics.components.Chat;
