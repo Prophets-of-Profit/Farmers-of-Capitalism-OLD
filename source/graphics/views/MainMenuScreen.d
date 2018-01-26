@@ -19,7 +19,7 @@ class MainMenuScreen : Screen {
      */
     this(Display display) {
         super(display);
-        this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.FreshAir2);
+        this.mainMenuTheme = new Sound!(SoundType.Music)(Soundtrack.Title);
         //Temporary button
         this.components ~= new class Button {
 

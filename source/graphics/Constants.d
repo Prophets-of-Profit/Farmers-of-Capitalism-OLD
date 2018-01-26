@@ -26,12 +26,7 @@ shared static this() {
  * A container for the paths of all of the game's soundtracks
  */
 enum Soundtrack : string {
-    BraveNewWorld = "res/music/BraveNewWorld.mp3",
-    BraveNewWorld2 = "res/music/BraveNewWorldII.mp3",
-    Enterprise = "res/music/Enterprise.mp3",
-    Enterprise2 = "res/music/EnterpriseII.mp3",
-    FreshAir = "res/music/FreshAir.mp3",
-    FreshAir2 = "res/music/FreshAirII.mp3"
+    Title = "res/music/title.mp3",
 }
 
 /** 
