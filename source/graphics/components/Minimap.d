@@ -50,12 +50,13 @@ class Minimap(uint worldSize) : Component {
         //TODO:
         this.container.window.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
         this.container.window.renderer.drawColor = PredefinedColor.GREEN;
-        foreach(tile; world.tiles.values) {
+        foreach(coord; world.tiles.keys) {
             this.container.window.renderer.fillRect(new iRectangle(
-                640 + cast(int) (tile.location.q * 1.732 * 20 + tile.location.r * 0.866 * 20),
-                480 + cast(int) (tile.location.r * 1.5 * 20), 10, 10)
+                640 + cast(int) (coord.q * 1.732 * 10 + coord.r * 0.866 * 10),
+                480 + cast(int) (coord.r * -1.5 * 10), 5, 5)
             );
         }
+        this.container.window.renderer.fillRect(new iRectangle(640, 480, 10, 10), PredefinedColor.WHITE);
     }
 
 }
