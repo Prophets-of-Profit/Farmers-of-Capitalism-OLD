@@ -40,7 +40,7 @@ class Player {
     /**
      * Sets the max tiles the player can move
      */
-    @property void _maxTravellableDistance(int newDistance) {
+    @property void maxTravellableDistance(int newDistance) {
         this._maxTravellableDistance = newDistance;
     }
 
