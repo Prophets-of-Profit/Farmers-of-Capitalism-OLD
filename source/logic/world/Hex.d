@@ -55,11 +55,6 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null) {
         this.location = location;
         this.baseClimate = climate;
-        iVector[] hexVertices = getCenterHexagonVertices();
-        foreach(vert; hexVertices) {
-            vert.x += hexWidth * (this.location.r + 2 * this.location.q);
-            vert.y += hexWidth * cast(int)(this.location.r * sqrt(3.0));
-        }
     }
 
     //TODO: make polygon a property based on center location and hex width
@@ -70,7 +65,7 @@ class Hex {
  * Returns an array of 6 points which form a hexagon
  * Based on the center of the center hexagon and the width of each hexagon; found in graphics.Constants
  */
-iVector[] getCenterHexagonVertices() {
+iVector[] getCenterHexagonVertices(iVector hexViewCenter, int hexWidth) {
     return [
             new iVector(hexViewCenter.x, hexViewCenter.y + 2 * hexWidth),
             new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y + hexWidth),

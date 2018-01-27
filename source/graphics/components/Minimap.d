@@ -2,6 +2,9 @@ module graphics.components.Minimap;
 
 import d2d;
 import logic.world.GameWorld;
+import logic.world.Hex;
+
+import std.math;
 
 /**
  * A component that renders the world in partial detail
@@ -45,7 +48,14 @@ class Minimap(uint worldSize) : Component {
      */
     override void draw() {
         //TODO:
-        this.container.window.renderer.fillRect(this.location, PredefinedColor.GREEN);
+        this.container.window.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
+        this.container.window.renderer.drawColor = PredefinedColor.GREEN;
+        foreach(tile; world.tiles.values) {
+            this.container.window.renderer.fillRect(new iRectangle(
+                640 + cast(int) (tile.location.q * 1.732 * 20 + tile.location.r * 0.866 * 20),
+                480 + cast(int) (tile.location.r * 1.5 * 20), 10, 10)
+            );
+        }
     }
 
 }

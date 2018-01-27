@@ -7,8 +7,6 @@ iVector aspectRatio; //A vector representing the aspect ratio of the screen; bot
 iVector logicalSize; //The logical game size or resolution that this game draws and scales at
 Surface[string] images; ///Surfaces of all of the images the game will use
 Font[string] fonts; ///All the typefaces the game will use
-iVector hexViewCenter; ///The position of the very center of the hex grid
-int hexWidth = 16; ///The length of the center to a vertex of each hexagon
 
 shared static this() {
     aspectRatio = new iVector(16, 9);
@@ -19,7 +17,6 @@ shared static this() {
     foreach (font; EnumMembers!Typeface) {
         mixin("fonts[font] = new Font(\"" ~ font ~ "\", 1500);");
     }
-    hexViewCenter = logicalSize / 2;
 }
 
 /** 
