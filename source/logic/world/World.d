@@ -9,7 +9,7 @@ import logic.world.Hex;
  * Represents the hexes in the game and actions that can be taken using them
  * Use GameWorld for game content
  */
-class World(int size) {
+class World(ulong size) {
 
     Hex[Coordinate] tiles; ///An array of all the hexes in the world
 
@@ -18,9 +18,9 @@ class World(int size) {
      * TODO: add worldgen
      */
     this() {
-        for (int i = -size; i <= size; i++) {
-            for (int j = -size; j <= size; j++) {
-                if (abs(i + j) <= size) {
+        for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
+            for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
+                if (abs(i + j) <= cast(int)size) {
                     this.tiles[Coordinate(i, j)] = new Hex(Coordinate(i, j));
                 }
             }
