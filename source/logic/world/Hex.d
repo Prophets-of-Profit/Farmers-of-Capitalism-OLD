@@ -63,15 +63,15 @@ class Hex {
 
 /**
  * Returns an array of 6 points which form a hexagon
- * Based on the center of the center hexagon and the width of each hexagon; found in graphics.Constants
+ * Based on the center of the center hexagon and the side length of each hexagon; found in graphics.Constants
  */
-iVector[] getCenterHexagonVertices(iVector hexViewCenter, int hexWidth) {
+iVector[6] getCenterHexagonVertices(iVector hexCenter, int sideLength) {
     return [
-            new iVector(hexViewCenter.x, hexViewCenter.y + 2 * hexWidth),
-            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y + hexWidth),
-            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y - hexWidth),
-            new iVector(hexViewCenter.x, hexViewCenter.y - 2 * hexWidth),
-            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y - hexWidth),
-            new iVector(hexViewCenter.x + hexWidth, hexViewCenter.y + hexWidth)
+            new iVector(hexCenter.x, hexCenter.y + sideLength), //Bottom
+            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Lower right
+            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Upper right
+            new iVector(hexCenter.x, hexCenter.y - sideLength), //Top
+            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Lower left
+            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Upper left
         ];
 }

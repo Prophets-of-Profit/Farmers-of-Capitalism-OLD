@@ -1,10 +1,11 @@
 module graphics.components.Minimap;
 
+import std.math;
+import std.parallelism;
 import d2d;
+import graphics.Constants;
 import logic.world.GameWorld;
 import logic.world.Hex;
-
-import std.math;
 
 /**
  * A component that renders the world in partial detail
@@ -13,6 +14,7 @@ class Minimap(uint worldSize) : Component {
 
     GameWorld!worldSize world; ///The world this minimap should represent
     iRectangle _location; ///Where the component is
+    int sideLength; ///The length of the hex sides; used in zooming
 
     /**
      * Sets the minimap's location
@@ -47,16 +49,17 @@ class Minimap(uint worldSize) : Component {
      * Handles drawing the minimap
      */
     override void draw() {
-        //TODO:
-        this.container.window.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
-        this.container.window.renderer.drawColor = PredefinedColor.GREEN;
+        this.container.renderer.drawColor = PredefinedColor.GREEN;
+        this.container.renderer.clear;
+        this.container.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
+        iVector center = this.location.center;
         foreach(coord; world.tiles.keys) {
-            this.container.window.renderer.fillRect(new iRectangle(
-                640 + cast(int) (coord.q * 1.732 * 10 + coord.r * 0.866 * 10),
-                480 + cast(int) (coord.r * -1.5 * 10), 5, 5)
-            );
+            this.container.renderer.fillPolygon!6(new iPolygon!6(getCenterHexagonVertices(                
+                new iVector(cast(int) (center.x - 2.5 + coord.q * hexBase.x * 20 + coord.r * hexBase.x * 10),
+                cast(int) (center.y - 2.5 + coord.r * -1.5 * 20)),
+                20
+            )), Color(cast(ubyte) ((abs(coord.q) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.r) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.s) * 255 / 2 + 100) % 255)));
         }
-        this.container.window.renderer.fillRect(new iRectangle(640, 480, 10, 10), PredefinedColor.WHITE);
     }
 
 }

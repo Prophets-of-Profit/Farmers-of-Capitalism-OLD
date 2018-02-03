@@ -1,5 +1,6 @@
 module graphics.Constants;
 
+import std.math;
 import std.traits;
 import d2d;
 
@@ -7,10 +8,12 @@ iVector aspectRatio; //A vector representing the aspect ratio of the screen; bot
 iVector logicalSize; //The logical game size or resolution that this game draws and scales at
 Surface[string] images; ///Surfaces of all of the images the game will use
 Font[string] fonts; ///All the typefaces the game will use
+dVector hexBase; ///The size of the rectangle in which a hexagon of side length 1 is inscribed
 
 shared static this() {
     aspectRatio = new iVector(16, 9);
     logicalSize = aspectRatio * 100;
+    hexBase = new dVector(sqrt(3.0), 2);
     foreach (image; EnumMembers!Image) {
         mixin("images[image] = loadImage(\"" ~ image ~ "\");");
     }
