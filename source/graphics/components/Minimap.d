@@ -14,7 +14,7 @@ class Minimap(uint worldSize) : Component {
 
     GameWorld!worldSize world; ///The world this minimap should represent
     iRectangle _location; ///Where the component is
-    int sideLength; ///The length of the hex sides; used in zooming
+    int sideLength = 20; ///The length of the hex sides; used in zooming
 
     /**
      * Sets the minimap's location
@@ -55,8 +55,8 @@ class Minimap(uint worldSize) : Component {
         iVector center = this.location.center;
         foreach(coord; world.tiles.keys) {
             this.container.renderer.fillPolygon!6(new iPolygon!6(getCenterHexagonVertices(                
-                new iVector(cast(int) (center.x - 2.5 + coord.q * hexBase.x * 20 + coord.r * hexBase.x * 10),
-                cast(int) (center.y - 2.5 + coord.r * -1.5 * 20)),
+                new iVector(cast(int) (center.x - this.sideLength / 2 + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
+                cast(int) (center.y - this.sideLength / 2 + coord.r * -1.5 * this.sideLength)),
                 20
             )), Color(cast(ubyte) ((abs(coord.q) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.r) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.s) * 255 / 2 + 100) % 255)));
         }
