@@ -1,5 +1,6 @@
 module graphics.components.Minimap;
 
+import std.algorithm;
 import std.math;
 import std.parallelism;
 import d2d;
@@ -18,6 +19,7 @@ class Minimap(uint worldSize) : Component {
     int scrollValue; ///The total mouse wheel displacement
     iVector lastClicked; ///The last place the minimap was clicked.
     iVector center; ///The center of the minimap hex grid
+    iVector centerDistance; ///The distance from the zoom focal point to the center
 
     /**
      * Sets the minimap's location
@@ -49,16 +51,31 @@ class Minimap(uint worldSize) : Component {
      * TODO: fix reference point
      */
     void handleEvent(SDL_Event event) {
-        if(!this.location.contains(this.container.mouse.location)) {
+        if (!this.location.contains(this.container.mouse.location)) {
             return;
         }
+        iVector mouseLocation = new iVector(this.container.mouse.location.components);
         //Zooming
         immutable previousScroll = this.scrollValue;
         this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
-        this.sideLength += this.scrollValue - previousScroll;
+        if (this.scrollValue != previousScroll) {
+            if (this.centerDistance is null) {
+                this.centerDistance = this.center - mouseLocation;
+            }
+            this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
+            immutable oldSideLength = this.sideLength;
+            this.center -= this.centerDistance;
+            //Occasionally the focal point will move very slightly; this is likely due to minor rounding errors
+            //TODO: fix
+            this.sideLength = clamp(this.sideLength + (this.scrollValue - previousScroll), minimapHexSize.x, minimapHexSize.y);
+            if(this.centerDistance != new iVector(0,0)) this.centerDistance.magnitude = this.centerDistance.magnitude * this.sideLength / oldSideLength;
+            this.center = mouseLocation + this.centerDistance;
+        } else {
+            this.centerDistance = null;
+        }
         //Dragging
-        if(this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) {
-            if(this.lastClicked is null) {
+        if (this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) {
+            if (this.lastClicked is null) {
                 this.lastClicked = new iVector(this.container.mouse.location.components);
             }
             this.center += new iVector(this.container.mouse.location.components) - lastClicked;

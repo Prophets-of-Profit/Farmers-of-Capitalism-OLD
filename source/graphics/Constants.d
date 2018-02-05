@@ -9,11 +9,13 @@ iVector logicalSize; //The logical game size or resolution that this game draws 
 Surface[string] images; ///Surfaces of all of the images the game will use
 Font[string] fonts; ///All the typefaces the game will use
 dVector hexBase; ///The size of the rectangle in which a hexagon of side length 1 is inscribed
+iVector minimapHexSize; ///The minimum and maximum sizes of hexes in the minimap by side length
 
 shared static this() {
     aspectRatio = new iVector(16, 9);
     logicalSize = aspectRatio * 100;
     hexBase = new dVector(sqrt(3.0), 2);
+    minimapHexSize = new iVector(10, 50);
     foreach (image; EnumMembers!Image) {
         mixin("images[image] = loadImage(\"" ~ image ~ "\");");
     }
