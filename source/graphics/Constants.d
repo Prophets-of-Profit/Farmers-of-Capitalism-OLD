@@ -24,14 +24,14 @@ shared static this() {
     }
 }
 
-/** 
+/**
  * A container for the paths of all of the game's soundtracks
  */
 enum Soundtrack : string {
     Title = "res/music/title.mp3",
 }
 
-/** 
+/**
  * A container for the paths of all of the game's sound effects
  */
 enum SoundEffect : string {
@@ -42,7 +42,8 @@ enum SoundEffect : string {
  * A container for the paths of all of the game's images
  */
 enum Image : string {
-    TempIcon = "res/pictures/TempIcon.png"
+    TempIcon = "res/pictures/TempIcon.png",
+    BiomePlains = "res/pictures/biome/plains.png"
 }
 
 /**
