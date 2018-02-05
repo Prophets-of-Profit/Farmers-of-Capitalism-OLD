@@ -44,6 +44,7 @@ class Minimap(uint worldSize) : Component {
         this.world = world;
         this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
         this.center = this.location.center;
+        this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
     }
 
     /**
@@ -93,13 +94,16 @@ class Minimap(uint worldSize) : Component {
         this.container.renderer.clear;
         this.container.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
         foreach(coord; world.tiles.keys) {
-            this.container.renderer.fillPolygon!6(new iPolygon!6(getCenterHexagonVertices(                
+            iPolygon!6 polygon = new iPolygon!6(getCenterHexagonVertices(                
                 cast(iVector) new dVector(
                     (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
                     (this.center.y + coord.r * -1.5 * this.sideLength)
                 ),
                 this.sideLength
-            )), Color(cast(ubyte) ((abs(coord.q) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.r) * 255 / 2 + 100) % 255), cast(ubyte) ((abs(coord.s) * 255 / 2 + 100) % 255)));
+            ));
+            iRectangle bounds = polygon.bound;
+            this.container.renderer.copy(new Texture(images[Image.BiomePlains], this.container.renderer), bounds);
+            this.container.renderer.fillPolygon!6(polygon, Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50));
         }
     }
 
