@@ -21,7 +21,7 @@ class World(ulong size) {
         for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
             for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
                 if (abs(i + j) <= cast(int)size) {
-                    this.tiles[Coordinate(i, j)] = new Hex(Coordinate(i, j));
+                    this.tiles[new Coordinate(i, j)] = new Hex(new Coordinate(i, j));
                 }
             }
         }
@@ -34,10 +34,10 @@ class World(ulong size) {
      * Followed by the passed coordinates in the last spot
      */
     Coordinate[] getAdjacencies(Coordinate location) {
-        return [Coordinate(location.q + 1, location.r), Coordinate(location.q,
-                location.r + 1), Coordinate(location.q - 1, location.r + 1),
-            Coordinate(location.q - 1, location.r), Coordinate(location.q,
-                    location.r - 1), Coordinate(location.q + 1, location.r - 1), location];
+        return [new Coordinate(location.q + 1, location.r), new Coordinate(location.q,
+                location.r + 1), new Coordinate(location.q - 1, location.r + 1),
+            new Coordinate(location.q - 1, location.r), new Coordinate(location.q,
+                    location.r - 1), new Coordinate(location.q + 1, location.r - 1), location];
     }
 
     /**

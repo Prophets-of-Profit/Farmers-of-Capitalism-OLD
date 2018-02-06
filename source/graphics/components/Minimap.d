@@ -5,6 +5,7 @@ import std.math;
 import std.parallelism;
 import d2d;
 import graphics.Constants;
+import logic.world.Coordinate;
 import logic.world.GameWorld;
 import logic.world.Hex;
 
@@ -20,6 +21,7 @@ class Minimap(uint worldSize) : Component {
     iVector lastClicked; ///The last place the minimap was clicked.
     iVector center; ///The center of the minimap hex grid
     iVector centerDistance; ///The distance from the zoom focal point to the center
+    Coordinate selectedHex; ///The hex tile that is selected
 
     /**
      * Sets the minimap's location
@@ -77,10 +79,22 @@ class Minimap(uint worldSize) : Component {
         //Dragging
         if (this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) {
             if (this.lastClicked is null) {
-                this.lastClicked = new iVector(this.container.mouse.location.components);
+                this.lastClicked = mouseLocation;
             }
-            this.center += new iVector(this.container.mouse.location.components) - lastClicked;
-            this.lastClicked = new iVector(this.container.mouse.location.components);
+            this.center += mouseLocation - lastClicked;
+            this.lastClicked = mouseLocation;
+            //Highlight when clicked inside a hex
+            Coordinate coordinate;
+            foreach(coord; world.tiles.keys) {
+                iPolygon!6 polygon = new iPolygon!6(getCenterHexagonVertices(                
+                    cast(iVector) new dVector(
+                        (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
+                        (this.center.y + coord.r * -1.5 * this.sideLength)
+                    ),
+                    this.sideLength));
+                if(polygon.contains(mouseLocation)) coordinate = coord; 
+            }
+            this.selectedHex = coordinate;
         } else {
             this.lastClicked = null;
         } 
@@ -94,16 +108,28 @@ class Minimap(uint worldSize) : Component {
         this.container.renderer.clear;
         this.container.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
         foreach(coord; world.tiles.keys) {
+            //Draw all the hexes
             iPolygon!6 polygon = new iPolygon!6(getCenterHexagonVertices(                
                 cast(iVector) new dVector(
                     (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
                     (this.center.y + coord.r * -1.5 * this.sideLength)
                 ),
-                this.sideLength
-            ));
+                this.sideLength));
             iRectangle bounds = polygon.bound;
             this.container.renderer.copy(new Texture(images[Image.BiomePlains], this.container.renderer), bounds);
             this.container.renderer.fillPolygon!6(polygon, Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50));
+        }
+        //Highlight the selected hex
+        if(this.selectedHex !is null) {
+            this.container.renderer.fillPolygon!6(
+                new iPolygon!6(getCenterHexagonVertices(                
+                cast(iVector) new dVector(
+                    (this.center.x + this.selectedHex.q * hexBase.x * this.sideLength + this.selectedHex.r * hexBase.x * this.sideLength / 2),
+                    (this.center.y + this.selectedHex.r * -1.5 * this.sideLength)
+                ),
+                this.sideLength)), 
+                Color(255, 0, 0, 100)
+            );
         }
     }
 

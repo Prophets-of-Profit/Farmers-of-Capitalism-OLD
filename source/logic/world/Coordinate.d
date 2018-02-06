@@ -21,7 +21,7 @@ enum Direction : int{
  * A hex contains two scalar values that represent distances along direction vector bases
  * The vector bases are separated by pi/3 radians
  */
-struct Coordinate {
+class Coordinate {
 
     int scalar1; ///The distance along the horizontal
     int scalar2; ///The distance along the axis at a pi/3 angle below the positive horizontal
@@ -32,6 +32,11 @@ struct Coordinate {
      */
     @property int scalar3() {
         return -scalar1 - scalar2;
+    }
+
+    this(int scalar1, int scalar2) {
+        this.scalar1 = scalar1;
+        this.scalar2 = scalar2;
     }
 
     alias q = scalar1;

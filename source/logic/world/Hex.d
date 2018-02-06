@@ -25,7 +25,7 @@ enum ClimateFactor {
  */
 class Hex {
 
-    immutable Coordinate location; ///The unchangable location of the hex
+    Coordinate location; ///The unchangable location of the hex
     double elevation; ///Stores the elevation of the hex as a percentage of the highest elevation in the world
     double[ClimateFactor] baseClimate; ///The base values that exemplify the overall climate
     Direction waterFlow; ///How the water on the tile flows; if the tile isn't a river, is Direction.NONE
