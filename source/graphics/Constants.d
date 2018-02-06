@@ -43,7 +43,9 @@ enum SoundEffect : string {
  */
 enum Image : string {
     TempIcon = "res/pictures/TempIcon.png",
-    BiomePlains = "res/pictures/biome/plains.png"
+    BiomePlains = "res/pictures/biome/plains.png",
+    BiomeRedwood = "res/pictures/biome/redwood.png",
+    BiomeOak = "res/pictures/biome/oak.png"
 }
 
 /**
