@@ -1,8 +1,12 @@
 module logic.world.World;
 
 import std.math;
+import std.random;
+import graphics.Constants;
 import logic.world.Coordinate;
 import logic.world.Hex;
+
+static Image[] biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.BiomeOak];
 
 /**
  * The world
@@ -21,7 +25,7 @@ class World(ulong size) {
         for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
             for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
                 if (abs(i + j) <= cast(int)size) {
-                    this.tiles[new Coordinate(i, j)] = new Hex(new Coordinate(i, j));
+                    this.tiles[new Coordinate(i, j)] = new Hex(new Coordinate(i, j), null, choice(biomeImages));
                 }
             }
         }

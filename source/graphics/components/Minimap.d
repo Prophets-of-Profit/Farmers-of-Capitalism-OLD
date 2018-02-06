@@ -116,7 +116,7 @@ class Minimap(uint worldSize) : Component {
                 ),
                 this.sideLength));
             iRectangle bounds = polygon.bound;
-            this.container.renderer.copy(new Texture(images[Image.BiomePlains], this.container.renderer), bounds);
+            this.container.renderer.copy(new Texture(images[world.tiles[coord].image], this.container.renderer), bounds);
             this.container.renderer.fillPolygon!6(polygon, Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50));
         }
         //Highlight the selected hex

@@ -30,6 +30,7 @@ class Hex {
     double[ClimateFactor] baseClimate; ///The base values that exemplify the overall climate
     Direction waterFlow; ///How the water on the tile flows; if the tile isn't a river, is Direction.NONE
     Direction windFlow; ///How the wind on the tile flows; all tiles have a wind direction, but it can vary over time
+    string image; ///The image to use for the hex
 
     /**
      * Gets the linear distance to the nearest water tile
@@ -52,9 +53,10 @@ class Hex {
      * The Hex constructor
      * Creates a hex based on its location and climate
      */
-    this(Coordinate location, double[ClimateFactor] climate = null) {
+    this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
+        this.image = image;
     }
 
     //TODO: make polygon a property based on center location and hex width
