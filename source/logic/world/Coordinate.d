@@ -1,18 +1,19 @@
 module logic.world.Coordinate;
 
+immutable int[2][] coordChangeByDirection = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1], [0, 0]]; ///Gets the change in coordinate (q, r) by each direction (as denoted below)
+
 /**
  * The different cardinal directions on a hex grid
  */
 enum Direction : int{
     NONE = 6,
-    NORTHEAST = 4,
+    NORTHEAST = 5,
     EAST = 0,
     SOUTHEAST = 1,
     SOUTHWEST = 2,
     WEST = 3,
     NORTHWEST = 4
 }
-
 
 /** 
  * A struct representation of a hex's coordinates
