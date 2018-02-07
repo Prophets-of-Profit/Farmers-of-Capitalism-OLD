@@ -80,4 +80,18 @@ class Player {
         this.location = location;
     }
 
+    /**
+     * Moves the player one tile in the specified direction.
+     */
+    void move(Direction direction) {
+        this.location = new Coordinate(this.location.q + coordChangeByDirection[direction][0], this.location.r + coordChangeByDirection[direction][1]);
+    }
+
+    /**
+     * Returns whether or not moving one tile in the given direction can be made
+     */
+    bool canMoveBeMade(Direction direction, World world) {
+        return world.tiles[world.getAdjacencies(this.location)[direction]].movementCost <= this.numMovesLeft;
+    }
+
 }

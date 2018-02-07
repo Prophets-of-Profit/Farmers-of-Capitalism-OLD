@@ -50,6 +50,14 @@ class Hex {
     }
 
     /**
+     * Returns the movement cost for a player walking on this hex.
+     * TODO:
+     */
+    @property double movementCost() {
+        return 0;
+    }
+
+    /**
      * The Hex constructor
      * Creates a hex based on its location and climate
      */
