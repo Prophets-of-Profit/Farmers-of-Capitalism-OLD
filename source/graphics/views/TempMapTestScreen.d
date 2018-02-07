@@ -13,8 +13,8 @@ class TempMapTestScreen : Screen {
 
     this(Display display) {
         super(display);
-        this.components ~= new Minimap!5(display, new iRectangle(0, 0, 1600,
-                900), new GameWorld!5());
+        this.components ~= new Minimap(display, new iRectangle(0, 0, 1600,
+                900), new GameWorld(5));
     }
 
     /**

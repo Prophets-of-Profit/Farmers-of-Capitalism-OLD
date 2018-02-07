@@ -12,9 +12,9 @@ import logic.world.Hex;
 /**
  * A component that renders the world in partial detail
  */
-class Minimap(uint worldSize) : Component {
+class Minimap : Component {
 
-    GameWorld!worldSize world; ///The world this minimap should represent
+    GameWorld world; ///The world this minimap should represent
     iRectangle _location; ///Where the component is
     int sideLength = 20; ///The length of the hex sides; used in zooming
     int scrollValue; ///The total mouse wheel displacement
@@ -40,7 +40,7 @@ class Minimap(uint worldSize) : Component {
     /**
      * Makes a minimap given the container and the world to draw
      */
-    this(Display container, iRectangle location, GameWorld!worldSize world) {
+    this(Display container, iRectangle location, GameWorld world) {
         super(container);
         this._location = location;
         this.world = world;

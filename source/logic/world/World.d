@@ -13,7 +13,7 @@ static Image[] biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.Biome
  * Represents the hexes in the game and actions that can be taken using them
  * Use GameWorld for game content
  */
-class World(ulong size) {
+class World {
 
     Hex[Coordinate] tiles; ///An array of all the hexes in the world
 
@@ -21,7 +21,7 @@ class World(ulong size) {
      * Generates a hexagonal world of a given radius (distance from center to corner)
      * TODO: add worldgen
      */
-    this() {
+    this(ulong size) {
         for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
             for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
                 if (abs(i + j) <= cast(int)size) {
