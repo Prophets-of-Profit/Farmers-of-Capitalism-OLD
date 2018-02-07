@@ -74,6 +74,8 @@ class Hex {
 /**
  * Returns an array of 6 points which form a hexagon
  * Based on the center of the center hexagon and the side length of each hexagon; found in graphics.Constants
+ * TODO: refactor to take in coordinate instead and then move this method to Coordinate
+ * TODO: return this as a polygon and not a list of points
  */
 iVector[6] getCenterHexagonVertices(iVector hexCenter, int sideLength) {
     return [

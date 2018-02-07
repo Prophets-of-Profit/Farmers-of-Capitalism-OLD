@@ -21,6 +21,7 @@ class Minimap : Component {
     iVector lastClicked; ///The last place the minimap was clicked.
     iVector center; ///The center of the minimap hex grid
     iVector centerDistance; ///The distance from the zoom focal point to the center
+    immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
     Coordinate selectedHex; ///The hex tile that is selected
 
     /**
@@ -104,33 +105,40 @@ class Minimap : Component {
      * Handles drawing the minimap
      */
     override void draw() {
-        this.container.renderer.drawColor = PredefinedColor.GREEN;
         this.container.renderer.clear;
         this.container.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
+        /**
+         * A method that returns a coordinate as a hexagon polygon
+         */
+        iPolygon!6 hexVertices(Coordinate coord) {
+            return new iPolygon!6(
+                getCenterHexagonVertices(                
+                    cast(iVector) new dVector(
+                        (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
+                        (this.center.y + coord.r * -1.5 * this.sideLength)
+                    ),
+                    this.sideLength
+                )
+            );
+        }
         foreach(coord; world.tiles.keys) {
             //Draw all the hexes
-            iPolygon!6 polygon = new iPolygon!6(getCenterHexagonVertices(                
-                cast(iVector) new dVector(
-                    (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
-                    (this.center.y + coord.r * -1.5 * this.sideLength)
-                ),
-                this.sideLength));
+            iPolygon!6 polygon = hexVertices(coord);
             iRectangle bounds = polygon.bound;
             this.container.renderer.copy(new Texture(images[world.tiles[coord].image], this.container.renderer), bounds);
-            this.container.renderer.fillPolygon!6(polygon, Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50));
+            this.container.renderer.fillPolygon!6(polygon, this.getHexColor(coord));
         }
         //Highlight the selected hex
         if(this.selectedHex !is null) {
-            this.container.renderer.fillPolygon!6(
-                new iPolygon!6(getCenterHexagonVertices(                
-                cast(iVector) new dVector(
-                    (this.center.x + this.selectedHex.q * hexBase.x * this.sideLength + this.selectedHex.r * hexBase.x * this.sideLength / 2),
-                    (this.center.y + this.selectedHex.r * -1.5 * this.sideLength)
-                ),
-                this.sideLength)), 
-                Color(255, 0, 0, 100)
-            );
+            this.container.renderer.fillPolygon!6(hexVertices(this.selectedHex), this.selectedColor);
         }
+    }
+
+    /**
+     * Returns the color of a hexagon at a given coordinate
+     */
+    Color getHexColor(Coordinate coord) {
+        return Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50);
     }
 
 }
