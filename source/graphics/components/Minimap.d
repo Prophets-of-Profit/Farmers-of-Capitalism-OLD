@@ -24,6 +24,7 @@ class Minimap : Component {
     iVector centerDistance; ///The distance from the zoom focal point to the center
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
     Coordinate selectedHex; ///The hex tile that is selected
+    bool isBeingResized;
 
     /**
      * Sets the minimap's location
@@ -56,10 +57,18 @@ class Minimap : Component {
      * Certain events will handle the minimap zooming while other events will select hexes
      */
     void handleEvent(SDL_Event event) {
-        if (!this.location.contains(this.container.mouse.location)) {
+        iVector mouseLocation = new iVector(this.container.mouse.location.components);
+        //Adjust minimap size
+        if(((mouseLocation - this.location.bottomRight).magnitude <= 75 
+        && this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) 
+        || this.isBeingResized) {
+            this.location = new iRectangle(this.location.x, this.location.y, mouseLocation.x - this.location.x, mouseLocation.y - this.location.y);
+            this.isBeingResized = this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed();
+        }
+        //The following code only executes if the mouse is within the minimap rectangle
+        if (!this.location.contains(mouseLocation)) {
             return;
         }
-        iVector mouseLocation = new iVector(this.container.mouse.location.components);
         //Zooming
         immutable previousScroll = this.scrollValue;
         this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
