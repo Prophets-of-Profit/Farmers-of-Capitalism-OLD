@@ -8,7 +8,10 @@
  * "I have PantheonTSD"
  *      -Kadin Tucker
  *
- * A proprietary software written by Saurabh Totey, Elia Gorokhovsky, and Kadin Tucker.
+ * "I like caterpillars"
+ *      -Gernene Tan
+ *
+ * A proprietary software written by Saurabh Totey, Elia Gorokhovsky, Gernene Tan and Kadin Tucker.
  *
  *    $$$$$$$$\                                                                       $$$$$$\         $$$$$$\                   $$\  $$\             $$\$$\
  *    $$  _____|                                                                     $$  __$$\       $$  __$$\                  \__| $$ |            $$ \__|
