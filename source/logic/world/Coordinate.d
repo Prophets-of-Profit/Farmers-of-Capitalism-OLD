@@ -3,7 +3,7 @@ module logic.world.Coordinate;
 import d2d;
 import graphics.Constants;
 
-immutable int[2][] coordChangeByDirection = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1], [0, 0]]; ///Gets the change in coordinate (q, r) by each direction (as denoted below)
+immutable coordChangeByDirection = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1], [0, 0]]; ///Gets the change in coordinate (q, r) by each direction (as denoted below)
 
 /**
  * The different cardinal directions on a hex grid

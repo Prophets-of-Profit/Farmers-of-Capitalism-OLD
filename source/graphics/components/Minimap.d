@@ -11,6 +11,7 @@ import logic.world.Hex;
 
 /**
  * A component that renders the world in partial detail
+ * TODO: make the hexes a buncha buttons so they can handle clicking correctly and have onClick actions
  */
 class Minimap : Component {
 
@@ -51,8 +52,8 @@ class Minimap : Component {
     }
 
     /**
-     * Handles zoom function
-     * TODO: fix reference point
+     * Handles events on the minimap
+     * Certain events will handle the minimap zooming while other events will select hexes
      */
     void handleEvent(SDL_Event event) {
         if (!this.location.contains(this.container.mouse.location)) {
@@ -69,10 +70,11 @@ class Minimap : Component {
             this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
             immutable oldSideLength = this.sideLength;
             this.center -= this.centerDistance;
-            //Occasionally the focal point will move very slightly; this is likely due to minor rounding errors
-            //TODO: fix
+            //TODO: Occasionally the focal point will move very slightly; this is likely due to minor rounding errors
             this.sideLength = clamp(this.sideLength + (this.scrollValue - previousScroll), minimapHexSize.x, minimapHexSize.y);
-            if(this.centerDistance != new iVector(0,0)) this.centerDistance.magnitude = this.centerDistance.magnitude * this.sideLength / oldSideLength;
+            if (this.centerDistance != new iVector(0,0)) {
+                this.centerDistance.magnitude = this.centerDistance.magnitude * this.sideLength / oldSideLength;
+            }
             this.center = mouseLocation + this.centerDistance;
         } else {
             this.centerDistance = null;
@@ -92,6 +94,7 @@ class Minimap : Component {
                     coordinate = coord;
                 } 
             }
+            //TODO: see above todo about making all hexes buttons
             this.selectedHex = coordinate;
         } else {
             this.lastClicked = null;
@@ -118,7 +121,7 @@ class Minimap : Component {
     }
 
     /**
-     * Returns the color of a hexagon at a given coordinate
+     * Returns the overlay color of a hexagon at a given coordinate
      */
     Color getHexColor(Coordinate coord) {
         return Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50);
