@@ -70,20 +70,3 @@ class Hex {
     //TODO: make polygon a property based on center location and hex width
 
 }
-
-/**
- * Returns an array of 6 points which form a hexagon
- * Based on the center of the center hexagon and the side length of each hexagon; found in graphics.Constants
- * TODO: refactor to take in coordinate instead and then move this method to Coordinate
- * TODO: return this as a polygon and not a list of points
- */
-iVector[6] getCenterHexagonVertices(iVector hexCenter, int sideLength) {
-    return [
-            new iVector(hexCenter.x, hexCenter.y + sideLength), //Bottom
-            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Lower right
-            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Upper right
-            new iVector(hexCenter.x, hexCenter.y - sideLength), //Top
-            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Lower left
-            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Upper left
-        ];
-}

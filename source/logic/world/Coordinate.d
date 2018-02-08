@@ -1,11 +1,14 @@
 module logic.world.Coordinate;
 
+import d2d;
+import graphics.Constants;
+
 immutable int[2][] coordChangeByDirection = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1], [0, 0]]; ///Gets the change in coordinate (q, r) by each direction (as denoted below)
 
 /**
  * The different cardinal directions on a hex grid
  */
-enum Direction : int{
+enum Direction {
     NONE = 6,
     NORTHEAST = 5,
     EAST = 0,
@@ -43,7 +46,22 @@ class Coordinate {
     alias r = scalar2;
     alias s = scalar3;
 
-
-    //TODO: add method to convert a coordinate to a d2d hexagonal polygon
+    /**
+     * Gets the coordinate as a hexagon given the map center and the hexagon side length
+     */
+    iPolygon!6 asHex(iVector mapCenter, int sideLength) {
+        iVector hexCenter = cast(iVector) new dVector(
+            mapCenter.x + this.q * hexBase.x * sideLength + this.r * hexBase.x * sideLength / 2,
+            mapCenter.y + this.r * -1.5 * sideLength
+        );
+        return new iPolygon!6(
+            new iVector(hexCenter.x, hexCenter.y + sideLength), //Bottom
+            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Lower right
+            new iVector(hexCenter.x + cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Upper right
+            new iVector(hexCenter.x, hexCenter.y - sideLength), //Top
+            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y - sideLength / 2), //Lower left
+            new iVector(hexCenter.x - cast(int)(sideLength * hexBase.x / 2), hexCenter.y + sideLength / 2), //Upper left);
+        );
+    }
 
 }

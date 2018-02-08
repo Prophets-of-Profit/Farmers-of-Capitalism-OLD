@@ -87,13 +87,10 @@ class Minimap : Component {
             //Highlight when clicked inside a hex
             Coordinate coordinate;
             foreach(coord; world.tiles.keys) {
-                iPolygon!6 polygon = new iPolygon!6(getCenterHexagonVertices(                
-                    cast(iVector) new dVector(
-                        (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
-                        (this.center.y + coord.r * -1.5 * this.sideLength)
-                    ),
-                    this.sideLength));
-                if(polygon.contains(mouseLocation)) coordinate = coord; 
+                iPolygon!6 polygon = coord.asHex(this.center, this.sideLength);
+                if(polygon.contains(mouseLocation)){
+                    coordinate = coord;
+                } 
             }
             this.selectedHex = coordinate;
         } else {
@@ -107,30 +104,16 @@ class Minimap : Component {
     override void draw() {
         this.container.renderer.clear;
         this.container.renderer.fillRect(this.location, PredefinedColor.DARKGREY);
-        /**
-         * A method that returns a coordinate as a hexagon polygon
-         */
-        iPolygon!6 hexVertices(Coordinate coord) {
-            return new iPolygon!6(
-                getCenterHexagonVertices(                
-                    cast(iVector) new dVector(
-                        (this.center.x + coord.q * hexBase.x * this.sideLength + coord.r * hexBase.x * this.sideLength / 2),
-                        (this.center.y + coord.r * -1.5 * this.sideLength)
-                    ),
-                    this.sideLength
-                )
-            );
-        }
         foreach(coord; world.tiles.keys) {
             //Draw all the hexes
-            iPolygon!6 polygon = hexVertices(coord);
+            iPolygon!6 polygon = coord.asHex(this.center, this.sideLength);
             iRectangle bounds = polygon.bound;
             this.container.renderer.copy(new Texture(images[world.tiles[coord].image], this.container.renderer), bounds);
-            this.container.renderer.fillPolygon!6(polygon, this.getHexColor(coord));
+            this.container.renderer.fillPolygon!6(coord.asHex(this.center, this.sideLength), this.getHexColor(coord));
         }
         //Highlight the selected hex
         if(this.selectedHex !is null) {
-            this.container.renderer.fillPolygon!6(hexVertices(this.selectedHex), this.selectedColor);
+            this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.center, this.sideLength), this.selectedColor);
         }
     }
 
