@@ -6,8 +6,8 @@ import d2d;
 
 iVector aspectRatio; //A vector representing the aspect ratio of the screen; both components should not share a common factor
 iVector logicalSize; //The logical game size or resolution that this game draws and scales at
-Surface[string] images; ///Surfaces of all of the images the game will use
-Font[string] fonts; ///All the typefaces the game will use
+Surface[Image] images; ///Surfaces of all of the images the game will use
+Font[Typeface] fonts; ///All the typefaces the game will use
 dVector hexBase; ///The size of the rectangle in which a hexagon of side length 1 is inscribed
 iVector minimapHexSize; ///The minimum and maximum sizes of hexes in the minimap by side length
 

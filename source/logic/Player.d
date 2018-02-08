@@ -6,6 +6,7 @@ import logic.world;
 /**
  * A class for each player to control
  * Contains basic data for each player
+ * TODO: player inventories as arrays of items
  */
 class Player {
 
@@ -14,7 +15,6 @@ class Player {
     private double _numMovesLeft; ///The number of tiles the player can move this turn
     private int _maxHealth; ///The highest number of health points this player can have
     private int _currentHealth; ///The current number of health points this player has
-    private Inventory _inventory; ///The player's items which they are carrying
 
     /** 
      * Gets the player's location
@@ -63,13 +63,6 @@ class Player {
      */
     @property void currentHealth(int newCurrentHealth) {
         this._currentHealth = newCurrentHealth;
-    }
-
-    /**
-     * Gets the player's inventory
-     */
-    @property Inventory inventory() {
-        return this._inventory;
     }
 
     /**
