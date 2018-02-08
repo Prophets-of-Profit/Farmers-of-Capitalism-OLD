@@ -16,12 +16,14 @@ static Image[] biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.Biome
 class World {
 
     Hex[Coordinate] tiles; ///An array of all the hexes in the world
+    ulong size; ///The size of the world
 
     /**
      * Generates a hexagonal world of a given radius (distance from center to corner)
      * TODO: add worldgen
      */
     this(ulong size) {
+        this.size = size;
         for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
             for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
                 if (abs(i + j) <= cast(int)size) {

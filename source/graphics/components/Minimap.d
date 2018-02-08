@@ -59,7 +59,7 @@ class Minimap : Component {
     void handleEvent(SDL_Event event) {
         iVector mouseLocation = new iVector(this.container.mouse.location.components);
         //Adjust minimap size
-        if(((mouseLocation - this.location.bottomRight).magnitude <= 75 
+        if(((mouseLocation - this.location.bottomRight).magnitude <= 25 
         && this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) 
         || this.isBeingResized) {
             this.location = new iRectangle(this.location.x, this.location.y, mouseLocation.x - this.location.x, mouseLocation.y - this.location.y);
