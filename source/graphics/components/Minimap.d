@@ -24,7 +24,7 @@ class Minimap : Component {
     iVector centerDistance; ///The distance from the zoom focal point to the center
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
     Coordinate selectedHex; ///The hex tile that is selected
-    bool isBeingResized;
+    bool isBeingResized; ///Whether the minimap is being resized
 
     /**
      * Sets the minimap's location
@@ -120,7 +120,7 @@ class Minimap : Component {
             //Draw all the hexes
             iPolygon!6 polygon = coord.asHex(this.center, this.sideLength);
             iRectangle bounds = polygon.bound;
-            this.container.renderer.copy(new Texture(images[world.tiles[coord].image], this.container.renderer), bounds);
+            this.container.renderer.copy(textures[this.world.tiles[coord].representation], bounds);
             this.container.renderer.fillPolygon!6(coord.asHex(this.center, this.sideLength), this.getHexColor(coord));
         }
         //Highlight the selected hex

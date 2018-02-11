@@ -7,6 +7,7 @@ import d2d;
 iVector aspectRatio; //A vector representing the aspect ratio of the screen; both components should not share a common factor
 iVector logicalSize; //The logical game size or resolution that this game draws and scales at
 Surface[Image] images; ///Surfaces of all of the images the game will use
+Texture[Image] textures; ///A list of all textures
 Font[Typeface] fonts; ///All the typefaces the game will use
 dVector hexBase; ///The size of the rectangle in which a hexagon of side length 1 is inscribed
 iVector minimapHexSize; ///The minimum and maximum sizes of hexes in the minimap by side length
@@ -21,6 +22,15 @@ shared static this() {
     }
     foreach (font; EnumMembers!Typeface) {
         mixin("fonts[font] = new Font(\"" ~ font ~ "\", 1500);");
+    }
+}
+
+/**
+ * Updates all the textures using the surfaces of those textures
+ */
+void updateTextures(Renderer renderer) {
+    foreach (image; EnumMembers!Image) {
+        textures[image] = new Texture(images[image], renderer);
     }
 }
 

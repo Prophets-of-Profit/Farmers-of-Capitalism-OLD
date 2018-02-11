@@ -1,10 +1,10 @@
 module logic.world.Hex;
 
+import std.math;
+import std.random;
+import std.traits;
 import graphics.Constants;
 import logic.world.Coordinate;
-
-import std.math;
-
 import d2d;
 
 /**
@@ -30,7 +30,14 @@ class Hex {
     double[ClimateFactor] baseClimate; ///The base values that exemplify the overall climate
     Direction waterFlow; ///How the water on the tile flows; if the tile isn't a river, is Direction.NONE
     Direction windFlow; ///How the wind on the tile flows; all tiles have a wind direction, but it can vary over time
-    string image; ///The image to use for the hex
+    Image tempImage = Image.TempIcon;
+
+    /**
+     * Gets how the tile looks
+     */
+    @property Image representation() {
+        return this.tempImage;
+    }
 
     /**
      * Gets the linear distance to the nearest water tile
@@ -64,9 +71,9 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
-        this.image = image;
+        while(this.tempImage == Image.TempIcon) {
+            this.tempImage = choice([EnumMembers!Image]);
+        }
     }
-
-    //TODO: make polygon a property based on center location and hex width
 
 }
