@@ -22,6 +22,7 @@ class Minimap : Component {
     int scrollValue; ///The total mouse wheel displacement
     iVector lastClicked; ///Where the mouse was last clicked
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
+    Coordinate selectedHex; ///The hex that is currently selected
 
     /**
      * Sets the minimap's location
@@ -82,6 +83,15 @@ class Minimap : Component {
             this.mapTarget.x = newTopLeft.x;
             this.mapTarget.y = newTopLeft.y;
             this.lastClicked = mouseLocation;
+        } else {
+            this.lastClicked = null;
+        }
+        if (event.type == SDL_MOUSEBUTTONUP) {
+            foreach (coord; this.world.tiles.keys) {
+                if (coord.asHex(this.mapTarget.center, this.sideLength).contains(mouseLocation)) {
+                    this.selectedHex = coord;
+                }
+            }
         }
     }
 
@@ -92,6 +102,9 @@ class Minimap : Component {
         this.container.renderer.copy(this.map, this.mapTarget);
         foreach (coord; this.world.tiles.keys) {
             this.container.renderer.fillPolygon!6(coord.asHex(this.mapTarget.center, this.sideLength), this.getHexColor(coord));
+        }
+        if (this.selectedHex !is null) {
+            this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
         }
     }
 
