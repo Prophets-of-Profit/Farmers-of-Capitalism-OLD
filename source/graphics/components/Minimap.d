@@ -22,7 +22,6 @@ class Minimap : Component {
     int scrollValue; ///The total mouse wheel displacement
     iVector lastClicked; ///Where the mouse was last clicked
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
-    Coordinate selectedHex; ///The hex tile that is selected
 
     /**
      * Sets the minimap's location
@@ -83,17 +82,6 @@ class Minimap : Component {
             this.mapTarget.x = newTopLeft.x;
             this.mapTarget.y = newTopLeft.y;
             this.lastClicked = mouseLocation;
-            //Highlight when clicked inside a hex
-            Coordinate coordinate;
-            foreach(coord; world.tiles.keys) {
-                if(coord.asHex(this.mapTarget.center, this.sideLength).contains(mouseLocation)) {
-                    coordinate = coord;
-                }
-            }
-            //TODO: see above todo about making all hexes buttons
-            this.selectedHex = coordinate;
-        } else {
-            this.lastClicked = null;
         }
     }
 
@@ -104,9 +92,6 @@ class Minimap : Component {
         this.container.renderer.copy(this.map, this.mapTarget);
         foreach (coord; this.world.tiles.keys) {
             this.container.renderer.fillPolygon!6(coord.asHex(this.mapTarget.center, this.sideLength), this.getHexColor(coord));
-        }
-        if (this.selectedHex !is null) {
-            this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
         }
     }
 
