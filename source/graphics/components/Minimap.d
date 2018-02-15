@@ -43,7 +43,11 @@ class Minimap : Component {
      * TODO: get this value dynamically
      */
     @property int sideLength() {
-        return 15;
+        if (this.location.w * sqrt(3.0) > this.location.h * 2) {
+            return cast(int) (this.location.h / (this.world.size + 1) / 3);
+        } else {
+            return cast(int) (this.location.w / this.world.size / sqrt(3.0) / 2);
+        }
     }
 
     /**

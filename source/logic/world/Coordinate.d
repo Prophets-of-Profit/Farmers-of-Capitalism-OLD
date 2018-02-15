@@ -26,18 +26,18 @@ enum Direction {
  */
 class Coordinate {
 
-    int scalar1; ///The distance along the horizontal
-    int scalar2; ///The distance along the axis at a pi/3 angle below the positive horizontal
+    long scalar1; ///The distance along the horizontal
+    long scalar2; ///The distance along the axis at a pi/3 angle below the positive horizontal
 
     /**
      * The distance along the axis at a 2pi/3 angle below the positive horizontal
      * Useful for functions that take cube coordinates
      */
-    @property int scalar3() {
+    @property long scalar3() {
         return -scalar1 - scalar2;
     }
 
-    this(int scalar1, int scalar2) {
+    this(long scalar1, long scalar2) {
         this.scalar1 = scalar1;
         this.scalar2 = scalar2;
     }

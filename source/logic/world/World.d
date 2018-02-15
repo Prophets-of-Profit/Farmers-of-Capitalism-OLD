@@ -6,7 +6,8 @@ import graphics.Constants;
 import logic.world.Coordinate;
 import logic.world.Hex;
 
-static Image[] biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.BiomeOak];
+//A list f all biomes
+immutable biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.BiomeOak];
 
 /**
  * The world
@@ -24,10 +25,10 @@ class World {
      */
     this(ulong size) {
         this.size = size;
-        for (int i = -1 * cast(int)size; i <= cast(int)size; i++) {
-            for (int j = -1 * cast(int)size; j <= cast(int)size; j++) {
-                if (abs(i + j) <= cast(int)size) {
-                    this.tiles[new Coordinate(i, j)] = new Hex(new Coordinate(i, j), null, choice(biomeImages));
+        for (long i = -1 * size; i <= cast(long)size; i++) {
+            for (long j = -1 * size; j <= cast(long)size; j++) {
+                if (abs(i + j) <= cast(long)size) {
+                    this.tiles[new Coordinate(i, j)] = new Hex(new Coordinate(i, j), null, choice(biomeImages.dup));
                 }
             }
         }
@@ -50,7 +51,7 @@ class World {
      * Gets the Manhattan distance between two hexes by their coordinates
      * This is equivalent to the shortest path between them if each tile is equally passable
      */
-    int getDistance(Coordinate a, Coordinate b) {
+    long getDistance(Coordinate a, Coordinate b) {
         return (abs(a.q - b.q) + abs(a.r - b.r) + abs(a.s - b.s)) / 2;
     }
 
