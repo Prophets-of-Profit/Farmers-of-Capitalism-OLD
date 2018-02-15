@@ -60,11 +60,17 @@ class Minimap : Component {
 
     /**
      * Updates how the map looks
+     * TODO: could be made MUCH more efficient
      */
     void updateTextures() {
         Surface m = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            m.blit(images[this.world.tiles[coord].representation], null, coord.asHex(this.location.center, this.sideLength).bound);
+            iPolygon!6 hex = coord.asHex(this.mapTarget.center, this.sideLength);
+            iRectangle size = hex.bound;
+            m.blit(images[this.world.tiles[coord].representation], null, size);
+            Surface colorSurface = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
+            colorSurface.fillPolygon!6(hex, this.getHexColor(coord));
+            m.blit(colorSurface, null, this.location);
         }
         this.map = new Texture(m, this.container.renderer);
     }
@@ -100,9 +106,6 @@ class Minimap : Component {
      */
     override void draw() {
         this.container.renderer.copy(this.map, this.mapTarget);
-        foreach (coord; this.world.tiles.keys) {
-            this.container.renderer.fillPolygon!6(coord.asHex(this.mapTarget.center, this.sideLength), this.getHexColor(coord));
-        }
         if (this.selectedHex !is null) {
             this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
         }
@@ -112,7 +115,7 @@ class Minimap : Component {
      * Returns the overlay color of a hexagon at a given coordinate
      */
     Color getHexColor(Coordinate coord) {
-        return Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 50);
+        return Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 75);
     }
 
 }
