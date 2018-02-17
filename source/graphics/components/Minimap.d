@@ -43,10 +43,10 @@ class Minimap : Component {
      * TODO: get this value dynamically
      */
     @property int sideLength() {
-        if (this.location.w * sqrt(3.0) > this.location.h * 2) {
+        if (this.location.w * hexBase.x > this.location.h * hexBase.y) {
             return cast(int) (this.location.h / (this.world.size + 1) / 3);
         } else {
-            return cast(int) (this.location.w / this.world.size / sqrt(3.0) / 2);
+            return cast(int) (this.location.w / this.world.size / hexBase.x / 2);
         }
     }
 
@@ -56,7 +56,7 @@ class Minimap : Component {
     this(Display container, iRectangle location, GameWorld world) {
         super(container);
         this._location = location;
-        this.mapTarget = location;
+        this.mapTarget = new iRectangle(location.x, location.y, location.w, location.h);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
         this.updateTextures();
