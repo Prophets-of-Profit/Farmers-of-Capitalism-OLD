@@ -1,47 +1,35 @@
 module logic.Player;
 
-import logic.item;
-import logic.world;
+import logic.item.Inventory;
+import logic.world.Coordinate;
+import logic.world.World;
+
+/**
+ * A list of what attributes a player can have along with their costs 
+ */
+enum Attribute {
+    CAN_SEE_GENETICS = 500 //TODO: actually set this to something real; test example is that the can see genetics attribute costs 500
+}
 
 /**
  * A class for each player to control
  * Contains basic data for each player
- * TODO: player inventories as arrays of items
  */
 class Player {
 
+    long money; ///How much money the player has
+    Attribute[] attributes; ///What attributes the player has
     private Coordinate _location; ///The location of the player in the world
-    private int _maxTravellableDistance; ///The maximum number of tiles the player can move in one turn
+    int maxTravellableDistance; ///The maximum number of tiles the player can move in one turn
     private double _numMovesLeft; ///The number of tiles the player can move this turn
-    private int _maxHealth; ///The highest number of health points this player can have
-    private int _currentHealth; ///The current number of health points this player has
+    int maxHealth; ///The highest number of health points this player can have
+    int currentHealth; ///The current number of health points this player has
 
     /**
-     * Gets the player's location
+     * Gets where the player is
      */
     @property Coordinate location() {
         return this._location;
-    }
-
-    /**
-     * Set the player's location
-     */
-    @property void location(Coordinate newLocation) {
-        this._location = newLocation;
-    }
-
-    /**
-     * Gets the max tiles the player can move
-     */
-    @property int maxTravellableDistance() {
-        return this._maxTravellableDistance;
-    }
-
-    /**
-     * Sets the max tiles the player can move
-     */
-    @property void maxTravellableDistance(int newDistance) {
-        this._maxTravellableDistance = newDistance;
     }
 
     /**
@@ -52,32 +40,19 @@ class Player {
     }
 
     /**
-     * Gets the current health of the player
-     */ 
-    @property int currentHealth() {
-        return this._currentHealth;
-    }
-
-    /**
-     * Sets the current health of the player
-     */
-    @property void currentHealth(int newCurrentHealth) {
-        this._currentHealth = newCurrentHealth;
-    }
-
-    /**
      * Constructs a new player object
      * Sets the player's location to the given coordinate
      */
     this(Coordinate location) {
-        this.location = location;
+        this._location = location;
     }
 
     /**
      * Moves the player one tile in the specified direction.
      */
     void move(Direction direction) {
-        this.location = new Coordinate(this.location.q + coordChangeByDirection[direction][0], this.location.r + coordChangeByDirection[direction][1]);
+        this._location = new Coordinate(this.location.q + coordChangeByDirection[direction][0], this.location.r + coordChangeByDirection[direction][1]);
+        this._numMovesLeft -= 0; //TODO: get this number and replace 0
     }
 
     /**
