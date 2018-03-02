@@ -16,7 +16,7 @@ class Player {
     private int _maxHealth; ///The highest number of health points this player can have
     private int _currentHealth; ///The current number of health points this player has
 
-    /** 
+    /**
      * Gets the player's location
      */
     @property Coordinate location() {

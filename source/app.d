@@ -39,7 +39,6 @@ void main() {
     Display mainDisplay = new Display(640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE,
             "Farmers of Capitalism!");
-    mainDisplay.framerate = 60000;
     updateTextures(mainDisplay.renderer); //updateTextures is defined in graphics.Constants
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
