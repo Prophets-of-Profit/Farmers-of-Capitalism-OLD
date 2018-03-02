@@ -1,5 +1,6 @@
 module logic.item.Item;
 
+import graphics.Constants;
 import logic.world.Coordinate;
 
 /**
@@ -9,6 +10,7 @@ import logic.world.Coordinate;
 interface Item {
 
     @property Coordinate location(); ///Where the item is
+    @property Image representation(); ///How the item looks
     @property bool isPlaced(); ///Whether the item is placed or not
     @property double completion(); ///How close this item is to being "completed"; what completion entails is up to the item
     @property int movementCostChange(); ///What additive change in movement cost this item has

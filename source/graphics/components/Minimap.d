@@ -85,6 +85,9 @@ class Minimap : Component {
      */
     void handleEvent(SDL_Event event) {
         iVector mouseLocation = this.container.mouse.location;
+        if (!this.location.contains(mouseLocation)) {
+            return;
+        }
         if (this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) {
             if (this.lastClicked is null) {
                 this.lastClicked = mouseLocation;
@@ -102,12 +105,6 @@ class Minimap : Component {
                     this.selectedHex = coord;
                 }
             }
-        }
-        immutable difference = this.container.mouse.totalWheelDisplacement.y - this.scrollValue;
-        if (difference != 0) {
-            //TODO: get mouse position relative to mapTarget
-            //TODO: make mapTarget larger or smaller based on scroll difference
-            //TODO: shift map target so that mouse position relative to mapTarget matches previous relative mouse position
         }
     }
 
