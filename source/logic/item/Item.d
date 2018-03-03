@@ -14,7 +14,6 @@ abstract class Item {
 
     @property Image representation(); ///How the item looks on the GUI
     @property double completion(); ///How close this item is to being "completed"; what completion entails is up to the item
-    @property int movementCostChange(); ///What additive change in movement cost this item has when placed
 
     /**
      * All items need to have an inventory

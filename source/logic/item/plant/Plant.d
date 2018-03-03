@@ -1,7 +1,9 @@
 module logic.item.plant.Plant;
 
+import graphics.Constants;
 import logic.item.Inventory;
 import logic.item.Item;
+import logic.Player;
 
 /**
  * A plant class that encompasses the behaviour of ALL plants
@@ -11,10 +13,11 @@ class Plant : Item {
     package double _completion; ///How grown the plant is
 
     /**
-     * Necessary constructor for all items
+     * The plant will always look like whatever species it is
+     * TODO:
      */
-    this(Inventory container) {
-        super(container);
+    override @property Image representation() {
+        return Image.TempIcon;
     }
 
     /**
@@ -24,6 +27,21 @@ class Plant : Item {
         return this._completion;
     }
 
-    //TODO: actually make; until the item methods are made, this won't compile    
+    /**
+     * Necessary constructor for all items
+     */
+    this(Inventory container) {
+        super(container);
+    }
+
+    override void onStep(Player actor) {}
+
+    override void incrementalAction() {}
+
+    override void mainAction(Player actor) {}
+
+    override void onCreate(Player actor) {}
+
+    override void onDestroy(Player actor) {}
 
 }
