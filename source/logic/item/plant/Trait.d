@@ -1,7 +1,15 @@
 module logic.item.plant.Trait;
 
 import d2d;
+import logic.item.Attribute;
 import logic.item.plant.Plant;
+
+/**
+ * Categories for where/when a trait can be expressed
+ */
+enum TraitExpression {
+    STEPPED_ON, INCREMENT, MAIN, CREATED, DESTROYED
+}
 
 /**
  * A plant's trait
@@ -22,6 +30,11 @@ abstract class Trait {
      */
     int dominance(Plant plant);
 
+    /**
+     * Returns all qualities that the trait gives to a plant
+     */
+    Quality[] qualities(Plant plant);
+
 }
 
 /**
@@ -29,10 +42,6 @@ abstract class Trait {
  */
 struct TraitSet {
 
-    Trait[] steppedOnTraits;
-    Trait[] incrementTraits;
-    Trait[] interactedTraits;
-    Trait[] createdTraits;
-    Trait[] destroyedTraits;
+    Trait[][TraitExpression] traits;
 
 }

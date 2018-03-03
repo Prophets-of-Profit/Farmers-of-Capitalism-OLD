@@ -1,6 +1,7 @@
 module logic.item.Item;
 
 import graphics.Constants;
+import logic.item.Attribute;
 import logic.item.Inventory;
 import logic.Player;
 
@@ -12,8 +13,11 @@ abstract class Item {
 
     Inventory container; ///Where the item is currently located
 
+    @property string name(); ///The name of the item; shown to the players
+    @property string description(); ///The description of the item; shown to the players
     @property Image representation(); ///How the item looks on the GUI
     @property double completion(); ///How close this item is to being "completed"; what completion entails is up to the item
+    @property Quality[] qualities(); ///What qualititave traits the item has; is used in determining item value
 
     /**
      * All items need to have an inventory
