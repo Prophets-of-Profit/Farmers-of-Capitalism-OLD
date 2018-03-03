@@ -30,7 +30,7 @@ class Hex {
     double[ClimateFactor] baseClimate; ///The base values that exemplify the overall climate
     Direction waterFlow; ///How the water on the tile flows; if the tile isn't a river, is Direction.NONE
     Direction windFlow; ///How the wind on the tile flows; all tiles have a wind direction, but it can vary over time
-    Image tempImage = Image.TempIcon;
+    Image tempImage;
 
     /**
      * Gets how the tile looks
@@ -71,9 +71,9 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
-        while(this.tempImage == Image.TempIcon) {
+        do {
             this.tempImage = choice([EnumMembers!Image]);
-        }
+        } while(this.tempImage == Image.TempIcon || this.tempImage == Image.InvBox);
     }
 
 }
