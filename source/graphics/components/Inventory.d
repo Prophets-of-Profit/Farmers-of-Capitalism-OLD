@@ -1,4 +1,4 @@
-module graphics.components.Inventory;
+module graphics.components.InvPanel;
 
 import d2d;
 import logic.item.Inventory;
