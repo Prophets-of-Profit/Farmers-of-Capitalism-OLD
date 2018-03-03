@@ -8,10 +8,9 @@ import logic.item.Inventory;
  */
 class InvPanel : Component {
 
-    iRectangle _location; ///The location and bounds of the inventory panel
+    private iRectangle _location; ///The location and bounds of the inventory panel
     Texture texture; ///The actual texture to be drawn to the screen
-    int rowLength; ///The number of items to display on each row
-    Inventory _inventory; ///The inventory this component displays
+    Inventory inventory; ///The inventory this component displays
 
     /**
      * Returns the location
@@ -28,30 +27,47 @@ class InvPanel : Component {
     }
 
     /**
-     * Gets the contained inventory
+     * Gets the sidelength for how wide/tall each item image should be
+     * Is based off of the dimensions of this panel
      */
-    @property Inventory inventory() {
-        return this._inventory;
+    @property int itemDimension() {
+        return 100; //TODO: calculate based on dimensions
     }
 
     /**
-     * Sets the contained inventory
+     * Gets how many columns of items this panel can display
+     * Is based off of the dimensions of this panel
      */
-    @property void inventory(Inventory newInventory) {
-        this._inventory = newInventory;
+    @property int columns() {
+        return 5; //TODO: calculate based on dimensions
+    }
+
+    /**
+     * Gets how many rows of items this panel will display
+     * Is based off of the number of columns and number of items
+     */
+    @property int rows() {
+        return cast(int) this.inventory.items.length / this.columns + (this.inventory.items.length % this.columns == 0)? 0 : 1;
+    }
+
+    /**
+     * Returns whether a slider is needed to navigate through all the items in the inventory
+     * Is based off of how many rows are needed and the display size of all items
+     */
+    @property bool needsSlider() {
+        return this.rows * itemDimension > this.location.h;
     }
 
     /**
      * Contructs a new inventory panel contained in the given display
      */
-    this(Display container, Inventory inventory, int rowLength=5) {
+    this(Display container, Inventory inventory) {
         super(container);
-        this._inventory = inventory;
-        this.rowLength = rowLength;
+        this.inventory = inventory;
     }
 
     /**
-     * Handles the slider of the inventory panel if it is too large
+     * Handles inventory slider (if applicable) and clicking on items in the inventory as well as hovering over items
      * TODO:
      */
     void handleEvent(SDL_Event event) {
