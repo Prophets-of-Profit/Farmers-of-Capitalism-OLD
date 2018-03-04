@@ -49,7 +49,7 @@ class InvPanel : Component {
      * Is based off of the number of columns and number of items
      */
     @property int rows() {
-        return this.inventory.items.length / this.columns + ((this.inventory.items.length % this.columns == 0)? 0 : 1);
+        return cast(int) this.inventory.items.length / this.columns + ((this.inventory.items.length % this.columns == 0)? 0 : 1);
     }
 
     /**
