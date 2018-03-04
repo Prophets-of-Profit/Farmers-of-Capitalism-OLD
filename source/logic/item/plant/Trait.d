@@ -14,10 +14,12 @@ enum TraitExpression {
 /**
  * A plant's trait
  * Traits determine the behaviour of plants and are passed on offspring
+ * TODO: find way to determine trait's dominance
  */
 private abstract class Trait {
 
     immutable iVector location; ///Where the trait is in "trait-space"; close traits are similar and more likely to mutate into eachother than further traits
+    immutable Quality[] qualities; ///All qualities that the trait gives to a plant
 
     /**
      * The trait, when called will perform its action
@@ -25,19 +27,17 @@ private abstract class Trait {
      */
     void opCall(Plant plant);
 
-    /**
-     * How dominant the trait is when compared to other traits; determines whether it will surface or not
-     */
-    int dominance(Plant plant);
-
-    /**
-     * Returns all qualities that the trait gives to a plant
-     */
-    Quality[] qualities(Plant plant);
-
 }
 
 alias TraitSet = Trait[][TraitExpression];
+
+/**
+ * Gets the phenotype or observable traits of a traitset
+ * These are the traits that a plant will actually exhibit
+ */
+TraitSet phenotype(TraitSet genotype) {
+    return null; //TODO:
+}
 
 ///All traits that exist in the game
 static immutable TraitSet allTraits;
