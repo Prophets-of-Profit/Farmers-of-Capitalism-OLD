@@ -38,7 +38,7 @@ void updateTextures(Renderer renderer) {
  * A container for the paths of all of the game's soundtracks
  */
 enum Soundtrack : string {
-    Title = "res/music/title.mp3",
+    Title = "res/music/Title.mp3",
 }
 
 /**
@@ -53,12 +53,12 @@ enum SoundEffect : string {
  */
 enum Image : string {
     Icon = "res/pictures/Icon.png",
-    BiomePlains = "res/pictures/biome/plains.png",
-    BiomeRedwood = "res/pictures/biome/redwood.png",
-    BiomeOak = "res/pictures/biome/oak.png",
-    InvBox = "res/pictures/ui/inventory-box.png",
-    PearItem = "res/pictures/item/pear.png",
-    TomatoItem = "res/pictures/item/tomato.png"
+    BiomePlains = "res/pictures/biome/Plains.png",
+    BiomeRedwood = "res/pictures/biome/Redwood.png",
+    BiomeOak = "res/pictures/biome/Oak.png",
+    InvBox = "res/pictures/ui/Inventory-Box.png",
+    PearItem = "res/pictures/item/Pear.png",
+    TomatoItem = "res/pictures/item/Tomato.png"
 }
 
 /**
