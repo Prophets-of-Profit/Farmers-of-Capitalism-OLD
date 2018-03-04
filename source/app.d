@@ -28,6 +28,7 @@
  */
 module app;
 
+import std.algorithm;
 import d2d;
 import graphics.Constants;
 import graphics.views.MainMenuScreen;
@@ -42,6 +43,14 @@ void main() {
     updateTextures(mainDisplay.renderer); //updateTextures is defined in graphics.Constants
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
+    mainDisplay.eventHandlers ~= new class EventHandler {
+        void handleEvent(SDL_Event event) {
+            if (mainDisplay.keyboard.allKeys[SDLK_F11].testAndRelease()) {
+                SDL_SetWindowFullscreen(mainDisplay.window.handle(), mainDisplay.window.info()
+                        .canFind(SDL_WINDOW_FULLSCREEN_DESKTOP) ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+            }
+        }
+    };
     mainDisplay.window.icon = images[Image.Icon];
     mainDisplay.run();
 }
