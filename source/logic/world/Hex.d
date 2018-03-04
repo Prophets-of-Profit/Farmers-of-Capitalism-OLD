@@ -73,7 +73,7 @@ class Hex {
         this.baseClimate = climate;
         do {
             this.tempImage = choice([EnumMembers!Image]);
-        } while(this.tempImage == Image.TempIcon || this.tempImage == Image.InvBox);
+        } while(this.tempImage == Image.Icon || this.tempImage == Image.InvBox);
     }
 
 }

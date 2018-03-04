@@ -4,7 +4,6 @@ import std.algorithm;
 import std.stdio;
 import d2d;
 import graphics.Constants;
-import graphics.views.TempMapTestScreen;
 
 /**
  * The main menu screen
@@ -28,7 +27,6 @@ class MainMenuScreen : Screen {
             }
 
             override void action() {
-                this.container.screen = new TempMapTestScreen(display);
             }
 
             override void draw() {}

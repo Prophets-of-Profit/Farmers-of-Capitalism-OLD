@@ -1,4 +1,4 @@
-module graphics.components.Minimap;
+module graphics.components.Map;
 
 import std.algorithm;
 import std.math;
@@ -13,7 +13,7 @@ import logic.world.Hex;
  * A component that renders the world in partial detail
  * TODO: make the hexes a buncha buttons so they can handle clicking correctly and have onClick actions
  */
-class Minimap : Component {
+class Map : Component {
 
     GameWorld world; ///The world this minimap should represent
     Texture map; ///The actual map that gets scaled and shown

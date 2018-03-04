@@ -42,6 +42,6 @@ void main() {
     updateTextures(mainDisplay.renderer); //updateTextures is defined in graphics.Constants
     mainDisplay.screen = new MainMenuScreen(mainDisplay);
     mainDisplay.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
-    mainDisplay.window.icon = images[Image.TempIcon];
+    mainDisplay.window.icon = images[Image.Icon];
     mainDisplay.run();
 }

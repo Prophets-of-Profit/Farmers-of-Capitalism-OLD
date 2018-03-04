@@ -52,11 +52,11 @@ enum SoundEffect : string {
  * A container for the paths of all of the game's images
  */
 enum Image : string {
-    TempIcon = "res/pictures/TempIcon.png",
+    Icon = "res/pictures/Icon.png",
     BiomePlains = "res/pictures/biome/plains.png",
     BiomeRedwood = "res/pictures/biome/redwood.png",
     BiomeOak = "res/pictures/biome/oak.png",
-    InvBox = "res/pictures/inventory-box.png"
+    InvBox = "res/pictures/ui/inventory-box.png"
 }
 
 /**
