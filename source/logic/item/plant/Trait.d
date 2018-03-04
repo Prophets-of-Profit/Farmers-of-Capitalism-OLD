@@ -15,7 +15,7 @@ enum TraitExpression {
  * A plant's trait
  * Traits determine the behaviour of plants and are passed on offspring
  */
-abstract class Trait {
+private abstract class Trait {
 
     immutable iVector location; ///Where the trait is in "trait-space"; close traits are similar and more likely to mutate into eachother than further traits
 
@@ -38,3 +38,27 @@ abstract class Trait {
 }
 
 alias TraitSet = Trait[][TraitExpression];
+
+///All traits that exist in the game
+static immutable TraitSet allTraits;
+
+///Initializes all of the traits
+shared static this() {
+    allTraits = [
+        TraitExpression.STEPPED_ON : [
+
+        ],
+        TraitExpression.INCREMENT : [
+
+        ],
+        TraitExpression.MAIN : [
+
+        ],
+        TraitExpression.CREATED : [
+
+        ],
+        TraitExpression.DESTROYED : [
+
+        ]
+    ]; 
+}
