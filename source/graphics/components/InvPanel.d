@@ -1,7 +1,10 @@
 module graphics.components.InvPanel;
 
 import d2d;
+import graphics.Constants;
 import logic.item.Inventory;
+
+immutable int itemsPerRow = 10; ///A constant value of how many items to display per horizontal row
 
 /**
  * A component which displays an inventory to the screen
@@ -31,15 +34,14 @@ class InvPanel : Component {
      * Is based off of the dimensions of this panel
      */
     @property int itemDimension() {
-        return 100; //TODO: calculate based on dimensions
+        return this._location.w / this.columns; 
     }
 
     /**
      * Gets how many columns of items this panel can display
-     * Is based off of the dimensions of this panel
      */
     @property int columns() {
-        return 5; //TODO: calculate based on dimensions
+        return itemsPerRow; //TODO: make this modular and not based on constant
     }
 
     /**
@@ -47,7 +49,7 @@ class InvPanel : Component {
      * Is based off of the number of columns and number of items
      */
     @property int rows() {
-        return cast(int) this.inventory.items.length / this.columns + (this.inventory.items.length % this.columns == 0)? 0 : 1;
+        return this.inventory.items.length / this.columns + ((this.inventory.items.length % this.columns == 0)? 0 : 1);
     }
 
     /**
@@ -61,9 +63,10 @@ class InvPanel : Component {
     /**
      * Contructs a new inventory panel contained in the given display
      */
-    this(Display container, Inventory inventory) {
+    this(Display container, iRectangle location, Inventory inventory) {
         super(container);
         this.inventory = inventory;
+        this._location = location;
     }
 
     /**
@@ -79,7 +82,32 @@ class InvPanel : Component {
      * TODO:
      */
     override void draw() {
+        this.updateTexture();
+        this.container.renderer.copy(this.texture, this.location);
+    }
 
+    /**
+     * Updates the texture to be drawn
+     * For internal use only
+     * TODO: Add slider and item drawing and clean up code
+     */
+    private void updateTexture() {
+        import std.stdio;
+        Surface inv = new Surface(this.location.w, this.location.h);
+        inv.fillRect(null, Color(130, 150, 130));
+        for(int i = 0; i < this.rows - 1; i++) {
+            for(int j = 0; j < this.columns; j++) {
+                inv.blit(images[Image.InvBox], null, 
+                        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
+                        this.itemDimension, this.itemDimension));
+            }
+        }
+        for(int k = 0; k < this.inventory.items.length % this.columns; k++){
+            inv.blit(images[Image.InvBox], null, 
+                    new iRectangle(k * this.itemDimension, (this.rows -  1) * this.itemDimension, 
+                    this.itemDimension, this.itemDimension));
+        }
+        this.texture = new Texture(inv, this.container.renderer);
     }
 
 }
