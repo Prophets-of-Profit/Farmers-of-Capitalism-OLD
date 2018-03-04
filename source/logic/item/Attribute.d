@@ -12,7 +12,7 @@ struct Attribute {
 /**
  * An enum that enumerates all the types of qualitative aspects in the game
  */
-enum Quality: Attribute {
+enum Quality : Attribute {
 
     SOFT = Attribute("Soft", "Soft. Not micro. Yet.", 100),
     DIRTY = Attribute("Dirty", "Can be compared to that uncle you have.", -5)

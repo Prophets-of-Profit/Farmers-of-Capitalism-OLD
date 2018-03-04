@@ -37,11 +37,4 @@ abstract class Trait {
 
 }
 
-/**
- * A container struct for holding all traits a plant would have/need
- */
-struct TraitSet {
-
-    Trait[][TraitExpression] traits;
-
-}
+alias TraitSet = Trait[][TraitExpression];
