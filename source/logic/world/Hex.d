@@ -71,9 +71,7 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
-        do {
-            this.tempImage = choice([EnumMembers!Image]);
-        } while(this.tempImage == Image.Icon || this.tempImage == Image.InvBox);
+        this.tempImage = Image.BiomePlains;
     }
 
 }

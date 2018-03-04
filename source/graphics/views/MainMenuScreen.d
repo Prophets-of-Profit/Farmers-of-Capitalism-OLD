@@ -4,6 +4,8 @@ import std.algorithm;
 import std.stdio;
 import d2d;
 import graphics.Constants;
+import graphics.views.MainGameScreen;
+import logic.world.GameWorld;
 
 /**
  * The main menu screen
@@ -27,6 +29,7 @@ class MainMenuScreen : Screen {
             }
 
             override void action() {
+                this.container.screen = new MainGameScreen(display, new GameWorld(20));
             }
 
             override void draw() {}

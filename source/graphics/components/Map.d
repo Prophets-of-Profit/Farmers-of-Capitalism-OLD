@@ -69,12 +69,12 @@ class Map : Component {
     void updateTextures() {
         Surface m = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            iPolygon!6 hex = coord.asHex(this.mapTarget.center, this.sideLength);
+            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.w / 2, this.mapTarget.h / 2), this.sideLength);
             iRectangle size = hex.bound;
             m.blit(images[this.world.tiles[coord].representation], null, size);
             Surface colorSurface = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
             colorSurface.fillPolygon!6(hex, this.getHexColor(coord));
-            m.blit(colorSurface, null, this.location);
+            m.blit(colorSurface, null, new iRectangle(0, 0, this.location.w, this.location.h));
         }
         this.map = new Texture(m, this.container.renderer);
     }
@@ -112,6 +112,7 @@ class Map : Component {
      * Handles drawing the minimap
      */
     override void draw() {
+        this.container.renderer.clear(Color(0, 0, 200));
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
             this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
