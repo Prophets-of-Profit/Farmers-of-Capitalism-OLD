@@ -22,8 +22,6 @@ class Player {
     private Coordinate _location; ///The location of the player in the world
     int maxTravellableDistance; ///The maximum number of tiles the player can move in one turn
     private double _numMovesLeft; ///The number of tiles the player can move this turn
-    int maxHealth; ///The highest number of health points this player can have
-    int currentHealth; ///The current number of health points this player has
 
     /**
      * Gets where the player is
