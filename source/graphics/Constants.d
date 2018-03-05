@@ -56,7 +56,7 @@ enum Image : string {
     BiomePlains = "res/pictures/biome/Plains.png",
     BiomeRedwood = "res/pictures/biome/Redwood.png",
     BiomeOak = "res/pictures/biome/Oak.png",
-    InvBox = "res/pictures/ui/Inventory-Box.png",
+    InvBox = "res/pictures/ui/InventoryBox.png",
     PearItem = "res/pictures/item/Pear.png",
     TomatoItem = "res/pictures/item/Tomato.png"
 }
