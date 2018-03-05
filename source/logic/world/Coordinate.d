@@ -34,12 +34,24 @@ class Coordinate {
      * Useful for functions that take cube coordinates
      */
     @property long scalar3() {
-        return -scalar1 - scalar2;
+        return -this.q - this.r;
+    }
+
+    /**
+     * Gets all coordinates that are either directly adjacent to this or are this
+     * Coordinates are returned in the following order:
+     * EAST, SOUTHEAST, SOUTHWEST, WEST, NORTHWEST, NORTHEAST, NONE
+     */
+    @property Coordinate[] adjacencies() {
+        return [
+            new Coordinate(this.q + 1, this.r), new Coordinate(this.q, this.r + 1), new Coordinate(this.q - 1, this.r + 1),
+            new Coordinate(this.q - 1, this.r), new Coordinate(this.q, this.r - 1), new Coordinate(this.q + 1, this.r - 1), this
+        ];
     }
 
     this(long scalar1, long scalar2) {
-        this.scalar1 = scalar1;
-        this.scalar2 = scalar2;
+        this.q = scalar1;
+        this.r = scalar2;
     }
 
     alias q = scalar1;

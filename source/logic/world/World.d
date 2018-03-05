@@ -34,19 +34,6 @@ class World {
         }
     }
 
-    /** 
-     * Returns coordinates adjacent to a given location
-     * Coordinates are returned in the following order:
-     * EAST, SOUTHEAST, SOUTHWEST, WEST, NORTHWEST, NORTHEAST,
-     * Followed by the passed coordinates in the last spot
-     */
-    Coordinate[] getAdjacencies(Coordinate location) {
-        return [new Coordinate(location.q + 1, location.r), new Coordinate(location.q,
-                location.r + 1), new Coordinate(location.q - 1, location.r + 1),
-            new Coordinate(location.q - 1, location.r), new Coordinate(location.q,
-                    location.r - 1), new Coordinate(location.q + 1, location.r - 1), location];
-    }
-
     /**
      * Gets the Manhattan distance between two hexes by their coordinates
      * This is equivalent to the shortest path between them if each tile is equally passable
