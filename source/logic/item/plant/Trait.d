@@ -1,5 +1,6 @@
 module logic.item.plant.Trait;
 
+import std.traits;
 import d2d;
 import logic.item.Attribute;
 import logic.item.plant.Plant;
@@ -14,12 +15,12 @@ enum TraitExpression {
 /**
  * A plant's trait
  * Traits determine the behaviour of plants and are passed on offspring
- * TODO: find way to determine trait's dominance
  */
 private abstract class Trait {
 
     immutable iVector location; ///Where the trait is in "trait-space"; close traits are similar and more likely to mutate into eachother than further traits
     immutable Quality[] qualities; ///All qualities that the trait gives to a plant
+    immutable ubyte dominance; ///How dominant the trait is; which trait is expressed in a certain category is based off of which traits have the highest dominance
 
     /**
      * The trait, when called will perform its action
@@ -36,7 +37,19 @@ alias TraitSet = Trait[][TraitExpression];
  * These are the traits that a plant will actually exhibit
  */
 TraitSet phenotype(TraitSet genotype) {
-    return null; //TODO:
+    TraitSet phen;
+    foreach (category; EnumMembers!TraitExpression) {
+        Trait[] dominantTraits;
+        foreach (trait; genotype[category]) {
+            if (dominantTraits.length == 0 || trait.dominance == dominantTraits[0].dominance) {
+                dominantTraits ~= trait;
+            } else if (trait.dominance > dominantTraits[0].dominance) {
+                dominantTraits = [trait];
+            }
+        }
+        phen[category] = dominantTraits;
+    }
+    return phen;
 }
 
 ///All traits that exist in the game

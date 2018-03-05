@@ -1,5 +1,7 @@
 module logic.item.plant.Species;
 
+import std.algorithm;
+import std.traits;
 import graphics.Constants;
 import logic.item.plant.Trait;
 
@@ -18,7 +20,30 @@ struct Species {
  * Gets the breed that closest represents the given traits
  */
 Breed getSpecies(TraitSet traits) {
-    return Breed.TOMATO_PLANT; //TODO:
+    Breed spec;
+    Breed[] speciesCandidates;
+    //Adds any species to speciesCandidates as long as the given traitset fills the trait requirements of the species
+    foreach (species; EnumMembers!Breed) {
+        bool hasRequiredTraits = true;
+        foreach (category; EnumMembers!TraitExpression) {
+            foreach (requiredTrait; species.requiredTraits[category]) {
+                if (!traits[category].canFind(requiredTrait)) {
+                    hasRequiredTraits = false;
+                    break;
+                }
+            }
+            if (!hasRequiredTraits) {
+                break;
+            }
+        }
+        if (hasRequiredTraits) {
+            speciesCandidates ~= species;
+        }
+    }
+    foreach (candidate; speciesCandidates) {
+        //TODO: get distance between given traitset and each candiate's required and common traits
+    }
+    return spec; //TODO: return candidate with smallest distance from given traitset
 }
 
 /**
