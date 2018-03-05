@@ -1,14 +1,27 @@
 module logic.Player;
 
+import std.algorithm;
 import logic.item.Inventory;
 import logic.world.Coordinate;
 import logic.world.World;
 
 /**
- * A list of what attributes a player can have along with their costs 
+ * An unlockable upgrade that can be bought
+ * Upgrades are like items but are permanent to a player
+ */
+struct Upgrade {
+    immutable string name; ///The name of the upgrade
+    immutable string description; ///A description of what the upgrade does
+    immutable long cost; ///How much the upgrade costs
+    int amount; ///How many of these upgrades exist; a negative amount means infinite of these upgrades exist
+}
+
+/**
+ * A list of what attributes a player can have along with their costs
+ * 
  */
 enum Attribute {
-    CAN_SEE_GENETICS = 500 //TODO: actually set this to something real; test example is that the can see genetics attribute costs 500
+    CAN_SEE_GENETICS = Upgrade("Genetics Glasses", "Gives you the ability to see a plant's genetics.", 15_000, -1) //TODO: actually set this to something real; test example is that the can see genetics attribute costs 15,000
 }
 
 /**
@@ -18,10 +31,17 @@ enum Attribute {
 class Player {
 
     long money; ///How much money the player has
-    Attribute[] attributes; ///What attributes the player has
+    private Attribute[] _attributes; ///What attributes the player has
     private Coordinate _location; ///The location of the player in the world
     int maxTravellableDistance; ///The maximum number of tiles the player can move in one turn
     private double _numMovesLeft; ///The number of tiles the player can move this turn
+
+    /**
+     * Gets all the player's attributes
+     */
+    @property Attribute[] attributes() {
+        return this._attributes;
+    }
 
     /**
      * Gets where the player is
@@ -46,18 +66,30 @@ class Player {
     }
 
     /**
-     * Moves the player one tile in the specified direction.
+     * Returns all the coordinates the player can move to
      */
-    void move(Direction direction) {
-        this._location = new Coordinate(this.location.q + coordChangeByDirection[direction][0], this.location.r + coordChangeByDirection[direction][1]);
-        this._numMovesLeft -= 0; //TODO: get this number and replace 0
+    Coordinate[] validMoves() {
+        return null; //TODO:
     }
 
     /**
-     * Returns whether or not moving one tile in the given direction can be made
+     * Moves the player one tile in the specified direction.
      */
-    bool canMoveBeMade(Direction direction, World world) {
-        return world.tiles[world.getAdjacencies(this.location)[direction]].movementCost <= this.numMovesLeft;
+    void move(Coordinate coord) {
+        //TODO:
+    }
+
+    /**
+     * Attempts to buy an attribute; returns success
+     */
+    bool buyAttribute(Attribute attrib) {
+        if (this.money < attrib.cost || this._attributes.canFind(attrib) || attrib.amount <= 0) {
+            return false;
+        }
+        this.money -= attrib.cost;
+        this._attributes ~= attrib;
+        attrib.amount--;
+        return true;
     }
 
 }

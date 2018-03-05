@@ -8,7 +8,7 @@ import logic.item.plant.Trait;
 /**
  * Represents a plant species
  */
-struct Species {
+immutable struct Species {
     string name; ///The name of the species
     string description; ///A description of the species
     Image representation; ///The image that represents the species; how it looks
