@@ -18,7 +18,7 @@ class MainGameScreen : Screen {
      */
     this(Display display, GameWorld world) { 
         super(display);
-        this.components ~= new Map(display, new iRectangle(0, 50, 1300, 600), world);
+        this.components ~= new Map(display, new iRectangle(0, 50, 1300, 700), world);
     }
 
     /**

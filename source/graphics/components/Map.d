@@ -112,7 +112,7 @@ class Map : Component {
      * Handles drawing the minimap
      */
     override void draw() {
-        this.container.renderer.clear(Color(0, 0, 200));
+        this.container.renderer.fillRect(this.location, PredefinedColor.BLUE); ///TODO: replace this with better background
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
             this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);

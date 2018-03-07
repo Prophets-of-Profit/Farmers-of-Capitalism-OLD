@@ -29,7 +29,7 @@ class MainMenuScreen : Screen {
             }
 
             override void action() {
-                this.container.screen = new MainGameScreen(display, new GameWorld(20));
+                this.container.screen = new MainGameScreen(display, new GameWorld(25));
             }
 
             override void draw() {}
