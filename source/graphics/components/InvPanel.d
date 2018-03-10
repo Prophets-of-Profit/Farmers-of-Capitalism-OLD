@@ -101,9 +101,9 @@ class InvPanel : Component {
                 inv.blit(images[Image.InvBox], null, 
                         new iRectangle(j * this.itemDimension, i * this.itemDimension, 
                         this.itemDimension, this.itemDimension));
-                inv.blit(images[this.inventory.items[count].representation], null, 
-                        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
-                        this.itemDimension, this.itemDimension));
+                //inv.blit(images[this.inventory.items[count].representation], null, 
+                //        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
+                //        this.itemDimension, this.itemDimension));
                 count++;
             }
         }
@@ -111,9 +111,9 @@ class InvPanel : Component {
             inv.blit(images[Image.InvBox], null, 
                     new iRectangle(k * this.itemDimension, (this.rows -  1) * this.itemDimension, 
                     this.itemDimension, this.itemDimension));
-            inv.blit(images[this.inventory.items[count].representation], null, 
-                        new iRectangle(k * this.itemDimension, (this.rows - 1) * this.itemDimension, 
-                        this.itemDimension, this.itemDimension));
+            //inv.blit(images[this.inventory.items[count].representation], null, 
+            //            new iRectangle(k * this.itemDimension, (this.rows - 1) * this.itemDimension, 
+            //            this.itemDimension, this.itemDimension));
             count++;
         }
         this.texture = new Texture(inv, this.container.renderer);
