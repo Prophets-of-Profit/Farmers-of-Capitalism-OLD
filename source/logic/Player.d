@@ -14,6 +14,7 @@ struct Upgrade {
     immutable string description; ///A description of what the upgrade does
     immutable long cost; ///How much the upgrade costs
     int amount; ///How many of these upgrades exist; a negative amount means infinite of these upgrades exist
+    immutable void delegate(Player) onBuy; ///What the upgrade does when bought
 }
 
 /**
@@ -34,7 +35,7 @@ class Player {
     private Attribute[] _attributes; ///What attributes the player has
     private Coordinate _location; ///The location of the player in the world
     int maxTravellableDistance; ///The maximum number of tiles the player can move in one turn
-    private double _numMovesLeft; ///The number of tiles the player can move this turn
+    int numMovesLeft; ///The number of tiles the player can move this turn
 
     /**
      * Gets all the player's attributes
@@ -48,13 +49,6 @@ class Player {
      */
     @property Coordinate location() {
         return this._location;
-    }
-
-    /**
-     * Gets the number of moves remaining this turn
-     */
-    @property double numMovesLeft() {
-        return this._numMovesLeft;
     }
 
     /**
