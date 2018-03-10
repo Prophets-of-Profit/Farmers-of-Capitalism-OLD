@@ -6,7 +6,7 @@ import graphics.Constants;
 import logic.world.Coordinate;
 import logic.world.Hex;
 
-//A list f all biomes
+//A list of all biomes
 immutable biomeImages = [Image.BiomePlains, Image.BiomeRedwood, Image.BiomeOak];
 
 /**
@@ -40,6 +40,13 @@ class World {
      */
     long getDistance(Coordinate a, Coordinate b) {
         return (abs(a.q - b.q) + abs(a.r - b.r) + abs(a.s - b.s)) / 2;
+    }
+
+    /**
+     * Gets the cost of moving from one coordinate to another
+     */
+    long getCost(Coordinate a, Coordinate b) {
+        return 1; //TODO:
     }
 
 }

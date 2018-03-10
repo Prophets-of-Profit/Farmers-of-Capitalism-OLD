@@ -60,8 +60,8 @@ class Hex {
      * Returns the movement cost for a player walking on this hex.
      * TODO:
      */
-    @property double movementCost() {
-        return 0;
+    @property int movementCost() {
+        return 1;
     }
 
     /**
@@ -71,7 +71,7 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
-        this.tempImage = Image.BiomePlains;
+        this.tempImage = choice(logic.world.World.biomeImages.dup);
     }
 
 }
