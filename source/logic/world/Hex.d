@@ -5,6 +5,7 @@ import std.random;
 import std.traits;
 import graphics.Constants;
 import logic.world.Coordinate;
+import logic.world.World;
 import d2d;
 
 /**
@@ -71,7 +72,7 @@ class Hex {
     this(Coordinate location, double[ClimateFactor] climate = null, string image = null) {
         this.location = location;
         this.baseClimate = climate;
-        this.tempImage = choice(logic.world.World.biomeImages.dup);
+        this.tempImage = choice(biomeImages.dup);
     }
 
 }

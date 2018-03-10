@@ -123,9 +123,10 @@ class Map : Component {
      * Returns the overlay color of a hexagon at a given coordinate
      */
     Color getHexColor(Coordinate coord) {
-        return Color(cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE] * 
-                    this.world.tiles[coord].weather[ClimateFactor.HUMIDITY])), 150,
-                    cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE])));
+        return Color(cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), cast(ubyte) ((abs(coord.q) * 64) % 255), 75);
+        // return Color(cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE] * 
+        //             this.world.tiles[coord].weather[ClimateFactor.HUMIDITY])), 150,
+        //             cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE])));
     }
 
 }
