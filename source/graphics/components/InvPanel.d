@@ -92,20 +92,29 @@ class InvPanel : Component {
      * TODO: Add slider and item drawing and clean up code
      */
     private void updateTexture() {
-        import std.stdio;
-        Surface inv = new Surface(this.location.w, this.location.h);
+        Surface inv = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
         inv.fillRect(null, Color(130, 150, 130));
-        for(int i = 0; i < this.rows - 1; i++) {
-            for(int j = 0; j < this.columns; j++) {
+        int count;
+        foreach(i; 0..this.rows - 1) {
+            foreach(j; 0..this.columns) {
+                
                 inv.blit(images[Image.InvBox], null, 
                         new iRectangle(j * this.itemDimension, i * this.itemDimension, 
                         this.itemDimension, this.itemDimension));
+                inv.blit(images[this.inventory.items[count].representation], null, 
+                        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
+                        this.itemDimension, this.itemDimension));
+                count++;
             }
         }
-        for(int k = 0; k < this.inventory.items.length % this.columns; k++){
+        foreach(int k; 0..cast(int) (this.inventory.items.length % this.columns)){
             inv.blit(images[Image.InvBox], null, 
                     new iRectangle(k * this.itemDimension, (this.rows -  1) * this.itemDimension, 
                     this.itemDimension, this.itemDimension));
+            inv.blit(images[this.inventory.items[count].representation], null, 
+                        new iRectangle(k * this.itemDimension, (this.rows - 1) * this.itemDimension, 
+                        this.itemDimension, this.itemDimension));
+            count++;
         }
         this.texture = new Texture(inv, this.container.renderer);
     }
