@@ -83,8 +83,10 @@ class Plant : Item {
         this.species = species;
         TraitSet combinedTraits;
         foreach(expression; EnumMembers!TraitExpression) {
-            combinedTraits[expression] = (cast(TraitSet) species.requiredTraits)[expression] ~ 
-                    (cast(TraitSet) species.commonTraits)[expression];
+            combinedTraits[expression] = ((species.requiredTraits.keys.canFind(expression))? 
+                    (cast(TraitSet) species.requiredTraits)[expression] : null) ~ 
+                    ((species.commonTraits.keys.canFind(expression))? 
+                    (cast(TraitSet) species.commonTraits)[expression] : null);
         }
         this.genotype = combinedTraits;
         this.phenotype = getPhenotype(combinedTraits);
