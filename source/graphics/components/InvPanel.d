@@ -98,9 +98,8 @@ class InvPanel : Component {
                 this.itemDimension - this.padding,
                 this.itemDimension - this.padding
             );
-            if (i >= this.inventory.length) { 
-                this.container.renderer.fillRect(bgBox, PredefinedColor.WHITE);
-            } else {
+            this.container.renderer.fillRect(bgBox, PredefinedColor.WHITE);
+            if (i < this.inventory.length) {
                 this.container.renderer.copy(textures[this.inventory[i].representation], bgBox);
             }
             this.container.renderer.drawRect(bgBox, PredefinedColor.BLACK);

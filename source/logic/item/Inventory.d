@@ -29,9 +29,8 @@ class Inventory {
     this(bool isPlaced, Coordinate location, Item[] contained...) {
         this.isPlaced = isPlaced;
         this.location = location;
-        this.items = contained;
-        foreach (item; this) {
-            item.container = this;
+        foreach (item; contained) {
+            this.addItem(item);
         }
     }
 
