@@ -74,6 +74,22 @@ class Plant : Item {
         this.species = getSpecies(traits);
     }
 
+    /**
+     * Constructs a plant using a species
+     * Makes it a default plant of that species; has all common and required traits
+     */
+    this(Inventory container, Breed species) {
+        super(container);
+        this.species = species;
+        TraitSet combinedTraits;
+        foreach(expression; EnumMembers!TraitExpression) {
+            combinedTraits[expression] = (cast(TraitSet) species.requiredTraits)[expression] ~ 
+                    (cast(TraitSet) species.commonTraits)[expression];
+        }
+        this.genotype = combinedTraits;
+        this.phenotype = getPhenotype(combinedTraits);
+    }
+
     override void onStep(Player actor) {
         this._actor = actor;
         this.phenotype[TraitExpression.STEPPED_ON].each!(trait => trait(this));
