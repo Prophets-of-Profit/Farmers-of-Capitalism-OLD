@@ -19,8 +19,8 @@ class Inventory {
     /**
      * Gives how many items
      */
-    @property ulong length() {
-        return this.items.length;
+    @property uint length() {
+        return cast(uint) this.items.length;
     }
 
     /**
@@ -58,16 +58,16 @@ class Inventory {
     /**
      * Removes the item at the given index
      */
-    void removeItem(ulong index) {
+    void removeItem(uint index) {
         this.items[index].container = null;
         this.items.remove(index);
     }
 
     Item[] opIndex() { return this.items; }
-    Item opIndex(ulong index) { return this.items[index]; }
-    Item[] opIndex(ulong[] indices...) { return indices.map!(index => this[index]).array; }
-    void opIndexAssign(Item newItem, ulong[] indices...) { foreach(index; indices) { this.items[index] = newItem; } }
-    ulong[] opSlice(ulong first, ulong second) { return iota(first, second).array; }
-    ulong opDollar(int position)() {return this.length; }
+    Item opIndex(uint index) { return this.items[index]; }
+    Item[] opIndex(uint[] indices...) { return indices.map!(index => this[index]).array; }
+    void opIndexAssign(Item newItem, uint[] indices...) { foreach(index; indices) { this.items[index] = newItem; } }
+    uint[] opSlice(uint first, uint second) { return iota(first, second).array; }
+    uint opDollar(uint position)() {return this.length; }
 
 }

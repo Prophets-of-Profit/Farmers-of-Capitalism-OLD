@@ -1,10 +1,9 @@
 module graphics.components.InvPanel;
 
+import std.range;
 import d2d;
 import graphics.Constants;
 import logic.item.Inventory;
-
-immutable int itemsPerRow = 10; ///A constant value of how many items to display per horizontal row
 
 /**
  * A component which displays an inventory to the screen
@@ -13,6 +12,7 @@ class InvPanel : Component {
 
     private iRectangle _location; ///The location and bounds of the inventory panel
     Inventory inventory; ///The inventory this component displays
+    immutable Color bgColor = Color(100, 100, 100); ///The background color of the inventory panel
 
     /**
      * Returns the location
@@ -29,6 +29,13 @@ class InvPanel : Component {
     }
 
     /**
+     * Gets how much space goes between each box
+     */
+    @property int padding() {
+        return cast(int) (this.location.dimensions.magnitude / 100);
+    }
+
+    /**
      * Gets the sidelength for how wide/tall each item image should be
      * Is based off of the dimensions of this panel
      */
@@ -40,7 +47,7 @@ class InvPanel : Component {
      * Gets how many columns of items this panel can display
      */
     @property int columns() {
-        return itemsPerRow; //TODO: make this modular and not based on constant
+        return 5;
     }
 
     /**
@@ -78,10 +85,26 @@ class InvPanel : Component {
 
     /**
      * Displays the inventory to the screen
-     * TODO:
      */
     override void draw() {
-
+        this.container.renderer.fillRect(this.location, this.bgColor);
+        this.container.renderer.drawRect(this.location, PredefinedColor.BLACK);
+        foreach(i; iota(0, this.inventory.maxItems < 0? this.inventory.length + 1 : this.inventory.maxItems)) {
+            immutable currentColumn = cast(int) i % this.columns;
+            immutable currentRow = cast(int) i / this.columns;
+            iRectangle bgBox = new iRectangle(
+                this.location.x + currentColumn * this.itemDimension + this.padding / 2,
+                this.location.y + currentRow * this.itemDimension + this.padding / 2,
+                this.itemDimension - this.padding,
+                this.itemDimension - this.padding
+            );
+            if (i >= this.inventory.length) { 
+                this.container.renderer.fillRect(bgBox, PredefinedColor.WHITE);
+            } else {
+                this.container.renderer.copy(textures[this.inventory[i].representation], bgBox);
+            }
+            this.container.renderer.drawRect(bgBox, PredefinedColor.BLACK);
+        }
     }
 
 }

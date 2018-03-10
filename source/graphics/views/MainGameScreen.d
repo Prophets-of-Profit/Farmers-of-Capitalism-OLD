@@ -20,7 +20,8 @@ class MainGameScreen : Screen {
     this(Display display, GameWorld world) { 
         super(display);
         this.components ~= new Map(display, new iRectangle(0, 50, 1300, 700), world);
-        this.components ~= new InvPanel(display, new iRectangle(1300, 50, 300, 700), null);
+        Inventory tempInventory = new Inventory(false, null, new Plant(Breed.TOMATO_PLANT));
+        this.components ~= new InvPanel(display, new iRectangle(1300, 50, 300, 700), tempInventory);
     }
 
     /**
