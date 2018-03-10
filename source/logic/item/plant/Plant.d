@@ -67,8 +67,7 @@ class Plant : Item {
     /**
      * Necessary constructor for all items
      */
-    this(Inventory container, TraitSet traits) {
-        super(container);
+    this(TraitSet traits) {
         this.genotype = traits;
         this.phenotype = getPhenotype(traits);
         this.species = getSpecies(traits);
@@ -78,8 +77,7 @@ class Plant : Item {
      * Constructs a plant using a species
      * Makes it a default plant of that species; has all common and required traits
      */
-    this(Inventory container, Breed species) {
-        super(container);
+    this(Breed species) {
         this.species = species;
         TraitSet combinedTraits;
         foreach(expression; EnumMembers!TraitExpression) {

@@ -12,7 +12,6 @@ immutable int itemsPerRow = 10; ///A constant value of how many items to display
 class InvPanel : Component {
 
     private iRectangle _location; ///The location and bounds of the inventory panel
-    Texture texture; ///The actual texture to be drawn to the screen
     Inventory inventory; ///The inventory this component displays
 
     /**
@@ -49,7 +48,7 @@ class InvPanel : Component {
      * Is based off of the number of columns and number of items
      */
     @property int rows() {
-        return cast(int) this.inventory.items.length / this.columns + ((this.inventory.items.length % this.columns == 0)? 0 : 1);
+        return cast(int) this.inventory.length / this.columns + ((this.inventory.length % this.columns == 0)? 0 : 1);
     }
 
     /**
@@ -82,41 +81,7 @@ class InvPanel : Component {
      * TODO:
      */
     override void draw() {
-        this.updateTexture();
-        this.container.renderer.copy(this.texture, this.location);
-    }
 
-    /**
-     * Updates the texture to be drawn
-     * For internal use only
-     * TODO: Add slider and item drawing and clean up code
-     */
-    private void updateTexture() {
-        Surface inv = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
-        inv.fillRect(null, Color(130, 150, 130));
-        int count;
-        foreach(i; 0..this.rows - 1) {
-            foreach(j; 0..this.columns) {
-                
-                inv.blit(images[Image.InvBox], null, 
-                        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
-                        this.itemDimension, this.itemDimension));
-                //inv.blit(images[this.inventory.items[count].representation], null, 
-                //        new iRectangle(j * this.itemDimension, i * this.itemDimension, 
-                //        this.itemDimension, this.itemDimension));
-                count++;
-            }
-        }
-        foreach(int k; 0..cast(int) (this.inventory.items.length % this.columns)){
-            inv.blit(images[Image.InvBox], null, 
-                    new iRectangle(k * this.itemDimension, (this.rows -  1) * this.itemDimension, 
-                    this.itemDimension, this.itemDimension));
-            //inv.blit(images[this.inventory.items[count].representation], null, 
-            //            new iRectangle(k * this.itemDimension, (this.rows - 1) * this.itemDimension, 
-            //            this.itemDimension, this.itemDimension));
-            count++;
-        }
-        this.texture = new Texture(inv, this.container.renderer);
     }
 
 }

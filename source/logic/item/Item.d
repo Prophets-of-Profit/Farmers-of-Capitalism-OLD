@@ -11,20 +11,13 @@ import logic.Player;
  */
 abstract class Item {
 
-    Inventory container; ///Where the item is currently located
+    package Inventory container; ///Where the item is currently located
 
     @property string name(); ///The name of the item; shown to the players
     @property string description(); ///The description of the item; shown to the players
     @property Image representation(); ///How the item looks on the GUI
     @property double completion(); ///How close this item is to being "completed"; what completion entails is up to the item
     @property Quality[] qualities(); ///What qualititave traits the item has; is used in determining item value
-
-    /**
-     * All items need to have an inventory
-     */
-    this(Inventory container) {
-        this.container = container;
-    }
 
     void onStep(Player actor); ///What happens when the item is stepped on
     void incrementalAction(); ///What this item does every turn
