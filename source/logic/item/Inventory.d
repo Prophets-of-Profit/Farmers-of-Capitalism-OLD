@@ -35,6 +35,16 @@ class Inventory {
     }
 
     /**
+     * A condition for the inventory that must always hold true
+     * Any item that is in this inventory must always have its container be this inventory
+     */
+    invariant {
+        foreach (item; this.items) {
+            assert(item.container == this);
+        }
+    }
+
+    /**
      * Adds the given item
      */
     void addItem(Item itemToAdd) {
