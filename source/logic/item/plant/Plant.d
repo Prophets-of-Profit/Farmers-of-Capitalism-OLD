@@ -70,7 +70,7 @@ class Plant : Item {
     this(Inventory container, TraitSet traits) {
         super(container);
         this.genotype = traits;
-        this.phenotype = traits.phenotype;
+        this.phenotype = getPhenotype(traits);
         this.species = getSpecies(traits);
     }
 

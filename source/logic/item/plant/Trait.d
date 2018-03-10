@@ -36,7 +36,7 @@ alias TraitSet = Trait[][TraitExpression];
  * Gets the phenotype or observable traits of a traitset
  * These are the traits that a plant will actually exhibit
  */
-TraitSet phenotype(TraitSet genotype) {
+TraitSet getPhenotype(TraitSet genotype) {
     TraitSet phen;
     foreach (category; EnumMembers!TraitExpression) {
         Trait[] dominantTraits;
