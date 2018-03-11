@@ -13,30 +13,15 @@ import logic.world.Hex;
  * A component that renders the world in partial detail
  * TODO: make the hexes a buncha buttons so they can handle clicking correctly and have onClick actions
  */
-class Map : Component {
+class Map : Button {
 
     GameWorld world; ///The world this minimap should represent
     Texture map; ///The actual map that gets scaled and shown
-    iRectangle _location; ///Where the component is
     iRectangle mapTarget; ///Where the map actually gets rendered; any part outside of location gets clipped
     int scrollValue; ///The total mouse wheel displacement
     iVector lastClicked; ///Where the mouse was last clicked
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
     Coordinate selectedHex; ///The hex that is currently selected
-
-    /**
-     * Sets the minimap's location
-     */
-    override @property void location(iRectangle newLoc) {
-        this._location = newLoc;
-    }
-
-    /**
-     * Gets the minimap's location
-     */
-    override @property iRectangle location() {
-        return this._location;
-    }
 
     /**
      * Gets the sidelength of a hex
@@ -54,8 +39,7 @@ class Map : Component {
      * Makes a minimap given the container and the world to draw
      */
     this(Display container, iRectangle location, GameWorld world) {
-        super(container);
-        this._location = location;
+        super(container, location);
         this.mapTarget = new iRectangle(location.x, location.y, location.w, location.h);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
@@ -83,7 +67,8 @@ class Map : Component {
      * Handles events on the minimap
      * Certain events will handle the minimap zooming while other events will select hexes
      */
-    void handleEvent(SDL_Event event) {
+    override void handleEvent(SDL_Event event) {
+        super.handleEvent(event);
         iVector mouseLocation = this.container.mouse.location;
         if (!this.location.contains(mouseLocation)) {
             return;
@@ -99,11 +84,15 @@ class Map : Component {
         } else {
             this.lastClicked = null;
         }
-        if (event.type == SDL_MOUSEBUTTONUP) {
-            foreach (coord; this.world.tiles.keys) {
-                if (coord.asHex(this.mapTarget.center, this.sideLength).contains(mouseLocation)) {
-                    this.selectedHex = coord;
-                }
+    }
+
+    /**
+     * What the map does when clicked
+     */
+    override void action() {
+        foreach (coord; this.world.tiles.keys) {
+            if (coord.asHex(this.mapTarget.center, this.sideLength).contains(this.container.mouse.location)) {
+                this.selectedHex = coord;
             }
         }
     }
