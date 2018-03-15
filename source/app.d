@@ -31,7 +31,7 @@ module app;
 import std.algorithm;
 import d2d;
 import graphics.Constants;
-import graphics.views.MainMenuScreen;
+import graphics.views.MainMenuActivity;
 
 /** 
  * Entry point for the program
@@ -41,7 +41,7 @@ void main() {
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE,
             "Farmers of Capitalism!");
     updateTextures(mainDisplay.renderer); //updateTextures is defined in graphics.Constants
-    mainDisplay.screen = new MainMenuScreen(mainDisplay);
+    mainDisplay.activity = new MainMenuActivity(mainDisplay);
     mainDisplay.renderer.logicalSize = logicalSize; //logicalSize defined in graphics.Constants
     mainDisplay.eventHandlers ~= new class EventHandler {
         void handleEvent(SDL_Event event) {

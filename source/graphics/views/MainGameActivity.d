@@ -1,4 +1,4 @@
-module graphics.views.MainGameScreen;
+module graphics.views.MainGameActivity;
 
 import d2d;
 import graphics.components.InvPanel;
@@ -11,10 +11,10 @@ import logic.world.GameWorld;
 /**
  * The site of the main UI
  */
-class MainGameScreen : Screen {
+class MainGameActivity : Activity {
 
     /**
-     * Constructor for the main game screen
+     * Constructor for the main game activity
      * Organizes the components into locations 
      */
     this(Display display, GameWorld world) { 
@@ -27,13 +27,13 @@ class MainGameScreen : Screen {
     /**
      * Handles keyboard and mouse events
      */
-    void handleEvent(SDL_Event event) {
+    override void handleEvent(SDL_Event event) {
     }
 
     /**
      * Action taken every frame
      */
-    override void onFrame() {
+    override void update() {
     }
 
     /**

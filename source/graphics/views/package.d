@@ -1,4 +1,4 @@
 module graphics.views;
 
-public import graphics.views.MainGameScreen;
-public import graphics.views.MainMenuScreen;
+public import graphics.views.MainGameActivity;
+public import graphics.views.MainMenuActivity;

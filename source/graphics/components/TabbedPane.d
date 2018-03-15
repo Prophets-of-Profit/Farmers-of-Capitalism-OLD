@@ -23,7 +23,7 @@ class TabbedPane : Component {
     /**
      *
      */
-    override @property void location(iRectangle newLoc) {
+    @property void location(iRectangle newLoc) {
 
     }
 

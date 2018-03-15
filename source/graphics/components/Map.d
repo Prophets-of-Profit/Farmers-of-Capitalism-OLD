@@ -28,10 +28,10 @@ class Map : Button {
      * TODO: get this value dynamically
      */
     @property int sideLength() {
-        if (this.location.w * hexBase.x > this.location.h * hexBase.y) {
-            return cast(int) (this.location.h / (this.world.size + 1) / 3);
+        if (this.location.extent.x * hexBase.x > this.location.extent.y * hexBase.y) {
+            return cast(int) (this.location.extent.y / (this.world.size + 1) / 3);
         } else {
-            return cast(int) (this.location.w / this.world.size / hexBase.x / 2);
+            return cast(int) (this.location.extent.x / this.world.size / hexBase.x / 2);
         }
     }
 
@@ -40,7 +40,7 @@ class Map : Button {
      */
     this(Display container, iRectangle location, GameWorld world) {
         super(container, location);
-        this.mapTarget = new iRectangle(location.x, location.y, location.w, location.h);
+        this.mapTarget = new iRectangle(location.initialPoint.x, location.initialPoint.y, location.initialPoint.x, location.initialPoint.y);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
         this.updateTextures();
@@ -51,15 +51,15 @@ class Map : Button {
      * TODO: could be made MUCH more efficient
      */
     void updateTextures() {
-        Surface m = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
-        Surface colorSurface = new Surface(this.location.w, this.location.h, SDL_PIXELFORMAT_RGBA32);
+        Surface m = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
+        Surface colorSurface = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.w / 2, this.mapTarget.h / 2), this.sideLength);
+            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.x / 2), this.sideLength);
             iRectangle size = hex.bound;
             m.blit(images[this.world.tiles[coord].representation], null, size);
-            colorSurface.fillPolygon!6(hex, this.getHexColor(coord));
+            colorSurface.fill!6(hex, this.getHexColor(coord));
         }
-        m.blit(colorSurface, null, new iVector(0));
+        m.blit(colorSurface, null, 0, 0);
         this.map = new Texture(m, this.container.renderer);
     }
 
@@ -78,8 +78,8 @@ class Map : Button {
                 this.lastClicked = mouseLocation;
             }
             iVector newTopLeft = this.mapTarget.topLeft + mouseLocation - this.lastClicked;
-            this.mapTarget.x = newTopLeft.x;
-            this.mapTarget.y = newTopLeft.y;
+            this.mapTarget.initialPoint.x = newTopLeft.x;
+            this.mapTarget.initialPoint.y = newTopLeft.y;
             this.lastClicked = mouseLocation;
         } else {
             this.lastClicked = null;
@@ -101,10 +101,10 @@ class Map : Button {
      * Handles drawing the minimap
      */
     override void draw() {
-        this.container.renderer.fillRect(this.location, PredefinedColor.BLUE); ///TODO: replace this with better background
+        this.container.renderer.fill(this.location, PredefinedColor.BLUE); ///TODO: replace this with better background
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
-            this.container.renderer.fillPolygon!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
+            this.container.renderer.fill!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
         }
     }
 

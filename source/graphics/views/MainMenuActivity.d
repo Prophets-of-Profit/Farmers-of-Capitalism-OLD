@@ -1,17 +1,17 @@
-module graphics.views.MainMenuScreen;
+module graphics.views.MainMenuActivity;
 
 import std.algorithm;
 import std.stdio;
 import d2d;
 import graphics.Constants;
-import graphics.views.MainGameScreen;
+import graphics.views.MainGameActivity;
 import logic.world.GameWorld;
 
 /**
- * The main menu screen
+ * The main menu activity
  * The entry point for the game
  */
-class MainMenuScreen : Screen {
+class MainMenuActivity : Activity {
 
     Sound!(SoundType.Music) mainMenuTheme; ///The main menu theme; loops forever
 
@@ -29,7 +29,7 @@ class MainMenuScreen : Screen {
             }
 
             override void action() {
-                this.container.screen = new MainGameScreen(display, new GameWorld(25));
+                this.container.activity = new MainGameActivity(display, new GameWorld(25));
             }
 
             override void draw() {}
@@ -39,13 +39,13 @@ class MainMenuScreen : Screen {
     /**
      * Handles keyboard and mouse events
      */
-    void handleEvent(SDL_Event event) {
+    override void handleEvent(SDL_Event event) {
     }
 
     /**
      * Action taken every frame
      */
-    override void onFrame() {
+    override void update() {
     }
 
     /**

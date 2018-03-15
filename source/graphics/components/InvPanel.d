@@ -19,7 +19,7 @@ class InvPanel : Button {
      * Gets how much space goes between each box
      */
     @property int padding() {
-        return cast(int) (this.location.dimensions.magnitude / 100);
+        return cast(int) (this.location.extent.magnitude / 100);
     }
 
     /**
@@ -27,7 +27,7 @@ class InvPanel : Button {
      * Is based off of the dimensions of this panel
      */
     @property int itemDimension() {
-        return this.location.w / this.columns; 
+        return this.location.initialPoint.x / this.columns; 
     }
 
     /**
@@ -50,7 +50,7 @@ class InvPanel : Button {
      * Is based off of how many rows are needed and the display size of all items
      */
     @property bool needsSlider() {
-        return this.rows * itemDimension > this.location.h;
+        return this.rows * itemDimension > this.location.extent.y;
     }
 
     /**
@@ -95,8 +95,8 @@ class InvPanel : Button {
      */
     iRectangle locationOf(int row, int column) {
         return new iRectangle(
-            this.location.x + column * this.itemDimension + this.padding / 2,
-            this.location.y + row * this.itemDimension + this.padding / 2,
+            this.location.initialPoint.x + column * this.itemDimension + this.padding / 2,
+            this.location.initialPoint.y + row * this.itemDimension + this.padding / 2,
             this.itemDimension - this.padding,
             this.itemDimension - this.padding
         );
@@ -106,20 +106,20 @@ class InvPanel : Button {
      * Displays the inventory to the screen
      */
     override void draw() {
-        this.container.renderer.fillRect(this.location, this.bgColor);
-        this.container.renderer.drawRect(this.location, PredefinedColor.BLACK);
+        this.container.renderer.fill(this.location, this.bgColor);
+        this.container.renderer.draw(this.location, PredefinedColor.BLACK);
         foreach(i; iota(0, this.inventory.maxItems < 0? this.inventory.length + 1 : this.inventory.maxItems)) {
             immutable currentColumn = cast(int) i % this.columns;
             immutable currentRow = cast(int) i / this.columns;
             iRectangle box = this.locationOf(currentRow, currentColumn);
-            this.container.renderer.fillRect(box, PredefinedColor.WHITE);
+            this.container.renderer.fill(box, PredefinedColor.WHITE);
             if (i < this.inventory.length) {
                 this.container.renderer.copy(textures[this.inventory[i].representation], box);
             }
             if (currentColumn == this.selectedItem.x && currentRow == this.selectedItem.y) {
-                this.container.renderer.fillRect(box, this.selectedItemColor);
+                this.container.renderer.fill(box, this.selectedItemColor);
             }
-            this.container.renderer.drawRect(box, PredefinedColor.BLACK);
+            this.container.renderer.draw(box, PredefinedColor.BLACK);
         }
     }
 
