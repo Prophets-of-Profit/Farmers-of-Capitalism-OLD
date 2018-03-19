@@ -11,7 +11,7 @@ import logic.world.Hex;
 
 /**
  * A component that renders the world in partial detail
- * TODO: make the hexes a buncha buttons so they can handle clicking correctly and have onClick actions
+ * TODO: correctly size hexes so there are no gaps in between them
  */
 class Map : Button {
 
@@ -25,7 +25,6 @@ class Map : Button {
 
     /**
      * Gets the sidelength of a hex
-     * TODO: get this value dynamically
      */
     @property int sideLength() {
         if (this.location.extent.x * hexBase.x > this.location.extent.y * hexBase.y) {
@@ -40,7 +39,7 @@ class Map : Button {
      */
     this(Display container, iRectangle location, GameWorld world) {
         super(container, location);
-        this.mapTarget = new iRectangle(location.initialPoint.x, location.initialPoint.y, location.initialPoint.x, location.initialPoint.y);
+        this.mapTarget = new iRectangle(location);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
         this.updateTextures();
@@ -48,13 +47,12 @@ class Map : Button {
 
     /**
      * Updates how the map looks
-     * TODO: could be made MUCH more efficient
      */
     void updateTextures() {
         Surface m = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         Surface colorSurface = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.x / 2), this.sideLength);
+            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.y / 2), this.sideLength);
             iRectangle size = hex.bound;
             m.blit(images[this.world.tiles[coord].representation], null, size);
             colorSurface.fill!6(hex, this.getHexColor(coord));
@@ -77,9 +75,7 @@ class Map : Button {
             if (this.lastClicked is null) {
                 this.lastClicked = mouseLocation;
             }
-            iVector newTopLeft = this.mapTarget.topLeft + mouseLocation - this.lastClicked;
-            this.mapTarget.initialPoint.x = newTopLeft.x;
-            this.mapTarget.initialPoint.y = newTopLeft.y;
+            this.mapTarget.initialPoint = this.mapTarget.topLeft + mouseLocation - this.lastClicked;
             this.lastClicked = mouseLocation;
         } else {
             this.lastClicked = null;

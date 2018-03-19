@@ -27,7 +27,7 @@ class InvPanel : Button {
      * Is based off of the dimensions of this panel
      */
     @property int itemDimension() {
-        return this.location.initialPoint.x / this.columns; 
+        return this.location.extent.x / this.columns; 
     }
 
     /**

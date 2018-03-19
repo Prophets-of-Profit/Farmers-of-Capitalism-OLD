@@ -8,7 +8,7 @@
 	"description": "A game about farming, power, and aliens.",
 	"homepage": "https://github.com/SaurabhTotey/Farmers-of-Capitalism",
 	"dependencies": {
-		"d2d": "~>1.5.1"
+		"d2d": "~>1.5.2"
 	},
 	"license": "proprietary"
 }
