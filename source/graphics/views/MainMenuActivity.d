@@ -13,7 +13,7 @@ import logic.world.GameWorld;
  */
 class MainMenuActivity : Activity {
 
-    Sound!(SoundType.Music) mainMenuTheme; ///The main menu theme; loops forever
+    Sound!(SoundType.Music) mainMenuTheme; ///The main menu theme
 
     /**
      * The constructor for a main menu

@@ -38,7 +38,8 @@ void updateTextures(Renderer renderer) {
  * A container for the paths of all of the game's soundtracks
  */
 enum Soundtrack : string {
-    Title = "res/music/Title.mp3",
+    Title = "res/music/Enterprise.mp3",
+    Sprouts = "res/music/Sprouts.mp3"
 }
 
 /**

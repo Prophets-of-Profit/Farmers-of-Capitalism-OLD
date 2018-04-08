@@ -13,6 +13,8 @@ import logic.world.GameWorld;
  */
 class MainGameActivity : Activity {
 
+    Sound!(SoundType.Music) musicToLoop; ///The music to loop while the game is running
+
     /**
      * Constructor for the main game activity
      * Organizes the components into locations 
@@ -22,6 +24,7 @@ class MainGameActivity : Activity {
         this.components ~= new Map(display, new iRectangle(0, 50, 1300, 700), world);
         Inventory tempInventory = new Inventory(false, null, new Plant(Breed.TOMATO_PLANT));
         this.components ~= new InvPanel(display, new iRectangle(1300, 50, 300, 700), tempInventory);
+        this.musicToLoop = new Sound!(SoundType.Music)(Soundtrack.Sprouts); 
     }
 
     /**
