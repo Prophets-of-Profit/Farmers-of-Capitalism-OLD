@@ -39,9 +39,16 @@ class Map : Button {
      */
     this(Display container, iRectangle location, GameWorld world) {
         super(container, location);
-        this.mapTarget = new iRectangle(location);
+        iVector center = new iVector(this.location.center);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
+        double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
+        this.mapTarget = new iRectangle(
+            cast(int) (center.x - this.sideLength * (this.world.size + 0.5) * hexBase.x), 
+            cast(int) (center.y - heightFactor * this.sideLength),
+            cast(int) (this.sideLength * (2 * this.world.size + 1) * hexBase.x),
+            cast(int) (2 * heightFactor * this.sideLength)
+        );
         this.updateTextures();
     }
 
@@ -49,7 +56,7 @@ class Map : Button {
      * Updates how the map looks
      */
     void updateTextures() {
-        Surface m = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
+        Surface m = new Surface(this.mapTarget.extent.x, this.mapTarget.extent.y, SDL_PIXELFORMAT_RGBA32);
         Surface colorSurface = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
             iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.y / 2), this.sideLength);
