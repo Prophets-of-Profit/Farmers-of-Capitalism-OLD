@@ -16,7 +16,7 @@ shared static this() {
     aspectRatio = new iVector(16, 9);
     logicalSize = aspectRatio * 100;
     hexBase = new dVector(sqrt(3.0), 2);
-    minimapHexSize = new iVector(10, 50);
+    minimapHexSize = new iVector(10, 500);
     foreach (image; EnumMembers!Image) {
         mixin("images[image] = loadImage(\"" ~ image ~ "\");");
     }

@@ -24,9 +24,9 @@ class Map : Button {
     Coordinate selectedHex; ///The hex that is currently selected
 
     /**
-     * Gets the sidelength of a hex
+     * Gets the minimum sidelength of a hex
      */
-    @property int sideLength() {
+    @property int minimumSideLength() {
         if (this.location.extent.x * hexBase.x > this.location.extent.y * hexBase.y) {
             return cast(int) (this.location.extent.y / (this.world.size + 1) / 3);
         } else {
@@ -35,19 +35,44 @@ class Map : Button {
     }
 
     /**
+     * Gets the sidelength of a single hex in the map
+     */
+    @property int sideLength() {
+        //TODO: May be prone to rounding errors
+        return cast(int) (this.mapTarget.extent.x / hexBase.x / (2 * this.world.size + 1));
+    }
+
+    /**
+     * Scales the mapTarget based on side length
+     */
+    @property void sideLength(int newSL) {
+        int newSideLength = clamp(newSL, this.minimumSideLength, minimapHexSize.y);
+        double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
+        iVector center = new iVector(this.mapTarget.center);
+        this.mapTarget = new iRectangle(
+            cast(int) (1 + center.x - newSideLength * (this.world.size + 0.5) * hexBase.x), 
+            cast(int) (center.y - heightFactor * newSideLength),
+            cast(int) (newSideLength * (2 * this.world.size + 1) * hexBase.x),
+            cast(int) (2 * heightFactor * newSideLength)
+        );
+        //Correct for rounding in integer division
+        this.mapTarget.initialPoint += center - this.mapTarget.center;
+    }
+
+    /**
      * Makes a minimap given the container and the world to draw
      */
     this(Display container, iRectangle location, GameWorld world) {
         super(container, location);
-        iVector center = new iVector(this.location.center);
         this.world = world;
         this.container.renderer.drawBlendMode = SDL_BLENDMODE_BLEND;
         double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
+        iVector center = new iVector(this.location.center);
         this.mapTarget = new iRectangle(
-            cast(int) (center.x - this.sideLength * (this.world.size + 0.5) * hexBase.x), 
-            cast(int) (center.y - heightFactor * this.sideLength),
-            cast(int) (this.sideLength * (2 * this.world.size + 1) * hexBase.x),
-            cast(int) (2 * heightFactor * this.sideLength)
+            cast(int) (center.x - this.minimumSideLength * (this.world.size + 0.5) * hexBase.x), 
+            cast(int) (center.y - heightFactor * this.minimumSideLength),
+            cast(int) (this.minimumSideLength * (2 * this.world.size + 1) * hexBase.x),
+            cast(int) (2 * heightFactor * this.minimumSideLength)
         );
         this.updateTextures();
     }
@@ -78,6 +103,7 @@ class Map : Button {
         if (!this.location.contains(mouseLocation)) {
             return;
         }
+        //Dragging
         if (this.container.mouse.allButtons[SDL_BUTTON_LEFT].isPressed()) {
             if (this.lastClicked is null) {
                 this.lastClicked = mouseLocation;
@@ -86,6 +112,13 @@ class Map : Button {
             this.lastClicked = mouseLocation;
         } else {
             this.lastClicked = null;
+        }
+        //Zooming
+        immutable previousScroll = this.scrollValue;
+        this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
+        if (this.scrollValue != previousScroll) {
+            this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
+            this.sideLength = this.sideLength + this.scrollValue - previousScroll;
         }
     }
 
