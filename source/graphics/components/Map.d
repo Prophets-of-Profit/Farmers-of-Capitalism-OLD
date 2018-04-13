@@ -50,7 +50,7 @@ class Map : Button {
         double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
         iVector center = new iVector(this.mapTarget.center);
         this.mapTarget = new iRectangle(
-            cast(int) (1 + center.x - newSideLength * (this.world.size + 0.5) * hexBase.x), 
+            cast(int) (center.x - newSideLength * (this.world.size + 0.5) * hexBase.x), 
             cast(int) (center.y - heightFactor * newSideLength),
             cast(int) (newSideLength * (2 * this.world.size + 1) * hexBase.x),
             cast(int) (2 * heightFactor * newSideLength)
@@ -118,7 +118,8 @@ class Map : Button {
         this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
         if (this.scrollValue != previousScroll) {
             this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
-            this.sideLength = this.sideLength + this.scrollValue - previousScroll;
+            //this.sideLength = this.sideLength + this.scrollValue - previousScroll;
+            this.zoom(this.sideLength + this.scrollValue - previousScroll, mouseLocation);
         }
     }
 
@@ -152,6 +153,29 @@ class Map : Button {
         // return Color(cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE] * 
         //             this.world.tiles[coord].weather[ClimateFactor.HUMIDITY])), 150,
         //             cast(ubyte) (150 * (1 - this.world.tiles[coord].weather[ClimateFactor.TEMPERATURE])));
+    }
+
+    /**
+     * Scales the size of the map in such a way that the focus remains where it is absolutely
+     */
+    void zoom(int newSL, iVector focus) {
+        int newSideLength = clamp(newSL, this.minimumSideLength, minimapHexSize.y);
+        double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
+        double focusProportionX = cast(double) (focus.x - this.mapTarget.initialPoint.x) / this.mapTarget.extent.x;
+        double focusProportionY = cast(double) (focus.y - this.mapTarget.initialPoint.y) / this.mapTarget.extent.y;
+        double newWidth = newSideLength * (2 * this.world.size + 1) * hexBase.x;
+        double newHeight = 2 * heightFactor * newSideLength;
+        this.mapTarget = new iRectangle(
+            cast(int) (focus.x - focusProportionX * newWidth), 
+            cast(int) (focus.y - focusProportionY * newHeight),
+            cast(int) (newWidth),
+            cast(int) (newHeight)
+        );
+        //Correct for rounding in integer division
+        this.mapTarget.initialPoint += focus - new iVector(
+            this.mapTarget.initialPoint.x + cast(int) (focusProportionX * this.mapTarget.extent.x),
+            this.mapTarget.initialPoint.y + cast(int) (focusProportionY * this.mapTarget.extent.y)
+        );
     }
 
 }
