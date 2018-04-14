@@ -72,4 +72,24 @@ class World {
         return distances;
     }
 
+    /**
+     * Gets the shortest path between two coordinates if getDistances has already been called
+     * If distances are not input, this will find them (but this is not optimal)
+     * Use this if performance is an issue and reachable tiles are already being displayed
+     * distances should be from start - use getDistances[start]
+     */
+    Coordinate[] getShortestPath(Coordinate start, Coordinate end, uint[Coordinate] distances = null) {
+        if(distances is null) distances = this.getDistances(start);
+        Coordinate[] path = [end];
+        while(path[0] != start) {
+            uint minimumDistance = path[0].adjacencies
+                                                    .filter!(a => a in distances)
+                                                    .map!(a => distances[a])
+                                                    .array
+                                                    .reduce!(min);
+            path = path[0].adjacencies.filter!(a => a in distances).find!(a => distances[a] == minimumDistance).front ~ path;
+        }
+        return path;
+    }
+
 }

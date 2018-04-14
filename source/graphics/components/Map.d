@@ -162,6 +162,18 @@ class Map : Button {
                     )
                 );
             }
+            Coordinate end;
+            foreach (coord; this.world.tiles.keys) {
+                if (coord.asHex(this.mapTarget.center, this.sideLength).contains(this.container.mouse.location)) {
+                    end = coord;
+                }
+            }
+            if(end !is null) {
+                Coordinate[] path = this.world.getShortestPath(this.selectedHex, end, distances);
+                foreach(coord; path) {
+                    this.fillHex(coord, Color(0, 0, 200, 150));
+                }
+            }
         }
     }
 
