@@ -150,7 +150,7 @@ class Map : Button {
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
             this.fillHex(this.selectedHex, this.selectedColor);
-            long[Coordinate] distances = this.world.getDistances(this.selectedHex);
+            uint[Coordinate] distances = this.world.getDistances(this.selectedHex);
             Coordinate[] reachableTiles = distances.keys.filter!(a => distances[a] <= 4).array;
             foreach(tile; reachableTiles) {
                 this.fillHex(tile, 
