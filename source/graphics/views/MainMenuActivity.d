@@ -29,7 +29,7 @@ class MainMenuActivity : Activity {
             }
 
             override void action() {
-                this.container.activity = new MainGameActivity(display, new GameWorld(4));
+                this.container.activity = new MainGameActivity(display, new GameWorld(5));
             }
 
             override void draw() {}

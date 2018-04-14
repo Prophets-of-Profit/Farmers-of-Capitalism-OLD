@@ -1,8 +1,10 @@
 module graphics.components.Map;
 
 import std.algorithm;
+import std.array;
 import std.math;
 import std.parallelism;
+import core.thread;
 import d2d;
 import graphics.Constants;
 import logic.world.Coordinate;
@@ -87,7 +89,7 @@ class Map : Button {
             iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.y / 2), this.sideLength);
             iRectangle size = hex.bound;
             m.blit(images[this.world.tiles[coord].representation], null, size);
-            colorSurface.fill!6(hex, this.getHexColor(coord));
+            //colorSurface.fill!6(hex, this.getHexColor(coord));
         }
         m.blit(colorSurface, null, 0, 0);
         this.map = new Texture(m, this.container.renderer);
@@ -118,7 +120,6 @@ class Map : Button {
         this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
         if (this.scrollValue != previousScroll) {
             this.scrollValue = this.container.mouse.totalWheelDisplacement.y;
-            //this.sideLength = this.sideLength + this.scrollValue - previousScroll;
             this.zoom(this.sideLength + this.scrollValue - previousScroll, mouseLocation);
         }
     }
@@ -135,13 +136,32 @@ class Map : Button {
     }
 
     /**
+     * Fills a hex with a color
+     */
+    void fillHex(Coordinate coords, Color color) {
+       this.container.renderer.fill!6(coords.asHex(this.mapTarget.center, this.sideLength), color); 
+    }
+
+    /**
      * Handles drawing the minimap
      */
     override void draw() {
         this.container.renderer.fill(this.location, PredefinedColor.BLUE); ///TODO: replace this with better background
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
-            this.container.renderer.fill!6(this.selectedHex.asHex(this.mapTarget.center, this.sideLength), this.selectedColor);
+            this.fillHex(this.selectedHex, this.selectedColor);
+            long[Coordinate] distances = this.world.getDistances(this.selectedHex);
+            Coordinate[] reachableTiles = distances.keys.filter!(a => distances[a] <= 4).array;
+            foreach(tile; reachableTiles) {
+                this.fillHex(tile, 
+                    Color(
+                        cast(ubyte) (max(255 - distances[tile] * 40, 0)),
+                        0,
+                        0,
+                        150
+                    )
+                );
+            }
         }
     }
 

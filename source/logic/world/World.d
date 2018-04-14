@@ -1,5 +1,7 @@
 module logic.world.World;
 
+import std.algorithm;
+import std.array;
 import std.math;
 import std.random;
 import graphics.Constants;
@@ -43,10 +45,29 @@ class World {
     }
 
     /**
-     * Gets the cost of moving from one coordinate to another
+     * Implementation of Dijkstra's algorithm to associate each coordinate with the minimum move cost from a source tile
      */
-    long getCost(Coordinate a, Coordinate b) {
-        return 1; //TODO:
+    long[Coordinate] getDistances(Coordinate s) {
+        long[Coordinate] distances;
+        assert(this.tiles.keys.canFind(s));
+        long[Coordinate] queue;
+        foreach(tile; this.tiles.byKey()) {
+            queue[tile] = 10000000000;
+            distances[tile] = 100000000; 
+        }
+        queue[s] = 0;
+        distances[s] = 0;
+        while(queue.keys.length > 0) {
+            long minimumDistance = queue.values.reduce!(min);
+            Coordinate toVisit = queue.keys.find!(a => queue[a] == minimumDistance).front;
+            queue.remove(toVisit);
+            foreach(coord; toVisit.adjacencies[0..$ - 1].filter!(a => a in this.tiles).array) {
+                long distance = min(distances[coord], distances[toVisit] + this.tiles[coord].movementCost);
+                distances[coord] = distance;
+                if(coord in queue) queue[coord] = distance;
+            }
+        }
+        return distances;
     }
 
 }

@@ -31,7 +31,7 @@ class Hex {
     double[ClimateFactor] baseClimate; ///The base values that exemplify the overall climate
     Direction waterFlow; ///How the water on the tile flows; if the tile isn't a river, is Direction.NONE
     Direction windFlow; ///How the wind on the tile flows; all tiles have a wind direction, but it can vary over time
-    Image tempImage;
+    Image tempImage; 
 
     /**
      * Gets how the tile looks
@@ -62,7 +62,12 @@ class Hex {
      * TODO:
      */
     @property int movementCost() {
-        return 1;
+        immutable int[Image] movementCosts = [
+            Image.BiomePlains : 1,
+            Image.BiomeOak : 2,
+            Image.BiomeRedwood : 3
+        ];
+        return movementCosts[this.tempImage];
     }
 
     /**

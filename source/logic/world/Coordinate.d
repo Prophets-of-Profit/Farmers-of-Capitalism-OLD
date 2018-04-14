@@ -1,5 +1,6 @@
 module logic.world.Coordinate;
 
+import std.conv;
 import d2d;
 import graphics.Constants;
 
@@ -57,6 +58,31 @@ class Coordinate {
     alias q = scalar1;
     alias r = scalar2;
     alias s = scalar3;
+
+    /**
+     * Represents the coordinate as an ordered triple
+     */
+    override string toString() {
+        return "(" ~ this.scalar1.to!string ~ "," ~ this.scalar2.to!string ~ "," ~ this.scalar3.to!string ~ ")";
+    }
+
+    /**
+     * Returns a "unique" has for this coordinate
+     * Breaks down with too many coords
+     */
+    override size_t toHash() {
+        return cast(size_t) (10000000 * q + r);
+    }
+
+    /**
+     * Checks equality for all dimensions
+     */
+    override bool opEquals(Object o) {
+        if(!cast(Coordinate) o) {
+            return false;
+        }
+        return this.scalar1 == (cast(Coordinate) o).scalar1 && this.scalar2 == (cast(Coordinate) o).scalar2 && this.scalar3 == (cast(Coordinate) o).scalar3;
+    }
 
     /**
      * Gets the coordinate as a hexagon given the map center and the hexagon side length
