@@ -4,6 +4,7 @@ import logic.world.Coordinate;
 
 /**
  * A unit on the map
+ * TODO: movement distances
  */
 class Actor {
 

@@ -5,7 +5,7 @@ import std.stdio;
 import d2d;
 import graphics.Constants;
 import graphics.views.MainGameActivity;
-import logic.world.GameWorld;
+import logic.Game;
 
 /**
  * The main menu activity
@@ -29,7 +29,7 @@ class MainMenuActivity : Activity {
             }
 
             override void action() {
-                this.container.activity = new MainGameActivity(display, new GameWorld(5));
+                this.container.activity = new MainGameActivity(display, new Game(5, 0));
             }
 
             override void draw() {}

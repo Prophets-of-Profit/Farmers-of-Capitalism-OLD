@@ -4,9 +4,9 @@ import d2d;
 import graphics.components.InvPanel;
 import graphics.components.Map;
 import graphics.Constants;
+import logic.Game;
 import logic.item.Inventory;
 import logic.item.plant;
-import logic.world.GameWorld;
 
 /**
  * The site of the main UI
@@ -19,9 +19,9 @@ class MainGameActivity : Activity {
      * Constructor for the main game activity
      * Organizes the components into locations 
      */
-    this(Display display, GameWorld world) { 
+    this(Display display, Game game) { 
         super(display);
-        this.components ~= new Map(display, new iRectangle(0, 50, 1300, 700), world);
+        this.components ~= new Map(display, new iRectangle(0, 50, 1300, 700), game.world);
         Inventory tempInventory = new Inventory(false, null, new Plant(Breed.TOMATO_PLANT));
         this.components ~= new InvPanel(display, new iRectangle(1300, 50, 300, 700), tempInventory);
         this.musicToLoop = new Sound!(SoundType.Music)(Soundtrack.Sprouts); 
