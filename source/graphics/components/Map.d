@@ -150,30 +150,17 @@ class Map : Button {
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
             this.fillHex(this.selectedHex, this.selectedColor);
-            uint[Coordinate] distances = this.world.getDistances(this.selectedHex);
-            Coordinate[] reachableTiles = distances.keys.filter!(a => distances[a] <= 4).array;
-            foreach(tile; reachableTiles) {
-                this.fillHex(tile, 
-                    Color(
-                        cast(ubyte) (max(255 - distances[tile] * 40, 0)),
-                        0,
-                        0,
-                        150
-                    )
-                );
-            }
-            Coordinate end;
-            foreach (coord; this.world.tiles.keys) {
-                if (coord.asHex(this.mapTarget.center, this.sideLength).contains(this.container.mouse.location)) {
-                    end = coord;
-                }
-            }
-            if(end !is null) {
-                Coordinate[] path = this.world.getShortestPath(this.selectedHex, end, distances);
-                foreach(coord; path) {
-                    this.fillHex(coord, Color(0, 0, 200, 150));
-                }
-            }
+        }
+        foreach(actor; this.world.actors) {
+            iRectangle tileLocation = actor.location.asHex(this.mapTarget.center, this.sideLength).bound;
+            iRectangle actorLocation = new iRectangle(
+                cast(int) (tileLocation.initialPoint.x + tileLocation.extent.x / 8), 
+                cast(int) (tileLocation.initialPoint.y + tileLocation.extent.y / 8),
+                cast(int) (3 * tileLocation.extent.x / 4),
+                cast(int) (3 * tileLocation.extent.y / 4)
+            );
+            Texture characterImage = new Texture(scaled(loadImage(actor.avatar), actorLocation.extent.x, actorLocation.extent.y), this.container.renderer);
+            this.container.renderer.copy(characterImage, actorLocation);
         }
     }
 

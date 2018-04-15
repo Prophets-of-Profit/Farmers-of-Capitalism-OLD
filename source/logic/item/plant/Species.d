@@ -50,5 +50,5 @@ Breed getSpecies(TraitSet traits) {
  * An enum of all the species that exist in the game
  */
 enum Breed : Species {
-    TOMATO_PLANT = Species("Tomato Plant", "Tom ate a plant.", Image.TomatoItem, null, null)
+    TOMATO_PLANT = Species("Tomato Plant", "Tom ate a plant.", Image.ItemTomato, null, null)
 }
