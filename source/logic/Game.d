@@ -45,7 +45,7 @@ class Game {
     this(ulong worldSize, int numPlayers) {
         this._world = new GameWorld(worldSize, this);
         foreach(i; 0..numPlayers) {
-            this._players ~= new Player(new Coordinate(0, 0)); 
+            this._players ~= new Player(new Coordinate(0, 0), this); 
         }
     }
 

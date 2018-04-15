@@ -7,6 +7,7 @@ import std.parallelism;
 import core.thread;
 import d2d;
 import graphics.Constants;
+import logic.actor.Actor;
 import logic.world.Coordinate;
 import logic.world.GameWorld;
 import logic.world.Hex;
@@ -24,6 +25,8 @@ class Map : Button {
     iVector lastClicked; ///Where the mouse was last clicked
     immutable selectedColor = Color(255, 255, 255, 100); ///The overlay color for the selected hex
     Coordinate selectedHex; ///The hex that is currently selected
+    Actor selectedActor; ///The actor being interacted with
+
 
     /**
      * Gets the minimum sidelength of a hex
@@ -59,6 +62,7 @@ class Map : Button {
         );
         //Correct for rounding in integer division
         this.mapTarget.initialPoint += center - this.mapTarget.center;
+        this.updateTextures();
     }
 
     /**
@@ -129,8 +133,19 @@ class Map : Button {
      */
     override void action() {
         foreach (coord; this.world.tiles.keys) {
+            //Selecting
             if (coord.asHex(this.mapTarget.center, this.sideLength).contains(this.container.mouse.location)) {
                 this.selectedHex = coord;
+                //Interacting with an actor
+                Actor[][Coordinate] actors = this.world.locatedActors;
+                if(coord in actors) {
+                    this.selectedActor = actors[coord][0];
+                } else {
+                    if(this.selectedActor !is null) {
+                        this.selectedActor.move(coord);
+                    }
+                    this.selectedActor = null;
+                }
             }
         }
     }
@@ -150,6 +165,21 @@ class Map : Button {
         this.container.renderer.copy(this.map, this.mapTarget);
         if (this.selectedHex !is null) {
             this.fillHex(this.selectedHex, this.selectedColor);
+        }
+        if(this.selectedActor !is null) {
+            Coordinate end;
+            foreach(tile; this.selectedActor.reachableTiles) {
+                this.fillHex(tile, Color(0, 255, 0, 150));
+                if(tile.asHex(this.mapTarget.center, this.sideLength).contains(this.container.mouse.location)) {
+                    end = tile;
+                }
+                if(end !is null) {
+                    Coordinate[] path = this.selectedActor.getShortestPath(end);
+                    foreach(coord; path) {
+                        this.fillHex(coord, Color(0, 0, 255, 150));
+                    }
+                }
+            }
         }
         foreach(actor; this.world.actors) {
             iRectangle tileLocation = actor.location.asHex(this.mapTarget.center, this.sideLength).bound;

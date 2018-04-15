@@ -2,6 +2,7 @@ module logic.world.GameWorld;
 
 import logic.actor.Actor;
 import logic.Game;
+import logic.world.Coordinate;
 import logic.world.World;
 
 /**
@@ -20,6 +21,19 @@ class GameWorld : World {
         foreach(player; this.game.players){
             foreach(unit; player.controlledUnits) {
                 units ~= unit;
+            }
+        }
+        return units;
+    }
+
+    /**
+     * Associates every coordinate on which there are actors with a list of actors on it
+     */
+    @property Actor[][Coordinate] locatedActors() {
+        Actor[][Coordinate] units;
+        foreach(player; this.game.players) {
+            foreach(unit; player.controlledUnits) {
+                units[unit.location] = (unit.location in units)? (units[unit.location] ~ unit) : [unit];
             }
         }
         return units;
