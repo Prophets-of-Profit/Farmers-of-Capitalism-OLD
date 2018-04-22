@@ -99,10 +99,10 @@ class Map : Button {
         Surface m = new Surface(newMapTarget.extent.x * mapResolutionScale, newMapTarget.extent.y * mapResolutionScale, SDL_PIXELFORMAT_RGBA32);
         Surface colorSurface = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            int sideLength = this.sideLength;
             iPolygon!6 hex = coord.asHex(new iVector(newMapTarget.extent.x * mapResolutionScale / 2, newMapTarget.extent.y * mapResolutionScale / 2), hexTextureSideLength);
             iRectangle size = hex.bound;
-            m.blit(images[this.world.tiles[coord].representation], null, size);
+            iRectangle newSize = new iRectangle(size.initialPoint - borderWidth, size.extent + 2 * borderWidth);
+            m.blit(images[this.world.tiles[coord].representation], null, newSize);
             //colorSurface.fill!6(hex, this.getHexColor(coord));
         }
         m.blit(colorSurface, null, 0, 0);
