@@ -36,7 +36,7 @@ class Actor {
      * Gets the movement cost for this unit to go to any coordinate
      */
     @property uint[Coordinate] distances() {
-        return this.controller.game.world.getDistances(this.location);
+        return this.controller.game.world.getDistances(this.location, this.numMovesLeft);
     }
 
     /**

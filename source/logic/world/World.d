@@ -47,11 +47,12 @@ class World {
     /**
      * Implementation of Dijkstra's algorithm to associate each coordinate with the minimum move cost from a source tile
      */
-    uint[Coordinate] getDistances(Coordinate s) {
+    uint[Coordinate] getDistances(Coordinate s, uint maxDistance = 200) {
         uint[Coordinate] distances;
         assert(this.tiles.keys.canFind(s));
         uint[Coordinate] queue;
-        foreach(tile; this.tiles.byKey()) {
+        Coordinate[] reachableTiles = this.tiles.keys.filter!(a => getDistance(s, a) <= maxDistance).array;
+        foreach(tile; reachableTiles) {
             //Subtract 100 here to avoid overflow; be careful of having maps too long, though this shouldn't be an issue
             //because the map will be unusable long before distances reach levels this high (unless you're using unpassable tiles)
             queue[tile] = uint.max - 100;
@@ -63,7 +64,7 @@ class World {
             uint minimumDistance = queue.values.reduce!(min);
             Coordinate toVisit = queue.keys.find!(a => queue[a] == minimumDistance).front;
             queue.remove(toVisit);
-            foreach(coord; toVisit.adjacencies[0..$ - 1].filter!(a => a in this.tiles).array) {
+            foreach(coord; toVisit.adjacencies[0..$ - 1].filter!(a => reachableTiles.canFind(a)).array) {
                 uint distance = min(distances[coord], distances[toVisit] + this.tiles[coord].movementCost);
                 distances[coord] = distance;
                 if(coord in queue) queue[coord] = distance;

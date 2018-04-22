@@ -11,6 +11,8 @@ Texture[Image] textures; ///A list of all textures
 Font[Typeface] fonts; ///All the typefaces the game will use
 dVector hexBase; ///The size of the rectangle in which a hexagon of side length 1 is inscribed
 iVector minimapHexSize; ///The minimum and maximum sizes of hexes in the minimap by side length
+int mapResolutionScale = 1; ///The scale at which the map is pre-rendered
+int hexTextureSideLength = 32; ///The length of a side of a hexagon texture
 
 shared static this() {
     aspectRatio = new iVector(16, 9);

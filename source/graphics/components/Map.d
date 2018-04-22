@@ -87,16 +87,26 @@ class Map : Button {
      * Updates how the map looks
      */
     void updateTextures() {
-        Surface m = new Surface(this.mapTarget.extent.x, this.mapTarget.extent.y, SDL_PIXELFORMAT_RGBA32);
+        //Set the target to a rectangle with the side length of a hex as 32 to fit with the textures
+        double heightFactor = 1 + cast(double) this.world.size * 3 / 2;
+        iVector center = new iVector(this.mapTarget.center);
+        iRectangle newMapTarget = new iRectangle(
+            cast(int) (center.x - hexTextureSideLength * (this.world.size + 0.5) * hexBase.x), 
+            cast(int) (center.y - heightFactor * hexTextureSideLength),
+            cast(int) (hexTextureSideLength * (2 * this.world.size + 1) * hexBase.x),
+            cast(int) (2 * heightFactor * hexTextureSideLength)
+        );
+        Surface m = new Surface(newMapTarget.extent.x * mapResolutionScale, newMapTarget.extent.y * mapResolutionScale, SDL_PIXELFORMAT_RGBA32);
         Surface colorSurface = new Surface(this.location.extent.x, this.location.extent.y, SDL_PIXELFORMAT_RGBA32);
         foreach (coord; this.world.tiles.keys) {
-            iPolygon!6 hex = coord.asHex(new iVector(this.mapTarget.extent.x / 2, this.mapTarget.extent.y / 2), this.sideLength);
+            int sideLength = this.sideLength;
+            iPolygon!6 hex = coord.asHex(new iVector(newMapTarget.extent.x * mapResolutionScale / 2, newMapTarget.extent.y * mapResolutionScale / 2), hexTextureSideLength);
             iRectangle size = hex.bound;
             m.blit(images[this.world.tiles[coord].representation], null, size);
             //colorSurface.fill!6(hex, this.getHexColor(coord));
         }
         m.blit(colorSurface, null, 0, 0);
-        this.map = new Texture(m, this.container.renderer);
+        this.map = new Texture(scaled(m, this.mapTarget.extent.x, this.mapTarget.extent.y), this.container.renderer);
     }
 
     /**

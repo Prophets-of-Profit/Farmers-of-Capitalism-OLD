@@ -2,7 +2,7 @@
  * "I feel like I have accomplished very much spending ~3 hours on a single line of easy code"
  *      -Saurabh Totey
  *
- * "Be careful not to choke on your aspirations"
+ * "Farming? Really? A man of your talents?"
  *      -Elia Gorokhovsky
  *
  * "I have PantheonTSD"
